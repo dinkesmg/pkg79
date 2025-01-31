@@ -100,142 +100,7 @@
         });
     })
 
-    // function get_puskesmas(id_puskesmas, nama_puskesmas){
-    //     console.log("puskesmas")
-    //     $('#puskesmas')
-    //         .empty()
-    //         .append($("<option/>")
-    //             .val(id_puskesmas)
-    //             .text(nama_puskesmas))
-    //         .val(id_puskesmas)
-    //         .trigger("change");
-
-    //     $('#puskesmas').select2({
-    //         placeholder: 'Cari...',
-    //         allowClear: true,
-    //         width: 'resolve',
-    //         theme: 'bootstrap4',
-    //         ajax: {
-    //             url: "{{ url('puskesmas/data') }}",
-    //             dataType: 'json',
-    //             delay: 500,
-    //             data: function (params) {
-    //                 console.log(params.term)
-    //                 return {
-    //                     search: params.term
-    //                 };
-    //             },
-    //             processResults: function (data) {
-    //                 return {
-    //                     results: data.map(function(item) {
-    //                         return {
-    //                             id: item.id,
-    //                             text: item.nama,
-    //                         };
-    //                     })
-    //                 };
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("AJAX error:", status, error);
-    //             },
-    //             cache: true
-    //         },
-    //         // minimumInputLength: 2,
-    //     });
-    // }
-
-    // function get_kecamatan(id_kecamatan, nama_kecamatan){
-    //     console.log("kecamat")
-    //     $('#kecamatan')
-    //         .empty()
-    //         .append($("<option/>")
-    //             .val(id_kecamatan)
-    //             .text(nama_kecamatan))
-    //         .val(id_kecamatan)
-    //         .trigger("change");
-
-    //     $('#kecamatan').select2({
-    //         placeholder: 'Cari...',
-    //         allowClear: true,
-    //         width: 'resolve',
-    //         theme: 'bootstrap4',
-    //         ajax: {
-    //             url: "{{ url('ref_kecamatan') }}",
-    //             dataType: 'json',
-    //             delay: 500,
-    //             data: function (params) {
-    //                 console.log(params.term)
-    //                 return {
-    //                     search: params.term
-    //                 };
-    //             },
-    //             processResults: function (data) {
-    //                 return {
-    //                     results: data
-    //                     .map(function(item) {
-    //                         return {
-    //                             id: item.id,
-    //                             text: item.nama_kecamatan,
-    //                         };
-    //                     })
-    //                 };
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("AJAX error:", status, error);
-    //             },
-    //             cache: true
-    //         },
-    //         // minimumInputLength: 2,
-    //     });
-    // }
-
-    // function get_kelurahan(id_kelurahan, nama_kelurahan){
-    //     console.log("kelur")
-    //     $('#kelurahan')
-    //         .empty()
-    //         .append($("<option/>")
-    //             .val(id_kelurahan)
-    //             .text(nama_kelurahan))
-    //         .val(id_kelurahan)
-    //         .trigger("change");
-
-    //     $('#kelurahan').select2({
-    //         placeholder: 'Cari...',
-    //         allowClear: true,
-    //         width: 'resolve',
-    //         theme: 'bootstrap4',
-    //         ajax: {
-    //             url: "{{ url('ref_kelurahan') }}",
-    //             dataType: 'json',
-    //             delay: 500,
-    //             data: function (params) {
-    //                 console.log(params.term)
-    //                 return {
-    //                     search: params.term
-    //                 };
-    //             },
-    //             processResults: function (data) {
-    //                 return {
-    //                     results: data
-    //                     // .filter(function(item){
-    //                     //     return item.petugas && item.petugas.nama != null;
-    //                     // })
-    //                     .map(function(item) {
-    //                         return {
-    //                             id: item.id,
-    //                             text: item.nama_kelurahan,
-    //                         };
-    //                     })
-    //                 };
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("AJAX error:", status, error);
-    //             },
-    //             cache: true
-    //         },
-    //         // minimumInputLength: 2,
-    //     });
-    // }
+    var semua_riwayat = []
 
     function tabel(){
         let col = 
@@ -246,26 +111,74 @@
                 },
             },
             { 'render': function (data, type, row, meta) {
-                var baseurl = "{{url('pasien/riwayat_skrining/')}}"
-                var actionsHtml = '<a href="'+baseurl+"/"+row.id+'" target="_blank"><button class="btn btn-sm btn-primary" style="width:100%"><i class="fa fa-pencil-alt"></i> Riwayat Skrining</button></a>'
+                let hasil_pemeriksaan = JSON.parse(row.hasil_pemeriksaan)
+                let program_tindak_lanjut = JSON.parse(row.program_tindak_lanjut)                
                 
-                if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
-                    actionsHtml += '<button class="btn btn-sm btn-warning" onclick="oc_modal(\'Edit\', \''+row.id+'\', \''+row.nik+'\', \''+row.nama+'\', \''+row.jenis_kelamin+'\', \''+row.tgl_lahir+'\', \''+(row.id_kecamatan && row.kecamatan ? row.kecamatan.id_kecamatan:'')+'\', \''+(row.id_kecamatan && row.kecamatan ? row.kecamatan.nama_kecamatan:'')+'\', \''+(row.id_kelurahan && row.kelurahan ? row.kelurahan.id_kelurahan:'')+'\', \''+(row.id_kelurahan && row.kelurahan ? row.kelurahan.nama_kelurahan:'')+'\')" style="width:100%"><i class="fa fa-pencil-alt"></i> Edit</button>'
+                var cek = semua_riwayat.some(function(entry) {
+                    return entry.id == row.id;
+                });
+
+                if (!cek) {
+                    semua_riwayat.push({
+                        id: row.id,
+                        tanggal_pemeriksaan: row.tanggal_pemeriksaan,
+                        tempat_periksa: row.tempat_periksa ? row.tempat_periksa : "",
+                        nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
+                        pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
+                        pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",                        
+                        pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
+                        pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
+                        pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
+                        pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
+                        pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
+                        pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
+                        hasil_pemeriksaan: hasil_pemeriksaan,
+                        kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
+                        program_tindak_lanjut: program_tindak_lanjut,
+                    });
                 }
+                // var baseurl = "{{url('pasien/riwayat_skrining/')}}"
+                var actionsHtml = ''
+                
+                // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
+                    
+                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"><i class="fa fa-pencil-alt"></i> Lihat</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-pencil-alt"></i> Hapus</button>'
+                // }
                 
                 return actionsHtml;
                 }
             },
-            { 'data': 'tanggal_pemeriksa' },
+            { 'data': 'tanggal_pemeriksaan' },
             { 'data': 'tempat_periksa' },
             { 'data': 'nama_fktp_pj' },
-            { 'data': 'id_pemeriksa' },
-            { 'data': 'id_pasien' },
-            { 'data': 'id_pasien' },
-            { 'data': 'id_pasien' },
-            { 'data': 'id_pasien' },
-            { 'data': 'hasil_pemeriksaan_kesehatan' },
-            { 'data': 'kesimpulan_hasil' },
+            { 'data': 'pemeriksa.nama' },
+            { 'render': function (data, type, row, meta) {
+                let pasien = (row.pasien && row.pasien.nik ? row.pasien.nik : "");
+
+                return pasien
+                }
+            },
+            { 'render': function (data, type, row, meta) {
+                let pasien = (row.pasien && row.pasien.nama ? row.pasien.nama : "");
+
+                return pasien
+                }
+            },
+            { 'render': function (data, type, row, meta) {
+                let pasien = (row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "");
+
+                return pasien
+                }
+            },
+            { 'render': function (data, type, row, meta) {
+                let pasien = (row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "");
+
+                return pasien
+                }
+            },
+            { 'data': 'hasil_pemeriksaan' },
+            { 'data': 'kesimpulan_hasil_pemeriksaan' },
             { 'data': 'program_tindak_lanjut' },
         ]
 
@@ -273,8 +186,7 @@
             destroy : true,
             scrollX : true,
             ajax :  {
-                // url: "{{url('pasien_puskesmas')}}",
-                url: "{{url('pasien/puskesmas')}}",
+                url: "{{url('riwayat/data')}}",
                 dataSrc: ''
             },
             columns: col
@@ -282,29 +194,40 @@
     }
 
     var ar_hasil_pemeriksaan = []
+    var dt
 
     function oc_modal(fitur, id_riwayat){
-        // let id_riwayat
-        let dt
-        if(id_riwayat!=null){
-            console.log("null")
+        console.log(semua_riwayat)
+
+        dt = semua_riwayat.find(function(entry) {
+            return entry.id == id_riwayat;
+        });
+        console.log(dt)
+        
+        if(dt==null){
+            // console.log("null")
             dt = {
+                id: '',
                 tanggal_pemeriksaan: '',
                 tempat_periksa: '',
                 nama_fktp_pj: '',
-                id_pemeriksa: '',
-                id_pasien: '',
+                pemeriksa_nik: '',
+                pemeriksa_nama: '',
+                pasien_nik: '',
+                pasien_nama: '',
+                pasien_jenis_kelamin: '',
+                pasien_tgl_lahir: '',
+                pasien_alamat: '',
+                pasien_no_hp: '',
                 hasil_pemeriksaan: '',
                 kesimpulan_hasil: '',
                 program_tindak_lanjut: '',
-            } 
+            }
         }
-        console.log(id_riwayat)
-        console.log(fitur)
-        console.log(dt.id_pasien)
-        if(dt.id_pasien!=""){
-            console.log("pasien dt")
-        }
+        
+        // console.log(id_riwayat)
+        // console.log(fitur)
+        // console.log(dt.id_pasien)
         // console.log(id_pasien)
         // console.log("id_petugas"+id_petugas)
         var role_auth = "{{ Auth::user()->role }}";
@@ -336,36 +259,36 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pemeriksa" type="text" value="'+((dt.id_pemeriksa != "")?dt.pemeriksa.nik:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nik_pemeriksa" type="text" value="'+((dt.pemeriksa_nik != "")?dt.pemeriksa_nik:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
-                <div class="col-8"><input id="nama_pemeriksa" type="text" value="'+((dt.id_pemeriksa != "")?dt.pemeriksa.nama:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_pemeriksa" type="text" value="'+((dt.pemeriksa_nama != "")?dt.pemeriksa_nama:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pasien</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.id_pasien != "")?dt.pasien.nik:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
-                <div class="col-8"><input id="nama_pasien" type="text" value="'+((dt.id_pasien != "")?dt.pasien.nama:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_pasien" type="text" value="'+((dt.pasien_nama != "")?dt.pasien_nama:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Jenis Kelamin</div>\
                 <div class="col-8"><select id="jenis_kelamin" style="width:100%">\
-                    <option value="Laki-laki" '+(((dt.id_pasien != "" && dt.pasien.jenis_kelamin === "Laki-laki") ? "selected" : ""))+'>Laki-laki</option>\
-                    <option value="Perempuan" '+(((dt.id_pasien != "" && dt.pasien.jenis_kelamin === "Perempuan") ? "selected" : ""))+'>Perempuan</option></select></div>\
+                    <option value="Laki-laki" '+(((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Laki-laki") ? "selected" : ""))+'>Laki-laki</option>\
+                    <option value="Perempuan" '+(((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Perempuan") ? "selected" : ""))+'>Perempuan</option></select></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Tanggal Lahir</div>\
-                <div class="col-8"><input id="tgl_lahir" type="date" value="'+((dt.id_pasien != "") != ""?dt.pasien.tgl_lahir:"")+'" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
+                <div class="col-8"><input id="tgl_lahir" type="date" value="'+((dt.pasien_tgl_lahir != "")?dt.pasien_tgl_lahir:"")+'" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Alamat</div>\
-                <div class="col-8"><input id="alamat" type="text" value="'+((dt.id_pasien != "")?dt.pasien.alamat:"")+'" style="width: 100%;"></input></div>\
+                <div class="col-8"><input id="alamat" type="text" value="'+((dt.pasien_alamat != "")?dt.pasien_alamat:"")+'" style="width: 100%;"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Usia</div>\
@@ -373,7 +296,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">No HP</div>\
-                <div class="col-8"><input id="no_hp" type="text" value="'+((dt.id_pasien != "")?dt.pasien.no_hp:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="no_hp" type="text" value="'+((dt.pasien_no_hp != "")?dt.pasien_no_hp:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
@@ -389,10 +312,10 @@
                 <div class="col-8">\
                     <select id="kesimpulan_hasil_pemeriksaan" style="width:100%">\
                         <option value="">Pilih</option>\
-                        <option value="Normal dan faktor resiko tidak terdeteksi" '+(((dt.hasil_pemeriksaan != "" && dt.hasil_pemeriksaan === "Normal dan faktor resiko tidak terdeteksi") ? "selected" : ""))+'>Normal dan faktor resiko tidak terdeteksi</option>\
-                        <option value="Normal dengan faktor resiko" '+(((dt.hasil_pemeriksaan != "" && dt.hasil_pemeriksaan === "Normal dengan faktor resiko") ? "selected" : ""))+'>Normal dengan faktor resiko</option>\
-                        <option value="Menunjukkan kondisi pra penyakit" '+(((dt.hasil_pemeriksaan != "" && dt.hasil_pemeriksaan === "Menunjukkan kondisi pra penyakit") ? "selected" : ""))+'>Menunjukkan kondisi pra penyakit</option>\
-                        <option value="Menunjukkan kondisi penyakit" '+(((dt.hasil_pemeriksaan != "" && dt.hasil_pemeriksaan === "Menunjukkan kondisi penyakit") ? "selected" : ""))+'>Menunjukkan kondisi penyakit</option>\
+                        <option value="Normal dan faktor resiko tidak terdeteksi" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dan faktor resiko tidak terdeteksi") ? "selected" : ""))+'>Normal dan faktor resiko tidak terdeteksi</option>\
+                        <option value="Normal dengan faktor resiko" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dengan faktor resiko") ? "selected" : ""))+'>Normal dengan faktor resiko</option>\
+                        <option value="Menunjukkan kondisi pra penyakit" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi pra penyakit") ? "selected" : ""))+'>Menunjukkan kondisi pra penyakit</option>\
+                        <option value="Menunjukkan kondisi penyakit" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi penyakit") ? "selected" : ""))+'>Menunjukkan kondisi penyakit</option>\
                     </select>\
                 </div>\
             </div>\
@@ -401,22 +324,26 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Edukasi yang diberikan</div>\
-                <div class="col-8"><input id="edukasi" type="text" value="'+((dt.id_pasien != "")?dt.pasien.no_hp:"")+'" oninput="oc_program_tindak_lanjut(\'edukasi\')" style="width:100%"></input></div>\
+                <div class="col-8"><input id="edukasi" type="text" value="" oninput="oc_program_tindak_lanjut(\'edukasi\')" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Rujuk FKTRL (disertai dengan keterangan)</div>\
-                <div class="col-8"><input id="rujuk_fktrl" type="text" value="'+((dt.id_pasien != "")?dt.pasien.no_hp:"")+'" oninput="oc_program_tindak_lanjut(\'rujuk_fktrl\')" style="width:100%"></input></div>\
+                <div class="col-8"><input id="rujuk_fktrl" type="text" value="" oninput="oc_program_tindak_lanjut(\'rujuk_fktrl\')" style="width:100%"></input></div>\
             </div>'
 
         $('#exampleModal .modal-body').html(html);
         $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\''+fitur+'\', \''+id_riwayat+'\')">'+fitur+'</button>');
+        
+        oc_tgl_pemeriksaan_dan_lahir()
+        get_program_tindak_lanjut()
+
         $('#exampleModal').modal('show');
     }
 
     function oc_fitur(fitur, id_riwayat){
         console.log(fitur)
         console.log(id_riwayat)
-        var vurl = fitur.toLowerCase()
+        let vurl = fitur.toLowerCase()
         console.log(vurl)
         if(vurl=="lihat"){
             let newUrl = `{{url('pasien/lihat_riwayat_msn')}}/${id_pasien}`;
@@ -464,12 +391,23 @@
                 },
                 data: {
                     id: id_riwayat,
+                    tanggal_pemeriksaan: tanggal_pemeriksaan,
+                    tempat_periksa: tempat_periksa,
+                    nama_fktp_pj: nama_fktp_pj,
+
+                    nik_pemeriksa: nik_pemeriksa,
+                    nama_pemeriksa: nama_pemeriksa,
+                    
                     nik_pasien: nik_pasien,
                     nama_pasien: nama_pasien,
                     jenis_kelamin: jenis_kelamin,
                     tgl_lahir: tgl_lahir,
-                    id_kecamatan: id_kecamatan,
-                    id_kelurahan: id_kelurahan,
+                    alamat: alamat,
+                    no_hp: no_hp,
+
+                    ar_hasil_pemeriksaan: ar_hasil_pemeriksaan,
+                    kesimpulan_hasil_pemeriksaan: kesimpulan_hasil_pemeriksaan,
+                    program_tindak_lanjut: program_tindak_lanjut
                 },
                 success: function(response) {
                     console.log(response)
@@ -523,7 +461,10 @@
     }
 
     function dewasa_18_29_tahun(){
-        // console.log("18")
+        console.log("18")
+        console.log(dt)
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
+
         let html = ''
 
         html+= '<div class="row mb-3" style="display:flex">\
@@ -730,6 +671,21 @@
                 </div>'
         
         $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
+        }
     }
 
     function oc_hasil_pemeriksaan_kesehatan(value){
@@ -766,9 +722,6 @@
 
     function oc_program_tindak_lanjut(value){
         let val = $('#'+value).val()
-        console.log(val)
-        console.log(value)
-
         let index = ar_program_tindak_lanjut.findIndex(item => Object.keys(item)[0] == value);
 
         if (index !== -1) {
@@ -778,8 +731,22 @@
             newObj[value] = val;
             ar_program_tindak_lanjut.push(newObj);
         }
+    }
 
-        console.log(ar_program_tindak_lanjut)
+    function get_program_tindak_lanjut(){
+        if(dt.id!="" && dt.program_tindak_lanjut!=null){
+            let variabel = ['edukasi', 'rujuk_fktrl']
+            ar_program_tindak_lanjut = dt.program_tindak_lanjut
+
+            variabel.map(var_nama => {
+                let index = ar_program_tindak_lanjut.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_program_tindak_lanjut[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+            })
+        }
     }
 </script>
 </html>

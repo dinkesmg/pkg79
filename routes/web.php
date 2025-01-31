@@ -19,6 +19,8 @@ Route::post('auth_cek', [AuthController::class, 'cek'])->name('auth.cek');
 Route::prefix('riwayat')->group(function () {
     // Route::middleware(['auth', 'cekrole:Admin|Puskesmas'])->group(function () {
         Route::get('/', [RiwayatController::class, 'index'])->name('riwayat.index');
+        Route::post('/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
+        Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
     // });
 });
 
