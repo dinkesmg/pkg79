@@ -1,4 +1,14 @@
-@include('layouts.header')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semar PKG79</title>
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  @include('layouts.header')
+</head>
+<body>
 <style>
     .password-input {
         position: relative;
@@ -23,7 +33,7 @@
         <div class="row" style="display:flex; justify-content:center; align-items:center; height:100vh">
             <div class="col-md-6 col-sm-4">
                 <div style="display:flex; justify-content:center;">
-                    <h5 style="color:rgb(22 179 172); margin-bottom:10px; font-weight:bold;">PKG79</h5>
+                    <h5 style="color:rgb(22 179 172); margin-bottom:10px; font-weight:bold;">Semar PKG79</h5>
                 </div>
                 <!-- <div>
                     <h5 style="color:##08BB20; margin-bottom:10px">Manajemen Layanan Terpadu Kinerja Pegawai Dinas Kesehatan Kota Semarang</h5>
@@ -62,7 +72,7 @@
         </div>
     </div>
 <!-- @//endsection -->
-
+</body>
 <script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
 <script>
     function togglePasswordVisibility() {
