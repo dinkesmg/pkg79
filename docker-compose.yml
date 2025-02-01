@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+    pkg79-app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: pkg79
+
+        restart: always
+        working_dir: /var/www/html
+        volumes:
+            - /var/project/pkg79:/var/www/html
+            - /var/project/pkg79/storage:/var/www/html/storage
+            - backup_data:/var/www/html/backup
+        ports:
+            - "7015:80"
+        networks:
+            - pkg79_network
+
+networks:
+    pkg79_network:
+        external: true
+
+volumes:
+    backup_data:
