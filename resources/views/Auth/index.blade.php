@@ -23,7 +23,7 @@
         <div class="row" style="display:flex; justify-content:center; align-items:center; height:100vh">
             <div class="col-md-6 col-sm-4">
                 <div style="display:flex; justify-content:center;">
-                    <h5 style="color:rgb(22 179 172); margin-bottom:10px; font-weight:bold;">PKG</h5>
+                    <h5 style="color:rgb(22 179 172); margin-bottom:10px; font-weight:bold;">PKG79</h5>
                 </div>
                 <!-- <div>
                     <h5 style="color:##08BB20; margin-bottom:10px">Manajemen Layanan Terpadu Kinerja Pegawai Dinas Kesehatan Kota Semarang</h5>
