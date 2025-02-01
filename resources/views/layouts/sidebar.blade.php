@@ -14,7 +14,7 @@
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
         <!-- <img src="{//{asset('asset')}}/apotek.png" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-        <span class="brand-text" style="color:#fff; font-weight:bold">PKG79</span>
+        <span class="brand-text" style="color:#fff; font-weight:bold">Semar PKG79</span>
     </a>
 
     <!-- Sidebar -->
