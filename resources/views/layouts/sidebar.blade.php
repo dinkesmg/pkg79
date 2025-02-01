@@ -14,7 +14,7 @@
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
         <!-- <img src="{//{asset('asset')}}/apotek.png" class="brand-image img-circle elevation-3" style="opacity: .8"> -->
-        <span class="brand-text" style="color:#fff; font-weight:bold">PKG</span>
+        <span class="brand-text" style="color:#fff; font-weight:bold">PKG79</span>
     </a>
 
     <!-- Sidebar -->
@@ -25,7 +25,7 @@
             <!-- <img src="{//{asset('public/gambar}/akun.png" style="width:60px; height:auto"> -->
             <!-- </div> -->
             <div class="info">
-                <a href="#" class="d-block" style="color:#fff; font-weight:bold">{{ Auth::user()->name }}</a>
+                <a href="#" class="d-block" style="color:#fff; font-weight:bold">{{ Auth::user()->nama }}</a>
             </div>
         </div>
 
@@ -41,13 +41,13 @@
                     </a>
                 </li> -->
                 @if (Auth::user()->role == 'Admin')
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a href="{{ url('user') }}"
                             class="nav-link {{ request()->routeIs('user*') == 1 ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users" style="color: yellow;"></i>
                             <p style="color:#fff; font-weight:bold">User</p>
                         </a>
-                    </li>
+                    </li> -->
                 @endif
                 @if (Auth::user()->role == 'Admin' ||
                         Auth::user()->role == 'Puskesmas')
@@ -71,7 +71,6 @@
                 <li class="nav-item">
                     <a href="{{ url('riwayat') }}"
                         class="nav-link {{ request()->routeIs('riwayat*') == 1 ? 'active' : '' }}">
-                        <img src="{{ asset('gambar/riwayat.png') }}" style="width: 25.59px; height: auto;">
                         <p style="color:#fff; font-weight:bold">Riwayat</p>
                     </a>
                 </li>

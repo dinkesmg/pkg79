@@ -142,14 +142,24 @@
                 
                 // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
                     
-                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"><i class="fa fa-pencil-alt"></i> Lihat</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-pencil-alt"></i> Hapus</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Lihat</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
                 // }
                 
                 return actionsHtml;
                 }
             },
-            { 'data': 'tanggal_pemeriksaan' },
+            {
+                render: function(data, type, row, meta) {
+                    let tgl = row.tanggal_pemeriksaan
+                    if (tgl) {
+                        let dateParts = tgl.split("-"); // Split "YYYY-MM-DD"
+                        let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0]; // Rearrange to "DD-MM-YYYY"
+                        return formattedDate;
+                    }
+                    return "";
+                },
+            },
             { 'data': 'tempat_periksa' },
             { 'data': 'nama_fktp_pj' },
             { 'data': 'pemeriksa.nama' },
@@ -197,7 +207,10 @@
     var dt
 
     function oc_modal(fitur, id_riwayat){
-        console.log(semua_riwayat)
+        ar_hasil_pemeriksaan = []
+        ar_program_tindak_lanjut = []
+
+        // console.log(semua_riwayat)
 
         dt = semua_riwayat.find(function(entry) {
             return entry.id == id_riwayat;
@@ -342,12 +355,31 @@
 
     function oc_fitur(fitur, id_riwayat){
         console.log(fitur)
-        console.log(id_riwayat)
+        // console.log(id_riwayat)
         let vurl = fitur.toLowerCase()
         console.log(vurl)
-        if(vurl=="lihat"){
-            let newUrl = `{{url('pasien/lihat_riwayat_msn')}}/${id_pasien}`;
-            window.location.href = newUrl;
+        if(vurl=="hapus"){
+            $.ajax({
+                url: `{{url('riwayat')}}/${vurl}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id_riwayat,
+                },
+                success: function(response) {
+                    console.log(response)
+                    $('#exampleModal').modal('hide');
+                    tabel()
+                    if(response.status=="Berhasil"){
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Berhasil '+fitur+' Pasien'
+                        })
+                    }
+                }
+            })
         }
         else if(vurl=="tambah"){
             let tanggal_pemeriksaan = $('#tanggal_pemeriksaan').val();
@@ -445,18 +477,303 @@
             // Hitung selisih tahun dan bulan
             var tahun = periksa.getFullYear() - lahir.getFullYear();
             var bulan = periksa.getMonth() - lahir.getMonth();
+            var hari = periksa.getDate() - lahir.getDate();
 
             if (bulan < 0) {
                 tahun--;
                 bulan += 12;
             }
 
-            $('#usia').val(tahun + " Tahun " + bulan + " Bulan")
+            if (hari < 0) {
+                bulan--;
+                // Dapatkan jumlah hari dalam bulan sebelumnya
+                var lastMonth = new Date(periksa.getFullYear(), periksa.getMonth(), 0);
+                hari += lastMonth.getDate();
+            }
 
+            $('#usia').val(tahun + " Tahun " + bulan + " Bulan " + hari + " Hari");
+
+            if(tahun == 0 && bulan == 0 && hari >= 0 && hari <= 28){
+                bbl()
+            }
+            if(tahun >= 1 && tahun <= 6){
+                balita_dan_pra_sekolah(tahun)
+            }
             if(tahun >= 18 && tahun <= 29){
-                // console.log("18")
                 dewasa_18_29_tahun()
             }
+            if(tahun >= 30 && tahun <= 39){
+                dewasa_30_39_tahun()
+            }
+            if(tahun >= 40 && tahun <= 59){
+                dewasa_40_59_tahun()
+            }
+            if(tahun >= 60){
+                lansia()
+            }
+        }
+    }
+
+    function bbl(){
+        console.log(dt)
+
+        let variabel = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu']
+
+        let html = ''
+
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Pertumbuhan (BB)</div>\
+                    <div class="col-8">\
+                        <select id="pertumbuhan_bb" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'pertumbuhan_bb\')">\
+                            <option value="">Pilih</option>\
+                            <option value="BB Lahir ≥ 2500 gr">BB Lahir ≥ 2500 gr</option>\
+                            <option value="BBLR (2000 - < 2500 gr) dan sehat">BBLR (2000 - < 2500 gr) dan sehat</option>\
+                            <option value="BBLR (2000 - <2500 gr) dan sakit">BBLR (2000 - <2500 gr) dan sakit</option>\
+                            <option value="BBLR < 2000 gr">BBLR < 2000 gr</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Penyakit Jantung Bawaan Kritis</div>\
+                    <div class="col-8">\
+                        <select id="penyakit_jantung_bawaan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'penyakit_jantung_bawaan\')">\
+                            <option value="">Pilih</option>\
+                            <option value=">95%, Perbedaan <3% di tangan kanan dan kaki">>95%, Perbedaan <3% di tangan kanan dan kaki</option>\
+                            <option value="90-95% atau perbedaan >3% di tangan dan kaki">90-95% atau perbedaan >3% di tangan dan kaki</option>\
+                            <option value="<90%"> <90%</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kekurangan Hormon Tiroid Sejak Lahir (TSHS)</div>\
+                    <div class="col-8">\
+                        <select id="kekurangan_hormon_tiroid" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kekurangan_hormon_tiroid\')">\
+                            <option value="">Pilih</option>\
+                            <option value="TSH Normal">TSH Normal</option>\
+                            <option value="TSH Tinggi">TSH Tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kekurangan Enzim Pelindung Sel Darah Merah (D6PD)</div>\
+                    <div class="col-8">\
+                        <select id="kekurangan_enzim_d6pd" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kekurangan_enzim_d6pd\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Negatif">Negatif</option>\
+                            <option value="Positif">Positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kekurangan Hormon Adrenal Sejak Lahir</div>\
+                    <div class="col-8">\
+                        <select id="kekurangan_hormon_adrenal" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kekurangan_hormon_adrenal\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Negatif">Negatif</option>\
+                            <option value="Positif">Positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kelainan Saluran Empedu</div>\
+                    <div class="col-8">\
+                        <select id="kelainan_saluran_empedu" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kelainan_saluran_empedu\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Warna tinja Normal">Warna tinja Normal</option>\
+                            <option value="Warna tinja Pucat">Warna tinja Pucat</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        
+        $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
+        }
+    }
+
+    function balita_dan_pra_sekolah(tahun){
+        console.log(dt)
+        let variabel = ['indeks_pbu_tbu', 'indeks_bbpb_bbtb', 'indeks_bbu', 'indeks_imtu', 'lingkar_kepala', 'perkembangan', 'tuberkulosis', 'telinga', 'pupil_putih', 'tes_e_tumbling', 'gigi', 'talasemia', 'gula_darah']
+
+        let html = ''
+
+        if(tahun < 6){
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Indeks PB/U atau TB/U</div>\
+                    <div class="col-8">\
+                        <select id="indeks_pbu_tbu" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'indeks_pbu_tbu\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Pendek atau sangat pendek">Pendek atau sangat pendek</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Indeks BB/PB atau BB/TB</div>\
+                    <div class="col-8">\
+                        <select id="indeks_bbpb_bbtb" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'indeks_bbpb_bbtb\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Gizi Baik (Normal)">Gizi Baik (Normal)</option>\
+                            <option value="Gizi kurang (Tanpa Stunting)">Gizi kurang (Tanpa Stunting)</option>\
+                            <option value="Beresiko gizi lebih">Beresiko gizi lebih</option>\
+                            <option value="Gizi lebih (Overweight)">Gizi lebih (Overweight)</option>\
+                            <option value="Obesitas">Obesitas</option>\
+                            <option value="Gizi buruk (tanpa stunting)">Gizi buruk (tanpa stunting)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Indeks BB/U</div>\
+                    <div class="col-8">\
+                        <select id="indeks_bbu" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'indeks_bbu\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Berat badan kurang (tanpa stunting)">Berat badan kurang (tanpa stunting)</option>\
+                            <option value="Berat badan sangat kurang (tanpa stunting)">Berat badan sangat kurang (tanpa stunting)</option>\
+                            <option value="Risiko berat badan lebih">Risiko berat badan lebih</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        }
+        if(tahun >= 6){
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Indeks (IMT/U)</div>\
+                    <div class="col-8">\
+                        <select id="indeks_imtu" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'indeks_imtu\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Gizi baik (normal)">Gizi baik (normal)</option>\
+                            <option value="Gizi kurang (Wasted)">Gizi kurang (Wasted)</option>\
+                            <option value="Gizi lebih (Overweight)">Gizi lebih (Overweight)</option>\
+                            <option value="Obesitas">Obesitas</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Lingkar Kepala Menurut Umur</div>\
+                    <div class="col-8">\
+                        <select id="lingkar_kepala" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'lingkar_kepala\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Mikrosefali atau Makrosefali">Mikrosefali atau Makrosefali</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        }
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Perkembangan</div>\
+                    <div class="col-8">\
+                        <select id="perkembangan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'perkembangan\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Sesuai umur">Sesuai umur</option>\
+                            <option value="Meragukan">Meragukan</option>\
+                            <option value="Ada kemungkinan penyimpangan">Ada kemungkinan penyimpangan</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tuberkulosis</div>\
+                    <div class="col-8">\
+                        <select id="tuberkulosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tuberkulosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Bukan Terduga TB (Tidak terdapat tanda, gejala dan kontak erat TB)">Bukan Terduga TB (Tidak terdapat tanda, gejala dan kontak erat TB)</option>\
+                            <option value="Terduga TB (Ada gejala & tanda TB)">Terduga TB (Ada gejala & tanda TB)</option>\
+                            <option value="Tidak ada gejala namun terdapat kontak erat/serumah atau faktor risiko lainnya">Tidak ada gejala namun terdapat kontak erat/serumah atau faktor risiko lainnya</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Telinga</div>\
+                    <div class="col-8">\
+                        <select id="telinga" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'telinga\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Semua jawaban YA - perkembangan sesuai umur">Semua jawaban YA - perkembangan sesuai umur</option>\
+                            <option value="Ada jawaban TIDAK - ada kemungkinan penyimpangan">Ada jawaban TIDAK - ada kemungkinan penyimpangan</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        if(tahun >= 1 && tahun < 3){
+            html+='<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Pemeriksaan pupil putih</div>\
+                    <div class="col-8">\
+                        <select id="pupil_putih" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'pupil_putih\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Curiga kelainan pupil putih pada anak">Curiga kelainan pupil putih pada anak</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        }
+        if(tahun >= 3 && tahun <=6){
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tes “E” tumbling</div>\
+                    <div class="col-8">\
+                        <select id="tes_e_tumbling" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_e_tumbling\')">\
+                            <option value="">Pilih</option>\
+                            <option value="3x benar Berturut-turut atau 4x benar atau lebih dalam 5x kesempatan serta Daya Lihat Anak Baik (Visus >6/12 atau >6/60)">3x benar Berturut-turut atau 4x benar atau lebih dalam 5x kesempatan serta Daya Lihat Anak Baik (Visus >6/12 atau >6/60)</option>\
+                            <option value="3x Salah Berturut-turut atau <4x benar dalam 5x kesempatan & Daya Lihat Anak Kurang (Visus <6/12 atau <6/60)">3x Salah Berturut-turut atau <4x benar dalam 5x kesempatan & Daya Lihat Anak Kurang (Visus <6/12 atau <6/60)</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        }
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gigi</div>\
+                    <div class="col-8">\
+                        <select id="gigi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gigi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada karies">Tidak ada karies</option>\
+                            <option value="Ada karies">Ada karies</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Talasemia</div>\
+                    <div class="col-8">\
+                        <select id="talasemia" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'talasemia\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Hemoglobin normal (≥11 g/dL)">Hemoglobin normal (≥11 g/dL)</option>\
+                            <option value="Hemoglobin di bawah normal (< 11 g/dL)">Hemoglobin di bawah normal (< 11 g/dL)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gula Darah</div>\
+                    <div class="col-8">\
+                        <select id="gula_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gula_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Anamnesis tanda dan gejala negatif">Anamnesis tanda dan gejala negatif</option>\
+                            <option value="Anamnesis tanda dan gejala positif (GDS Normal)">Anamnesis tanda dan gejala positif (GDS Normal)</option>\
+                            <option value="GDP < 100 mgdl">GDP < 100 mgdl</option>\
+                            <option value="GDP ≥100 mg/dl">GDP ≥100 mg/dl</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        
+        $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
         }
     }
 
@@ -666,6 +983,906 @@
                             <option value="Status imunisasi TT Lengkap">Status imunisasi TT Lengkap</option>\
                             <option value="Status imunisasi TT belum lengkap">Status imunisasi TT belum lengkap</option>\
                             <option value="Bukan Calon pengantin">Bukan Calon pengantin</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        
+        $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
+        }
+    }
+
+    function dewasa_30_39_tahun(){
+        console.log(dt)
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
+
+        let html = ''
+
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Status Gizi</div>\
+                    <div class="col-8">\
+                        <select id="status_gizi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'status_gizi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Overweight">Overweight</option>\
+                            <option value="Underweight">Underweight</option>\
+                            <option value="Obesitas">Obesitas</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tuberkulosis</div>\
+                    <div class="col-8">\
+                        <select id="tuberkulosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tuberkulosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdapat tanda, gejala dan Kontak erat TB">Tidak terdapat tanda, gejala dan Kontak erat TB</option>\
+                            <option value="Terdapat kontak erat TB Positif tanpa gejala">Terdapat kontak erat TB Positif tanpa gejala</option>\
+                            <option value="Terdapat kontak erat TB positif dengan gejala">Terdapat kontak erat TB positif dengan gejala</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tekanan Darah</div>\
+                    <div class="col-8">\
+                        <select id="tekanan_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tekanan_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdiagnosis Hipertensi atau prehipertensi">Tidak terdiagnosis Hipertensi atau prehipertensi</option>\
+                            <option value="Terdiagnosis hipertensi tanpa tanda bahaya">Terdiagnosis hipertensi tanpa tanda bahaya</option>\
+                            <option value="Terdiagnosis hipertensi dengan tanda bahaya">Terdiagnosis hipertensi dengan tanda bahaya</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gula Darah</div>\
+                    <div class="col-8">\
+                        <select id="gula_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gula_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal (GDS<100)">Normal (GDS<100)</option>\
+                            <option value="Prediabetes (GDS 140 - 199)">Prediabetes (GDS 140 - 199)</option>\
+                            <option value="Hiperglikemia (GDS > 200)">Hiperglikemia (GDS > 200)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Telinga (Tes Pendengaran)</div>\
+                    <div class="col-8">\
+                        <select id="tes_pendengaran" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_pendengaran\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Lulus">Lulus</option>\
+                            <option value="Tidak lulus (Hasil normal)">Tidak lulus (Hasil normal)</option>\
+                            <option value="Tidak lulus (ditemukan gangguan atau kelainan)">Tidak lulus (ditemukan gangguan atau kelainan)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Mata (Tes Tajam Penglihatan)</div>\
+                    <div class="col-8">\
+                        <select id="tes_penglihatan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_penglihatan\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Visus (6/6 - 6/12)">Visus (6/6 - 6/12)</option>\
+                            <option value="Abnormal (Visus <6/12)">Abnormal (Visus <6/12)</option>\
+                            <option value="Visus membaik">Visus membaik</option>\
+                            <option value="Visus tidak membaik">Visus tidak membaik</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gigi</div>\
+                    <div class="col-8">\
+                        <select id="gigi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gigi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada karies (normal)">Tidak ada karies (normal)</option>\
+                            <option value="Ada karies, gigi goyang">Ada karies, gigi goyang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kesehatan Jiwa</div>\
+                    <div class="col-8">\
+                        <select id="kesehatan_jiwa" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kesehatan_jiwa\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak ada gangguan jiwa">Tidak ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa">Ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa dengan penyulit">Ada gangguan jiwa dengan penyulit</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Merokok</div>\
+                    <div class="col-8">\
+                        <select id="merokok" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'merokok\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak merokok">Tidak merokok</option>\
+                            <option value="Merokok">Merokok</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tingkat Aktivitas Fisik</div>\
+                    <div class="col-8">\
+                        <select id="aktivitas_fisik" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'aktivitas_fisik\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Cukup">Cukup</option>\
+                            <option value="Kurang">Kurang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Faktor Resiko</div>\
+                    <div class="col-8">\
+                        <select id="faktor_resiko" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'faktor_resiko\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Faktor resiko hati negatif">Faktor resiko hati negatif</option>\
+                            <option value="Faktor resiko hati positif">Faktor resiko hati positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis B</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_b" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_b\')">\
+                            <option value="">Pilih</option>\
+                            <option value="HBsAg Non Reaktif">HBsAg Non Reaktif</option>\
+                            <option value="HBsAg Reaktif">HBsAg Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis C</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_c" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_c\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Anti HCV Non Reaktif">Anti HCV Non Reaktif</option>\
+                            <option value="Anti HCV Reaktif">Anti HCV Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Fibrosis/Sirosis</div>\
+                    <div class="col-8">\
+                        <select id="fibrosis_sirosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'fibrosis_sirosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="APRI Score ≤ 0.5">APRI Score ≤ 0.5</option>\
+                            <option value="APRI Score >0.5">APRI Score >0.5</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Payudara</div>\
+                    <div class="col-8">\
+                        <select id="kanker_payudara" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_payudara\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Sadanis Negatif">Sadanis Negatif</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Normal">Sadanis Positif pemeriksaan USG Normal</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Simple Cyst">Sadanis Positif pemeriksaan USG Simple Cyst</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Non Simple cyst">Sadanis Positif pemeriksaan USG Non Simple cyst</option>\
+                            <option value="Sadanis Positif resiko sangat tinggi">Sadanis Positif resiko sangat tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Leher Rahim</div>\
+                    <div class="col-8">\
+                        <select id="kanker_leher_rahim" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_leher_rahim\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada faktor resiko">Tidak ada faktor resiko</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif">Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif">Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif</option>\
+                            <option value="Curiga kanker">Curiga kanker</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Anemia (Hb Test)</div>\
+                    <div class="col-8">\
+                        <select id="anemia" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'anemia\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak Normal (Hb <12 gr/dL)">Tidak Normal (Hb <12 gr/dL)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">HIV</div>\
+                    <div class="col-8">\
+                        <select id="hiv" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hiv\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Non Reaktif">Non Reaktif</option>\
+                            <option value="Reaktif">Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Sifilis</div>\
+                    <div class="col-8">\
+                        <select id="sifilis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'sifilis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="RDT HIV R1 Non Reaktif">RDT HIV R1 Non Reaktif</option>\
+                            <option value="R2 dan R3 Reaktif">R2 dan R3 Reaktif</option>\
+                            <option value="R2 dan R3 Non Reaktif">R2 dan R3 Non Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">NAPZA</div>\
+                    <div class="col-8">\
+                        <select id="napza" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'napza\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Menggunakan salah satu zat atau minum alkohol">Menggunakan salah satu zat atau minum alkohol</option>\
+                            <option value="Tidak pernah">Tidak pernah</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Status Imunisasi TT</div>\
+                    <div class="col-8">\
+                        <select id="status_imunisasi_tt" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'status_imunisasi_tt\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Status imunisasi TT Lengkap">Status imunisasi TT Lengkap</option>\
+                            <option value="Status imunisasi TT belum lengkap">Status imunisasi TT belum lengkap</option>\
+                            <option value="Bukan Calon pengantin">Bukan Calon pengantin</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        
+        $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
+        }
+    }
+
+    function dewasa_40_59_tahun(){
+        console.log(dt)
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
+
+        let html = ''
+
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Status Gizi</div>\
+                    <div class="col-8">\
+                        <select id="status_gizi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'status_gizi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Overweight">Overweight</option>\
+                            <option value="Underweight">Underweight</option>\
+                            <option value="Obesitas">Obesitas</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tuberkulosis</div>\
+                    <div class="col-8">\
+                        <select id="tuberkulosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tuberkulosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdapat tanda, gejala dan Kontak erat TB">Tidak terdapat tanda, gejala dan Kontak erat TB</option>\
+                            <option value="Terdapat kontak erat TB Positif tanpa gejala">Terdapat kontak erat TB Positif tanpa gejala</option>\
+                            <option value="Terdapat kontak erat TB positif dengan gejala">Terdapat kontak erat TB positif dengan gejala</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tekanan Darah</div>\
+                    <div class="col-8">\
+                        <select id="tekanan_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tekanan_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdiagnosis Hipertensi atau prehipertensi">Tidak terdiagnosis Hipertensi atau prehipertensi</option>\
+                            <option value="Terdiagnosis hipertensi tanpa tanda bahaya">Terdiagnosis hipertensi tanpa tanda bahaya</option>\
+                            <option value="Terdiagnosis hipertensi dengan tanda bahaya">Terdiagnosis hipertensi dengan tanda bahaya</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gula Darah</div>\
+                    <div class="col-8">\
+                        <select id="gula_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gula_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal (GDS<100)">Normal (GDS<100)</option>\
+                            <option value="Prediabetes (GDS 140 - 199)">Prediabetes (GDS 140 - 199)</option>\
+                            <option value="Hiperglikemia (GDS > 200)">Hiperglikemia (GDS > 200)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Telinga (Tes Pendengaran)</div>\
+                    <div class="col-8">\
+                        <select id="tes_pendengaran" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_pendengaran\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Lulus">Lulus</option>\
+                            <option value="Tidak lulus (Hasil normal)">Tidak lulus (Hasil normal)</option>\
+                            <option value="Tidak lulus (ditemukan gangguan atau kelainan)">Tidak lulus (ditemukan gangguan atau kelainan)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Mata (Tes Tajam Penglihatan)</div>\
+                    <div class="col-8">\
+                        <select id="tes_penglihatan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_penglihatan\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Visus (6/6 - 6/12)">Visus (6/6 - 6/12)</option>\
+                            <option value="Abnormal (Visus <6/12)">Abnormal (Visus <6/12)</option>\
+                            <option value="Visus membaik">Visus membaik</option>\
+                            <option value="Visus tidak membaik">Visus tidak membaik</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gigi</div>\
+                    <div class="col-8">\
+                        <select id="gigi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gigi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada karies (normal)">Tidak ada karies (normal)</option>\
+                            <option value="Ada karies, gigi goyang">Ada karies, gigi goyang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kesehatan Jiwa</div>\
+                    <div class="col-8">\
+                        <select id="kesehatan_jiwa" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kesehatan_jiwa\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak ada gangguan jiwa">Tidak ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa">Ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa dengan penyulit">Ada gangguan jiwa dengan penyulit</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Merokok</div>\
+                    <div class="col-8">\
+                        <select id="merokok" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'merokok\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak merokok">Tidak merokok</option>\
+                            <option value="Merokok">Merokok</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tingkat Aktivitas Fisik</div>\
+                    <div class="col-8">\
+                        <select id="aktivitas_fisik" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'aktivitas_fisik\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Cukup">Cukup</option>\
+                            <option value="Kurang">Kurang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Faktor Resiko</div>\
+                    <div class="col-8">\
+                        <select id="faktor_resiko" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'faktor_resiko\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Faktor resiko hati negatif">Faktor resiko hati negatif</option>\
+                            <option value="Faktor resiko hati positif">Faktor resiko hati positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis B</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_b" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_b\')">\
+                            <option value="">Pilih</option>\
+                            <option value="HBsAg Non Reaktif">HBsAg Non Reaktif</option>\
+                            <option value="HBsAg Reaktif">HBsAg Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis C</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_c" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_c\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Anti HCV Non Reaktif">Anti HCV Non Reaktif</option>\
+                            <option value="Anti HCV Reaktif">Anti HCV Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Fibrosis/Sirosis</div>\
+                    <div class="col-8">\
+                        <select id="fibrosis_sirosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'fibrosis_sirosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="APRI Score ≤ 0.5">APRI Score ≤ 0.5</option>\
+                            <option value="APRI Score >0.5">APRI Score >0.5</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Payudara</div>\
+                    <div class="col-8">\
+                        <select id="kanker_payudara" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_payudara\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Sadanis Negatif">Sadanis Negatif</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Normal">Sadanis Positif pemeriksaan USG Normal</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Simple Cyst">Sadanis Positif pemeriksaan USG Simple Cyst</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Non Simple cyst">Sadanis Positif pemeriksaan USG Non Simple cyst</option>\
+                            <option value="Sadanis Positif resiko sangat tinggi">Sadanis Positif resiko sangat tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Leher Rahim</div>\
+                    <div class="col-8">\
+                        <select id="kanker_leher_rahim" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_leher_rahim\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada faktor resiko">Tidak ada faktor resiko</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif">Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif">Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif</option>\
+                            <option value="Curiga kanker">Curiga kanker</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Risiko Jantung</div>\
+                    <div class="col-8">\
+                        <select id="risiko_jantung" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'risiko_jantung\')">\
+                            <option value="">Pilih</option>\
+                            <option value="EKG Normal">EKG Normal</option>\
+                            <option value="EKG Tidak normal">EKG Tidak normal</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Risiko Stroke</div>\
+                    <div class="col-8">\
+                        <select id="risiko_stroke" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'risiko_stroke\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tinggi">Tinggi</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Fungsi Ginjal</div>\
+                    <div class="col-8">\
+                        <select id="fungsi_ginjal" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'fungsi_ginjal\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak normal">Tidak normal</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Paru</div>\
+                    <div class="col-8">\
+                        <select id="kanker_paru" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_paru\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Risiko ringan">Risiko ringan</option>\
+                            <option value="Risiko sedang atau tinggi">Risiko sedang atau tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Usus</div>\
+                    <div class="col-8">\
+                        <select id="kanker_usus" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_usus\')">\
+                            <option value="">Pilih</option>\
+                            <option value="APCS 0-1 Risiko rendah">APCS 0-1 Risiko rendah</option>\
+                            <option value="APCS 2-3 Risiko sedang">APCS 2-3 Risiko sedang</option>\
+                            <option value="APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua">APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua</option>\
+                            <option value="APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif">APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">PPOK</div>\
+                    <div class="col-8">\
+                        <select id="ppok" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'ppok\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Resiko rendah (PUMA < 6)">Resiko rendah (PUMA < 6)</option>\
+                            <option value="Resiko tinggi (PUMA ≥ 6)">Resiko tinggi (PUMA ≥ 6)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Anemia (Hb Test)</div>\
+                    <div class="col-8">\
+                        <select id="anemia" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'anemia\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak Normal (Hb <12 gr/dL)">Tidak Normal (Hb <12 gr/dL)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">HIV</div>\
+                    <div class="col-8">\
+                        <select id="hiv" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hiv\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Non Reaktif">Non Reaktif</option>\
+                            <option value="Reaktif">Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Sifilis</div>\
+                    <div class="col-8">\
+                        <select id="sifilis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'sifilis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="RDT HIV R1 Non Reaktif">RDT HIV R1 Non Reaktif</option>\
+                            <option value="R2 dan R3 Reaktif">R2 dan R3 Reaktif</option>\
+                            <option value="R2 dan R3 Non Reaktif">R2 dan R3 Non Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">NAPZA</div>\
+                    <div class="col-8">\
+                        <select id="napza" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'napza\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Menggunakan salah satu zat atau minum alkohol">Menggunakan salah satu zat atau minum alkohol</option>\
+                            <option value="Tidak pernah">Tidak pernah</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Status Imunisasi TT</div>\
+                    <div class="col-8">\
+                        <select id="status_imunisasi_tt" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'status_imunisasi_tt\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Status imunisasi TT Lengkap">Status imunisasi TT Lengkap</option>\
+                            <option value="Status imunisasi TT belum lengkap">Status imunisasi TT belum lengkap</option>\
+                            <option value="Bukan Calon pengantin">Bukan Calon pengantin</option>\
+                        </select>\
+                    </div>\
+                </div>'
+        
+        $('#id_hasil_pemeriksaan').html(html);
+
+        if(dt.id!="" && dt.hasil_pemeriksaan!=null){
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            variabel.map(var_nama => {
+                let index = ar_hasil_pemeriksaan.findIndex(item => Object.keys(item)[0] == var_nama);
+
+                if (index !== -1) {
+                    let value = ar_hasil_pemeriksaan[index][var_nama];
+                    $('#'+var_nama).val(value);
+                }
+                // else{
+                //     $('#'+var_nama).val("");
+                // }
+            })
+        }
+    }
+
+    function lansia(){
+        console.log(dt)
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'ppok', 'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living', 'frailty_syndrome', 'sarc_caif']
+
+        let html = ''
+
+        html+= '<div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Status Gizi</div>\
+                    <div class="col-8">\
+                        <select id="status_gizi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'status_gizi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Overweight">Overweight</option>\
+                            <option value="Underweight">Underweight</option>\
+                            <option value="Obesitas">Obesitas</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tuberkulosis</div>\
+                    <div class="col-8">\
+                        <select id="tuberkulosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tuberkulosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdapat tanda, gejala dan Kontak erat TB">Tidak terdapat tanda, gejala dan Kontak erat TB</option>\
+                            <option value="Terdapat kontak erat TB Positif tanpa gejala">Terdapat kontak erat TB Positif tanpa gejala</option>\
+                            <option value="Terdapat kontak erat TB positif dengan gejala">Terdapat kontak erat TB positif dengan gejala</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tekanan Darah</div>\
+                    <div class="col-8">\
+                        <select id="tekanan_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tekanan_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdiagnosis Hipertensi atau prehipertensi">Tidak terdiagnosis Hipertensi atau prehipertensi</option>\
+                            <option value="Terdiagnosis hipertensi tanpa tanda bahaya">Terdiagnosis hipertensi tanpa tanda bahaya</option>\
+                            <option value="Terdiagnosis hipertensi dengan tanda bahaya">Terdiagnosis hipertensi dengan tanda bahaya</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gula Darah</div>\
+                    <div class="col-8">\
+                        <select id="gula_darah" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gula_darah\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal (GDS<100)">Normal (GDS<100)</option>\
+                            <option value="Prediabetes (GDS 140 - 199)">Prediabetes (GDS 140 - 199)</option>\
+                            <option value="Hiperglikemia (GDS > 200)">Hiperglikemia (GDS > 200)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Telinga (Tes Pendengaran)</div>\
+                    <div class="col-8">\
+                        <select id="tes_pendengaran" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_pendengaran\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Lulus">Lulus</option>\
+                            <option value="Tidak lulus (Hasil normal)">Tidak lulus (Hasil normal)</option>\
+                            <option value="Tidak lulus (ditemukan gangguan atau kelainan)">Tidak lulus (ditemukan gangguan atau kelainan)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Mata (Tes Tajam Penglihatan)</div>\
+                    <div class="col-8">\
+                        <select id="tes_penglihatan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'tes_penglihatan\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Visus (6/6 - 6/12)">Visus (6/6 - 6/12)</option>\
+                            <option value="Abnormal (Visus <6/12)">Abnormal (Visus <6/12)</option>\
+                            <option value="Visus membaik">Visus membaik</option>\
+                            <option value="Visus tidak membaik">Visus tidak membaik</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gigi</div>\
+                    <div class="col-8">\
+                        <select id="gigi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gigi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada karies (normal)">Tidak ada karies (normal)</option>\
+                            <option value="Ada karies, gigi goyang">Ada karies, gigi goyang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kesehatan Jiwa</div>\
+                    <div class="col-8">\
+                        <select id="kesehatan_jiwa" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kesehatan_jiwa\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak ada gangguan jiwa">Tidak ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa">Ada gangguan jiwa</option>\
+                            <option value="Ada gangguan jiwa dengan penyulit">Ada gangguan jiwa dengan penyulit</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Merokok</div>\
+                    <div class="col-8">\
+                        <select id="merokok" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'merokok\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak merokok">Tidak merokok</option>\
+                            <option value="Merokok">Merokok</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tingkat Aktivitas Fisik</div>\
+                    <div class="col-8">\
+                        <select id="aktivitas_fisik" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'aktivitas_fisik\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Cukup">Cukup</option>\
+                            <option value="Kurang">Kurang</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Faktor Resiko</div>\
+                    <div class="col-8">\
+                        <select id="faktor_resiko" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'faktor_resiko\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Faktor resiko hati negatif">Faktor resiko hati negatif</option>\
+                            <option value="Faktor resiko hati positif">Faktor resiko hati positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis B</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_b" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_b\')">\
+                            <option value="">Pilih</option>\
+                            <option value="HBsAg Non Reaktif">HBsAg Non Reaktif</option>\
+                            <option value="HBsAg Reaktif">HBsAg Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hepatitis C</div>\
+                    <div class="col-8">\
+                        <select id="hepatitis_c" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'hepatitis_c\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Anti HCV Non Reaktif">Anti HCV Non Reaktif</option>\
+                            <option value="Anti HCV Reaktif">Anti HCV Reaktif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Fibrosis/Sirosis</div>\
+                    <div class="col-8">\
+                        <select id="fibrosis_sirosis" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'fibrosis_sirosis\')">\
+                            <option value="">Pilih</option>\
+                            <option value="APRI Score ≤ 0.5">APRI Score ≤ 0.5</option>\
+                            <option value="APRI Score >0.5">APRI Score >0.5</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Payudara</div>\
+                    <div class="col-8">\
+                        <select id="kanker_payudara" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_payudara\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Sadanis Negatif">Sadanis Negatif</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Normal">Sadanis Positif pemeriksaan USG Normal</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Simple Cyst">Sadanis Positif pemeriksaan USG Simple Cyst</option>\
+                            <option value="Sadanis Positif pemeriksaan USG Non Simple cyst">Sadanis Positif pemeriksaan USG Non Simple cyst</option>\
+                            <option value="Sadanis Positif resiko sangat tinggi">Sadanis Positif resiko sangat tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Leher Rahim</div>\
+                    <div class="col-8">\
+                        <select id="kanker_leher_rahim" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_leher_rahim\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada faktor resiko">Tidak ada faktor resiko</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif">Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif</option>\
+                            <option value="Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif">Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif</option>\
+                            <option value="Curiga kanker">Curiga kanker</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Risiko Jantung</div>\
+                    <div class="col-8">\
+                        <select id="risiko_jantung" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'risiko_jantung\')">\
+                            <option value="">Pilih</option>\
+                            <option value="EKG Normal">EKG Normal</option>\
+                            <option value="EKG Tidak normal">EKG Tidak normal</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Risiko Stroke</div>\
+                    <div class="col-8">\
+                        <select id="risiko_stroke" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'risiko_stroke\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tinggi">Tinggi</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang</option>\
+                            <option value="Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi">Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Fungsi Ginjal</div>\
+                    <div class="col-8">\
+                        <select id="fungsi_ginjal" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'fungsi_ginjal\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal">Normal</option>\
+                            <option value="Tidak normal">Tidak normal</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Paru</div>\
+                    <div class="col-8">\
+                        <select id="kanker_paru" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_paru\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Risiko ringan">Risiko ringan</option>\
+                            <option value="Risiko sedang atau tinggi">Risiko sedang atau tinggi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kanker Usus</div>\
+                    <div class="col-8">\
+                        <select id="kanker_usus" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_usus\')">\
+                            <option value="">Pilih</option>\
+                            <option value="APCS 0-1 Risiko rendah">APCS 0-1 Risiko rendah</option>\
+                            <option value="APCS 2-3 Risiko sedang">APCS 2-3 Risiko sedang</option>\
+                            <option value="APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua">APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua</option>\
+                            <option value="APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif">APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">PPOK</div>\
+                    <div class="col-8">\
+                        <select id="ppok" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'ppok\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Resiko rendah (PUMA < 6)">Resiko rendah (PUMA < 6)</option>\
+                            <option value="Resiko tinggi (PUMA ≥ 6)">Resiko tinggi (PUMA ≥ 6)</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gangguan Penglihatan</div>\
+                    <div class="col-8">\
+                        <select id="gangguan_penglihatan" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gangguan_penglihatan\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada gangguan">Tidak ada gangguan</option>\
+                            <option value="Ditemukan ≥1 gangguan">Ditemukan ≥1 gangguan</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gangguan Pendengaran</div>\
+                    <div class="col-8">\
+                        <select id="gangguan_pendengaran" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gangguan_pendengaran\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada gangguan">Tidak ada gangguan</option>\
+                            <option value="Ditemukan ≥1 gangguan">Ditemukan ≥1 gangguan</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Gejala Depresi</div>\
+                    <div class="col-8">\
+                        <select id="gejala_depresi" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'gejala_depresi\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada gangguan">Tidak ada gangguan</option>\
+                            <option value="Tidak depresi">Tidak depresi</option>\
+                            <option value="Kemungkinan depresi">Kemungkinan depresi</option>\
+                            <option value="Depresi">Depresi</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Activity Daily Living</div>\
+                    <div class="col-8">\
+                        <select id="activity_daily_living" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'activity_daily_living\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Mandiri">Mandiri</option>\
+                            <option value="Ketergantungan ringan">Ketergantungan ringan</option>\
+                            <option value="Ketergantungan Sedang">Ketergantungan Sedang</option>\
+                            <option value="Ketergantungan Berat">Ketergantungan Berat</option>\
+                            <option value="Ketergantungan total">Ketergantungan total</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Frailty Syndrome / Kerapuhan</div>\
+                    <div class="col-8">\
+                        <select id="frailty_syndrome" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'frailty_syndrome\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak ada sindrom kerapuhan">Tidak ada sindrom kerapuhan</option>\
+                            <option value="Sindrom pra-kerapuhan">Sindrom pra-kerapuhan</option>\
+                            <option value="Sindroma kerapuhan">Sindroma kerapuhan</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">SARC-CaIF</div>\
+                    <div class="col-8">\
+                        <select id="sarc_caif" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'sarc_caif\')">\
+                            <option value="">Pilih</option>\
+                            <option value="Tidak terdapat kemungkinan Sarkopenia">Tidak terdapat kemungkinan Sarkopenia</option>\
+                            <option value="Terdapat kemungkinan Sarkopenia">Terdapat kemungkinan Sarkopenia</option>\
                         </select>\
                     </div>\
                 </div>'

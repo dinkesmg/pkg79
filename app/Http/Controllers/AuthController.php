@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Puskesmas;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -35,6 +36,25 @@ class AuthController extends Controller
             // dd("gagal");
             return redirect()->route('/');
             // return redirect()->route('/')->with('error', 'Nama atau password salah.');
+        }
+    }
+    
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('/');
+    }
+
+    public function daftar_puskesmas(){
+        $puskesmas = Puskesmas::get();
+
+        // dd($puskesmas);
+        foreach ($puskesmas as $p) {
+            $user = new User();
+            $user->nama = $p->nama;
+            $user->password = bcrypt("PKG79" . $p->kode_p);
+            $user->role = "Puskesmas";
+            $user->save();
         }
     }
 }

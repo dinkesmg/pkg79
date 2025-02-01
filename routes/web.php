@@ -16,11 +16,18 @@ use App\Http\Controllers\RiwayatController;
 */
 Route::get('/', [AuthController::class, 'index'])->name('/');
 Route::post('auth_cek', [AuthController::class, 'cek'])->name('auth.cek');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::prefix('riwayat')->group(function () {
     // Route::middleware(['auth', 'cekrole:Admin|Puskesmas'])->group(function () {
         Route::get('/', [RiwayatController::class, 'index'])->name('riwayat.index');
         Route::post('/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
         Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
-    // });
+        Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
+        
+        // });
 });
+
+Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
+
 

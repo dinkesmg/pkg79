@@ -25,7 +25,7 @@ class RiwayatController extends Controller
         // dd("tes");
         $id_user = Auth::user()->id;
         // $data = Riwayat::with(['pasien', 'pemeriksa'])->get();
-        $data = Riwayat::with(['pasien', 'pemeriksa'])->where('id_user', $id_user)->get();
+        $data = Riwayat::with(['pasien', 'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
 
         // dd($data);
         return response()->json($data);
@@ -87,6 +87,15 @@ class RiwayatController extends Controller
         $data->save();
 
         return response()->json(['status' => "Berhasil", 'data' => $data]);
+    }
+
+    public function hapus(Request $request)
+    {
+        $data = Riwayat::find($request->id);
+        $data->delete();
+
+        return response()->json(['status' => "Berhasil", 'data' => $data]);
+        
     }
 
 }
