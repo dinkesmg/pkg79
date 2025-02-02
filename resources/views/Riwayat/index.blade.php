@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Semar PKG79</title>
+  <link rel="icon" href="{{ asset('logo_semarpkg79.png')}}" type="image/x-icon">
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
   @include('layouts.header')
@@ -90,6 +91,10 @@
 
     var role_auth = "{{Auth::user()->role}}";
 
+    // document.addEventListener('wheel', function(e) {
+    //     e.preventDefault();
+    // }, { passive: true });
+
     $(document).ready(function () {
         tabel()
         Toast = Swal.mixin({
@@ -103,6 +108,8 @@
     var semua_riwayat = []
 
     function tabel(){
+        semua_riwayat = []
+       
         let col = 
         [
             {
@@ -114,18 +121,60 @@
                 let hasil_pemeriksaan = JSON.parse(row.hasil_pemeriksaan)
                 let program_tindak_lanjut = JSON.parse(row.program_tindak_lanjut)                
                 
-                var cek = semua_riwayat.some(function(entry) {
-                    return entry.id == row.id;
-                });
+                // var cek = semua_riwayat.some(function(entry) {
+                //     return entry.id == row.id;
+                // });
 
-                if (!cek) {
+                // if (!cek) {
+                //     semua_riwayat.push({
+                //         id: row.id,
+                //         tanggal_pemeriksaan: row.tanggal_pemeriksaan,
+                //         tempat_periksa: row.tempat_periksa ? row.tempat_periksa : "",
+                //         nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
+                //         pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
+                //         pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",                        
+                //         pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
+                //         pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
+                //         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
+                //         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
+                //         pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
+                //         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
+                //         hasil_pemeriksaan: hasil_pemeriksaan,
+                //         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
+                //         program_tindak_lanjut: program_tindak_lanjut,
+                //     });
+                // }
+
+                var index = semua_riwayat.findIndex(entry => entry.id == row.id);
+
+                if (index !== -1) {
+                    // Update existing entry
+                    semua_riwayat[index] = {
+                        id: row.id,
+                        tanggal_pemeriksaan: row.tanggal_pemeriksaan,
+                        tempat_periksa: row.tempat_periksa ? row.tempat_periksa : "",
+                        nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
+                        pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
+                        pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",
+                        pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
+                        pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
+                        pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
+                        pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
+                        pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
+                        pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
+                        hasil_pemeriksaan: hasil_pemeriksaan,
+                        kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
+                        program_tindak_lanjut: program_tindak_lanjut,
+                    };
+                } else {
+                    // Add new entry if not found
                     semua_riwayat.push({
                         id: row.id,
                         tanggal_pemeriksaan: row.tanggal_pemeriksaan,
                         tempat_periksa: row.tempat_periksa ? row.tempat_periksa : "",
                         nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
                         pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
-                        pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",                        
+                        pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",
                         pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
                         pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
                         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
@@ -142,9 +191,12 @@
                 
                 // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
                     
-                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Lihat</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Edit\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Edit</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
                     actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
-                // }
+                    actionsHtml += '<button class="btn btn-sm btn-secondary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"> PDF</button>'
+                    
+                    // }
                 
                 return actionsHtml;
                 }
@@ -153,7 +205,7 @@
                 render: function(data, type, row, meta) {
                     let tgl = row.tanggal_pemeriksaan
                     if (tgl) {
-                        let dateParts = tgl.split("-"); // Split "YYYY-MM-DD"
+                        let dateParts = tgl.split("-");
                         let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0]; // Rearrange to "DD-MM-YYYY"
                         return formattedDate;
                     }
@@ -207,10 +259,11 @@
     var dt
 
     function oc_modal(fitur, id_riwayat){
+        console.log(semua_riwayat)
         ar_hasil_pemeriksaan = []
         ar_program_tindak_lanjut = []
 
-        // console.log(semua_riwayat)
+        console.log(semua_riwayat)
 
         dt = semua_riwayat.find(function(entry) {
             return entry.id == id_riwayat;
@@ -243,10 +296,98 @@
         // console.log(dt.id_pasien)
         // console.log(id_pasien)
         // console.log("id_petugas"+id_petugas)
-        var role_auth = "{{ Auth::user()->role }}";
-        console.log(role_auth)
+        // var role_auth = "{{ Auth::user()->role }}";
+        // console.log(role_auth)
         $('#exampleModal .modal-title').text(fitur+' Pasien');
-        var html='\
+        if(fitur=="Detail"){
+            let hasil_pemeriksaan = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan)); 
+            let l_ar_hasil_pemeriksaan = ""
+            for (let i = 0; i < hasil_pemeriksaan.length; i++) {
+                console.log(hasil_pemeriksaan[i])
+                
+                let formattedString = Object.entries(hasil_pemeriksaan[i])
+                    .map(([key, value]) => `${key}: ${value}`)
+                    .join(", ");
+                
+                l_ar_hasil_pemeriksaan += '-'+formattedString+'</br>'
+            }
+            
+            let edukasi = ""
+            let rujuk_fktrl = "" 
+            let program_tl = dt.program_tindak_lanjut?dt.program_tindak_lanjut:""
+            if(program_tl){
+                edukasi = dt.program_tindak_lanjut.find(item => item.edukasi !== undefined && item.edukasi !== null);
+                rujuk_fktrl = dt.program_tindak_lanjut.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null);
+            }
+            
+            // console.log(JSON.stringify(l_ar_hasil_pemeriksaan))
+            // console.log(dt.program_tindak_lanjut)
+            // console.log(edukasi)
+            var html='\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Tanggal Pemeriksaan:'+dt.tanggal_pemeriksaan+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Tempat Periksa:'+dt.tempat_periksa+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Nama FKTP PJ:'+dt.nama_fktp_pj+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">NIK:'+dt.pemeriksa_nik+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Nama:'+dt.pemeriksa_nama+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Identitas Pasien</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">NIK:'+dt.pasien_nik+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Nama:'+dt.pasien_nama+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Jenis Kelamin:'+dt.pasien_jenis_kelamin+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Tanggal Lahir:'+dt.pasien_tgl_lahir+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Alamat:'+dt.pasien_alamat+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">No HP:'+dt.pasien_no_hp+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12" style="width:100%">'+l_ar_hasil_pemeriksaan+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Kesimpulan Hasil</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Hasil Pemeriksaan</div>\
+                <div class="col-12">'+dt.kesimpulan_hasil_pemeriksaan+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Program Tindak Lanjut</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Edukasi yang diberikan:'+edukasi+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Rujuk FKTRL (disertai dengan keterangan):'+rujuk_fktrl+'</div>\
+            </div>'
+        }
+        else{
+            var html='\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Tanggal Pemeriksaan</div>\
                 <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="'+((dt.tanggal_pemeriksaan != "") != ""?dt.tanggal_pemeriksaan:"")+'" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
@@ -283,7 +424,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
@@ -299,6 +440,22 @@
                 <div class="col-4">Tanggal Lahir</div>\
                 <div class="col-8"><input id="tgl_lahir" type="date" value="'+((dt.pasien_tgl_lahir != "")?dt.pasien_tgl_lahir:"")+'" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
             </div>\
+            <!-- <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Provinsi</div>\
+                <div class="col-8"><select class="form-control" id="provinsi" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kota/Kab</div>\
+                <div class="col-8"><select class="form-control" id="kota_kab" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kecamatan</div>\
+                <div class="col-8"><select class="form-control" id="kecamatan" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kelurahan</div>\
+                <div class="col-8"><select class="form-control" id="kelurahan" style="width: 100%;"></select></div>\
+            </div> -->\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Alamat</div>\
                 <div class="col-8"><input id="alamat" type="text" value="'+((dt.pasien_alamat != "")?dt.pasien_alamat:"")+'" style="width: 100%;"></input></div>\
@@ -343,15 +500,163 @@
                 <div class="col-4">Rujuk FKTRL (disertai dengan keterangan)</div>\
                 <div class="col-8"><input id="rujuk_fktrl" type="text" value="" oninput="oc_program_tindak_lanjut(\'rujuk_fktrl\')" style="width:100%"></input></div>\
             </div>'
+        }
 
         $('#exampleModal .modal-body').html(html);
         $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\''+fitur+'\', \''+id_riwayat+'\')">'+fitur+'</button>');
         
         oc_tgl_pemeriksaan_dan_lahir()
         get_program_tindak_lanjut()
+        // get_provinsi("", "")
+        // get_kelurahan()
 
         $('#exampleModal').modal('show');
     }
+
+    function oi_nik(){
+
+    }
+
+    // function get_provinsi(id, nama) {
+    //     // console.log("kelur")
+    //     $('#provinsi')
+    //         .empty()
+    //         .append($("<option/>")
+    //             .val(id)
+    //             .text(nama))
+    //         .val(id)
+    //         .trigger("change");
+
+    //     $('#provinsi').select2({
+    //         placeholder: 'Cari...',
+    //         allowClear: true,
+    //         width: 'resolve',
+    //         theme: 'bootstrap4',
+    //         dropdownParent: $("#exampleModal"),
+    //         ajax: {
+    //             url: "{{ url('master_provinsi') }}",
+    //             dataType: 'json',
+    //             delay: 500,
+    //             data: function(params) {
+    //                 console.log(params.term)
+    //                 return {
+    //                     search: params.term
+    //                 };
+    //             },
+    //             processResults: function(data) {
+    //                 console.log(data)
+    //                 return {
+    //                     results: data
+    //                         // .filter(function(item){
+    //                         //     return item.petugas && item.petugas.nama != null;
+    //                         // })
+    //                         .map(function(item) {
+    //                             return {
+    //                                 id: item.id,
+    //                                 text: item.nama,
+    //                             };
+    //                         })
+    //                 };
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error("AJAX error:", status, error);
+    //             },
+    //             cache: true
+    //         },
+    //         // minimumInputLength: 2,
+    //     });
+
+    //         // $('#provinsi').select2({
+    //         //     placeholder: 'Cari atau ketik nama provinsi...',
+    //         //     allowClear: true,
+    //         //     width: '100%',
+    //         //     theme: 'bootstrap4',
+    //         //     tags: true, // ✅ Allows manual text input
+    //         //     createTag: function(params) {
+    //         //         let term = $.trim(params.term);
+    //         //         if (term === '') return null; // Prevent empty values
+
+    //         //         return {
+    //         //             id: term, // Assign the entered text as the ID
+    //         //             text: term,
+    //         //             newOption: true
+    //         //         };
+    //         //     },
+    //         //     ajax: {
+    //         //         url: "{{ url('master_provinsi') }}",
+    //         //         dataType: 'json',
+    //         //         delay: 500,
+    //         //         data: function(params) {
+    //         //             return {
+    //         //                 search: params.term
+    //         //             };
+    //         //         },
+    //         //         processResults: function(data) {
+    //         //             return {
+    //         //                 results: data.map(function(item) {
+    //         //                     return {
+    //         //                         id: item.id,
+    //         //                         text: item.nama
+    //         //                     };
+    //         //                 })
+    //         //             };
+    //         //         },
+    //         //         error: function(xhr, status, error) {
+    //         //             console.error("AJAX error:", status, error);
+    //         //         },
+    //         //         cache: false // Prevent caching issues
+    //         //     }
+    //         // });
+    // }
+
+    // function get_kelurahan() {
+    //     // console.log("kelur")
+    //     // $('#kelurahan')
+    //     //     .empty()
+    //     //     .append($("<option/>")
+    //     //         .val(id_kelurahan)
+    //     //         .text(nama_kelurahan))
+    //     //     .val(id_kelurahan)
+    //     //     .trigger("change");
+
+    //     $('#kelurahan').select2({
+    //         placeholder: 'Cari...',
+    //         allowClear: true,
+    //         width: 'resolve',
+    //         theme: 'bootstrap4',
+    //         ajax: {
+    //             url: "{{ url('master_kelurahan') }}",
+    //             dataType: 'json',
+    //             delay: 500,
+    //             data: function(params) {
+    //                 console.log(params.term)
+    //                 return {
+    //                     search: params.term
+    //                 };
+    //             },
+    //             processResults: function(data) {
+    //                 console.log(data)
+    //                 return {
+    //                     results: data
+    //                         // .filter(function(item){
+    //                         //     return item.petugas && item.petugas.nama != null;
+    //                         // })
+    //                         .map(function(item) {
+    //                             return {
+    //                                 id: item.id,
+    //                                 text: item.nama,
+    //                             };
+    //                         })
+    //                 };
+    //             },
+    //             error: function(xhr, status, error) {
+    //                 console.error("AJAX error:", status, error);
+    //             },
+    //             cache: true
+    //         },
+    //         // minimumInputLength: 2,
+    //     });
+    // }
 
     function oc_fitur(fitur, id_riwayat){
         console.log(fitur)
@@ -381,7 +686,7 @@
                 }
             })
         }
-        else if(vurl=="tambah"){
+        else if(vurl=="tambah" || vurl=="edit"){
             let tanggal_pemeriksaan = $('#tanggal_pemeriksaan').val();
             let tempat_periksa = $('#tempat_periksa').val();
             let nama_fktp_pj = $('#nama_fktp_pj').val();
@@ -451,12 +756,12 @@
                             title: 'Berhasil '+fitur+' Pasien'
                         })
                     }
-                    else{
-                        Toast.fire({
-                            icon: 'error',
-                            title: 'Data Pasien Sudah Ada'
-                        })
-                    }
+                    // else{
+                    //     Toast.fire({
+                    //         icon: 'error',
+                    //         title: 'Data Pasien Sudah Ada'
+                    //     })
+                    // }
 
                 }
             })

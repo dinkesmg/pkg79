@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\MasterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,6 +23,7 @@ Route::prefix('riwayat')->group(function () {
     // Route::middleware(['auth', 'cekrole:Admin|Puskesmas'])->group(function () {
         Route::get('/', [RiwayatController::class, 'index'])->name('riwayat.index');
         Route::post('/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
+        Route::post('/edit', [RiwayatController::class, 'edit'])->name('riwayat.edit');
         Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
         Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
         
@@ -29,5 +31,7 @@ Route::prefix('riwayat')->group(function () {
 });
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
+Route::get('master_provinsi', [MasterController::class, 'provinsi'])->name('master_provinsi.data');
+Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('master_kelurahan.data');
 
 
