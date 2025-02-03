@@ -32,6 +32,8 @@ Route::prefix('riwayat')->group(function () {
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
 Route::get('master_provinsi', [MasterController::class, 'provinsi'])->name('master_provinsi.data');
+Route::get('master_kota_kab', [MasterController::class, 'kota_kab'])->name('master_kota_kab.data');
+Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('master_kecamatan.data');
 Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('master_kelurahan.data');
 
 

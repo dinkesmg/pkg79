@@ -75,11 +75,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Modal content goes here -->
                 </div>
                 <div class="modal-footer">
-                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
-                    <!-- Add additional buttons or actions here -->
                 </div>
             </div>
         </div>
@@ -148,7 +145,6 @@
                 var index = semua_riwayat.findIndex(entry => entry.id == row.id);
 
                 if (index !== -1) {
-                    // Update existing entry
                     semua_riwayat[index] = {
                         id: row.id,
                         tanggal_pemeriksaan: row.tanggal_pemeriksaan,
@@ -160,14 +156,33 @@
                         pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
                         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
                         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
-                        pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
+                        
+                        pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
+                        pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
+                        pasien_kota_kab_ktp: row.pasien && row.pasien.kota_kab_ktp ? row.pasien.kota_kab_ktp : "",
+                        pasien_kota_kab_ktp_nama: row.pasien && row.pasien.kota_kab_ktp && row.pasien.ref_kota_kab_ktp.nama ? row.pasien.ref_kota_kab_ktp.nama : "",
+                        pasien_kecamatan_ktp: row.pasien && row.pasien.kecamatan_ktp ? row.pasien.kecamatan_ktp : "",
+                        pasien_kecamatan_ktp_nama: row.pasien && row.pasien.kecamatan_ktp && row.pasien.ref_kecamatan_ktp.nama ? row.pasien.ref_kecamatan_ktp.nama : "",
+                        pasien_kelurahan_ktp: row.pasien && row.pasien.kelurahan_ktp ? row.pasien.kelurahan_ktp : "",
+                        pasien_kelurahan_ktp_nama: row.pasien && row.pasien.kelurahan_ktp && row.pasien.ref_kelurahan_ktp.nama ? row.pasien.ref_kelurahan_ktp.nama : "",
+                        pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
+                        
+                        pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
+                        pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
+                        pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien.kota_kab_dom : "",
+                        pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row.pasien.ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
+                        pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien.kecamatan_dom : "",
+                        pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row.pasien.ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
+                        pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien.kelurahan_dom : "",
+                        pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row.pasien.ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
+                        pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien.alamat_dom : "",
+
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                         program_tindak_lanjut: program_tindak_lanjut,
                     };
                 } else {
-                    // Add new entry if not found
                     semua_riwayat.push({
                         id: row.id,
                         tanggal_pemeriksaan: row.tanggal_pemeriksaan,
@@ -175,11 +190,32 @@
                         nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
                         pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
                         pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",
+                        
                         pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
                         pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
                         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
                         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
-                        pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
+                        
+                        pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
+                        pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
+                        pasien_kota_kab_ktp: row.pasien && row.pasien.kota_kab_ktp ? row.pasien.kota_kab_ktp : "",
+                        pasien_kota_kab_ktp_nama: row.pasien && row.pasien.kota_kab_ktp && row.pasien.ref_kota_kab_ktp.nama ? row.pasien.ref_kota_kab_ktp.nama : "",
+                        pasien_kecamatan_ktp: row.pasien && row.pasien.kecamatan_ktp ? row.pasien.kecamatan_ktp : "",
+                        pasien_kecamatan_ktp_nama: row.pasien && row.pasien.kecamatan_ktp && row.pasien.ref_kecamatan_ktp.nama ? row.pasien.ref_kecamatan_ktp.nama : "",
+                        pasien_kelurahan_ktp: row.pasien && row.pasien.kelurahan_ktp ? row.pasien.kelurahan_ktp : "",
+                        pasien_kelurahan_ktp_nama: row.pasien && row.pasien.kelurahan_ktp && row.pasien.ref_kelurahan_ktp.nama ? row.pasien.ref_kelurahan_ktp.nama : "",
+                        pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
+
+                        pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
+                        pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
+                        pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien.kota_kab_dom : "",
+                        pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row.pasien.ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
+                        pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien.kecamatan_dom : "",
+                        pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row.pasien.ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
+                        pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien.kelurahan_dom : "",
+                        pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row.pasien.ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
+                        pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien.alamat_dom : "",
+
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
@@ -283,7 +319,27 @@
                 pasien_nama: '',
                 pasien_jenis_kelamin: '',
                 pasien_tgl_lahir: '',
-                pasien_alamat: '',
+
+                pasien_provinsi_ktp_kode: '',
+                pasien_provinsi_ktp_nama: '',
+                pasien_kota_kab_ktp_kode: '',
+                pasien_kota_kab_ktp_nama: '',
+                pasien_kecamatan_ktp_kode: '',
+                pasien_kecamatan_ktp_nama: '',
+                pasien_kelurahan_ktp_kode: '',
+                pasien_kelurahan_ktp_nama: '',
+                pasien_alamat_ktp: '',
+                
+                pasien_provinsi_dom_kode: '',
+                pasien_provinsi_dom_nama: '',
+                pasien_kota_kab_dom_kode: '',
+                pasien_kota_kab_dom_nama: '',
+                pasien_kecamatan_dom_kode: '',
+                pasien_kecamatan_dom_nama: '',
+                pasien_kelurahan_dom_kode: '',
+                pasien_kelurahan_dom_nama: '',
+                pasien_alamat_dom: '',
+
                 pasien_no_hp: '',
                 hasil_pemeriksaan: '',
                 kesimpulan_hasil: '',
@@ -300,28 +356,33 @@
         // console.log(role_auth)
         $('#exampleModal .modal-title').text(fitur+' Pasien');
         if(fitur=="Detail"){
+            let tgl_lahir = dt.pasien_tgl_lahir;
+            let parts = tgl_lahir.split("-");
+            let format_tgl_lahir = parts[2] + "-" + parts[1] + "-" + parts[0];
+
             let hasil_pemeriksaan = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan)); 
             let l_ar_hasil_pemeriksaan = ""
-            for (let i = 0; i < hasil_pemeriksaan.length; i++) {
-                console.log(hasil_pemeriksaan[i])
-                
-                let formattedString = Object.entries(hasil_pemeriksaan[i])
-                    .map(([key, value]) => `${key}: ${value}`)
-                    .join(", ");
-                
-                l_ar_hasil_pemeriksaan += '-'+formattedString+'</br>'
+            if(hasil_pemeriksaan!="" && hasil_pemeriksaan!=null){
+                for (let i = 0; i < hasil_pemeriksaan.length; i++) {   
+                    let formattedString = Object.entries(hasil_pemeriksaan[i])
+                        .map(([key, value]) => `${key}: ${value}`)
+                        .join(", ");
+                    
+                    l_ar_hasil_pemeriksaan += '-'+formattedString+'</br>'
+                }
             }
             
             let edukasi = ""
             let rujuk_fktrl = "" 
             let program_tl = dt.program_tindak_lanjut?dt.program_tindak_lanjut:""
             if(program_tl){
-                edukasi = dt.program_tindak_lanjut.find(item => item.edukasi !== undefined && item.edukasi !== null);
-                rujuk_fktrl = dt.program_tindak_lanjut.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null);
+                edukasi = dt.program_tindak_lanjut.find(item => item.edukasi !== undefined && item.edukasi !== null)?.edukasi;
+                rujuk_fktrl = dt.program_tindak_lanjut.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)?.rujuk_fktrl;
             }
             
             // console.log(JSON.stringify(l_ar_hasil_pemeriksaan))
             // console.log(dt.program_tindak_lanjut)
+            // console.log("edukasi")
             // console.log(edukasi)
             var html='\
             <div class="row mb-3" style="display:flex">\
@@ -337,13 +398,13 @@
                 <div class="col-12"><b>Identitas Pemeriksa</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
-                <div class="col-12">NIK:'+dt.pemeriksa_nik+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
                 <div class="col-12">Nama:'+dt.pemeriksa_nama+'</div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pasien</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>KTP</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12">NIK:'+dt.pasien_nik+'</div>\
@@ -355,10 +416,10 @@
                 <div class="col-12">Jenis Kelamin:'+dt.pasien_jenis_kelamin+'</div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tanggal Lahir:'+dt.pasien_tgl_lahir+'</div>\
+                <div class="col-12">Tanggal Lahir:'+format_tgl_lahir+'</div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Alamat:'+dt.pasien_alamat+'</div>\
+                <div class="col-12">Alamat:'+dt.pasien_alamat_ktp+'</div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12">No HP:'+dt.pasien_no_hp+'</div>\
@@ -440,25 +501,51 @@
                 <div class="col-4">Tanggal Lahir</div>\
                 <div class="col-8"><input id="tgl_lahir" type="date" value="'+((dt.pasien_tgl_lahir != "")?dt.pasien_tgl_lahir:"")+'" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
             </div>\
-            <!-- <div class="row mb-3" style="display:flex">\
+            <div class="row mb-3">\
+                <div class="col-12"><b>KTP</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Provinsi</div>\
-                <div class="col-8"><select class="form-control" id="provinsi" style="width: 100%;"></select></div>\
+                <div class="col-8"><select class="form-control" id="provinsi_ktp" style="width: 100%;"></select></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Kota/Kab</div>\
-                <div class="col-8"><select class="form-control" id="kota_kab" style="width: 100%;"></select></div>\
+                <div class="col-8"><select class="form-control" id="kota_kab_ktp" style="width: 100%;"></select></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Kecamatan</div>\
-                <div class="col-8"><select class="form-control" id="kecamatan" style="width: 100%;"></select></div>\
+                <div class="col-8"><select class="form-control" id="kecamatan_ktp" style="width: 100%;"></select></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Kelurahan</div>\
-                <div class="col-8"><select class="form-control" id="kelurahan" style="width: 100%;"></select></div>\
-            </div> -->\
+                <div class="col-8"><select class="form-control" id="kelurahan_ktp" style="width: 100%;"></select></div>\
+            </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Alamat</div>\
-                <div class="col-8"><input id="alamat" type="text" value="'+((dt.pasien_alamat != "")?dt.pasien_alamat:"")+'" style="width: 100%;"></input></div>\
+                <div class="col-8"><input id="alamat_ktp" type="text" value="'+((dt.pasien_alamat_ktp != "")?dt.pasien_alamat_ktp:"")+'" style="width: 100%;"></input></div>\
+            </div>\
+            <div class="row mb-3">\
+                <div class="col-12"><b>Domisili</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Provinsi</div>\
+                <div class="col-8"><select class="form-control" id="provinsi_dom" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kota/Kab</div>\
+                <div class="col-8"><select class="form-control" id="kota_kab_dom" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kecamatan</div>\
+                <div class="col-8"><select class="form-control" id="kecamatan_dom" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Kelurahan</div>\
+                <div class="col-8"><select class="form-control" id="kelurahan_dom" style="width: 100%;"></select></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Alamat</div>\
+                <div class="col-8"><input id="alamat_dom" type="text" value="'+((dt.pasien_alamat_dom != "")?dt.pasien_alamat_dom:"")+'" style="width: 100%;"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Usia</div>\
@@ -507,155 +594,564 @@
         
         oc_tgl_pemeriksaan_dan_lahir()
         get_program_tindak_lanjut()
-        // get_provinsi("", "")
-        // get_kelurahan()
+        get_provinsi_ktp(dt.pasien_provinsi_ktp, dt.pasien_provinsi_ktp_nama)
+        get_kota_kab_ktp(dt.pasien_kota_kab_ktp, dt.pasien_kota_kab_ktp_nama)
+        get_kecamatan_ktp(dt.pasien_kecamatan_ktp, dt.pasien_kecamatan_ktp_nama)
+        get_kelurahan_ktp(dt.pasien_kelurahan_ktp, dt.pasien_kelurahan_ktp_nama)
+        
+        get_provinsi_dom(dt.pasien_provinsi_dom, dt.pasien_provinsi_dom_nama)
+        get_kota_kab_dom(dt.pasien_kota_kab_dom, dt.pasien_kota_kab_dom_nama)
+        get_kecamatan_dom(dt.pasien_kecamatan_dom, dt.pasien_kecamatan_dom_nama)
+        get_kelurahan_dom(dt.pasien_kelurahan_dom, dt.pasien_kelurahan_dom_nama)
+        
+        if(dt.nik!=""){
+            oi_nik()
+        }
 
         $('#exampleModal').modal('show');
     }
 
     function oi_nik(){
-
+    //     let nik = $('#nik_pasien').val()
+        
+    //     get_provinsi(nik)
+    //     get_kota_kab(nik)
+    //     get_kecamatan(nik)
+    //     // get_kelurahan(nik, kode_kelurahan)
     }
 
-    // function get_provinsi(id, nama) {
-    //     // console.log("kelur")
-    //     $('#provinsi')
-    //         .empty()
-    //         .append($("<option/>")
-    //             .val(id)
-    //             .text(nama))
-    //         .val(id)
-    //         .trigger("change");
+    function get_provinsi_ktp(kode, nama) {
+        // if(nik.length >= 6){
+            // let kode_prov = nik.slice(-2);
+            // let kode_prov = nik.slice(0, 2);
+            
+            // $.ajax({
+            //     url: "{{ url('master_provinsi') }}",
+            //     dataType: 'json',
+            //     data: { search: kode_prov },
+            //     success: function(data) {
+            //         if (data.length == 1) {
+            //             $('#provinsi').html(data[0].nama)
+            //         }
+            //         else{
+            //             $('#provinsi').html("")
+            //         }
+            //     },
+            //     error: function(xhr, status, error) {
+            //         console.error("Error fetching province:", error);
+            //     }
+            // });
+            console.log("provinsi ktp"+kode+nama)
+            $('#provinsi_ktp')
+            .empty()
+            .append($("<option/>")
+                .val(kode)
+                .text(nama))
+            .val(kode)
+            // .append($("<option/>")
+            //     .val("")
+            //     .text(""))
+            // .val("")
+            .trigger("change");
 
-    //     $('#provinsi').select2({
-    //         placeholder: 'Cari...',
-    //         allowClear: true,
-    //         width: 'resolve',
-    //         theme: 'bootstrap4',
-    //         dropdownParent: $("#exampleModal"),
-    //         ajax: {
-    //             url: "{{ url('master_provinsi') }}",
+            $('#provinsi_ktp').select2({
+                placeholder: 'Cari...',
+                allowClear: true,
+                width: 'resolve',
+                dropdownParent: $(".modal-body"),
+                theme: 'bootstrap4',
+                ajax: {
+                    url: "{{ url('master_provinsi') }}",
+                    dataType: 'json',
+                    delay: 500,
+                    data: function(params) {
+                        console.log(params.term)
+                        return {
+                            search: params.term,
+                            kode_provinsi: kode,
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data)
+                        return {
+                            results: data
+                                .map(function(item) {
+                                    return {
+                                        id: item.kode,
+                                        text: item.nama,
+                                    };
+                                })
+                        };
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX error:", status, error);
+                    },
+                    // cache: true
+                },
+                // minimumInputLength: 2,
+            });
+        // }
+    }
+
+    function get_kota_kab_ktp(kode, nama) {
+        $('#kota_kab_ktp')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kota_kab_ktp').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kota_kab') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    // if(kode==""){
+                    let kode_provinsi = $('#provinsi_ktp').val();
+                        // console.log("kode"+kode_provinsi)
+                    // }
+                    // console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode_provinsi,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    function get_kecamatan_ktp(kode, nama) {
+        $('#kecamatan_ktp')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kecamatan_ktp').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kecamatan') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    let kode = $('#kota_kab_ktp').val();
+                    // console.log(kode_provinsi)
+                    
+                    console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    function get_kelurahan_ktp(kode, nama) {
+        $('#kelurahan_ktp')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kelurahan_ktp').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kelurahan') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    let kode = $('#kecamatan_ktp').val();
+                    // console.log(kode_provinsi)
+                    
+                    console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    function get_provinsi_dom(kode, nama) {
+        console.log("provinsi dom"+kode+nama)
+            $('#provinsi_dom')
+            .empty()
+            .append($("<option/>")
+                .val(kode)
+                .text(nama))
+            .val(kode)
+            // .append($("<option/>")
+            //     .val("")
+            //     .text(""))
+            // .val("")
+            .trigger("change");
+
+            $('#provinsi_dom').select2({
+                placeholder: 'Cari...',
+                allowClear: true,
+                width: 'resolve',
+                theme: 'bootstrap4',
+                dropdownParent: $(".modal-body"),
+                ajax: {
+                    url: "{{ url('master_provinsi') }}",
+                    dataType: 'json',
+                    delay: 500,
+                    data: function(params) {
+                        console.log(params.term)
+                        return {
+                            search: params.term,
+                            kode_provinsi: kode,
+                        };
+                    },
+                    processResults: function(data) {
+                        console.log(data)
+                        return {
+                            results: data
+                                .map(function(item) {
+                                    return {
+                                        id: item.kode,
+                                        text: item.nama,
+                                    };
+                                })
+                        };
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX error:", status, error);
+                    },
+                    // cache: true
+                },
+                // minimumInputLength: 2,
+            });
+        // }
+    }
+
+    function get_kota_kab_dom(kode, nama) {
+        $('#kota_kab_dom')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kota_kab_dom').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kota_kab') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    // if(kode==""){
+                    let kode_provinsi = $('#provinsi_dom').val();
+                        // console.log("kode"+kode_provinsi)
+                    // }
+                    // console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode_provinsi,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    function get_kecamatan_dom(kode, nama) {
+        $('#kecamatan_dom')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kecamatan_dom').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kecamatan') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    let kode = $('#kota_kab_dom').val();
+                    // console.log(kode_provinsi)
+                    
+                    console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    function get_kelurahan_dom(kode, nama) {
+        $('#kelurahan_dom')
+        .empty()
+        .append($("<option/>")
+            .val(kode)
+            .text(nama))
+        .val(kode)
+        .trigger("change");
+
+        $('#kelurahan_dom').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_kelurahan') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    let kode = $('#kecamatan_dom').val();
+                    // console.log(kode_provinsi)
+                    
+                    console.log(params.term)
+                    return {
+                        search: params.term,
+                        kode_parent: kode,
+                        kode: kode
+
+                    };
+                },
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                            .map(function(item) {
+                                return {
+                                    id: item.kode,
+                                    text: item.nama,
+                                };
+                            })
+                    };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+    }
+
+    // function get_kota_kab(nik) {
+    //     if(nik.length >= 6){
+    //         // let kode_prov = nik.slice(-2);
+    //         let kode_kota_kab = nik.slice(0, 4);
+            
+    //         $.ajax({
+    //             url: "{{ url('master_kota_kab') }}",
     //             dataType: 'json',
-    //             delay: 500,
-    //             data: function(params) {
-    //                 console.log(params.term)
-    //                 return {
-    //                     search: params.term
-    //                 };
-    //             },
-    //             processResults: function(data) {
+    //             data: { search: kode_kota_kab },
+    //             success: function(data) {
     //                 console.log(data)
-    //                 return {
-    //                     results: data
-    //                         // .filter(function(item){
-    //                         //     return item.petugas && item.petugas.nama != null;
-    //                         // })
-    //                         .map(function(item) {
-    //                             return {
-    //                                 id: item.id,
-    //                                 text: item.nama,
-    //                             };
-    //                         })
-    //                 };
+    //                 if (data.length == 1) {
+    //                     $('#kota_kab').html(data[0].nama)
+    //                 }
+    //                 else{
+    //                     $('#kota_kab').html("")
+    //                 }
     //             },
     //             error: function(xhr, status, error) {
-    //                 console.error("AJAX error:", status, error);
-    //             },
-    //             cache: true
-    //         },
-    //         // minimumInputLength: 2,
-    //     });
-
-    //         // $('#provinsi').select2({
-    //         //     placeholder: 'Cari atau ketik nama provinsi...',
-    //         //     allowClear: true,
-    //         //     width: '100%',
-    //         //     theme: 'bootstrap4',
-    //         //     tags: true, // ✅ Allows manual text input
-    //         //     createTag: function(params) {
-    //         //         let term = $.trim(params.term);
-    //         //         if (term === '') return null; // Prevent empty values
-
-    //         //         return {
-    //         //             id: term, // Assign the entered text as the ID
-    //         //             text: term,
-    //         //             newOption: true
-    //         //         };
-    //         //     },
-    //         //     ajax: {
-    //         //         url: "{{ url('master_provinsi') }}",
-    //         //         dataType: 'json',
-    //         //         delay: 500,
-    //         //         data: function(params) {
-    //         //             return {
-    //         //                 search: params.term
-    //         //             };
-    //         //         },
-    //         //         processResults: function(data) {
-    //         //             return {
-    //         //                 results: data.map(function(item) {
-    //         //                     return {
-    //         //                         id: item.id,
-    //         //                         text: item.nama
-    //         //                     };
-    //         //                 })
-    //         //             };
-    //         //         },
-    //         //         error: function(xhr, status, error) {
-    //         //             console.error("AJAX error:", status, error);
-    //         //         },
-    //         //         cache: false // Prevent caching issues
-    //         //     }
-    //         // });
+    //                 console.error("Error fetching province:", error);
+    //             }
+    //         });
+    //     }
     // }
 
-    // function get_kelurahan() {
-    //     // console.log("kelur")
-    //     // $('#kelurahan')
-    //     //     .empty()
-    //     //     .append($("<option/>")
-    //     //         .val(id_kelurahan)
-    //     //         .text(nama_kelurahan))
-    //     //     .val(id_kelurahan)
-    //     //     .trigger("change");
-
-    //     $('#kelurahan').select2({
-    //         placeholder: 'Cari...',
-    //         allowClear: true,
-    //         width: 'resolve',
-    //         theme: 'bootstrap4',
-    //         ajax: {
-    //             url: "{{ url('master_kelurahan') }}",
+    // function get_kecamatan(nik) {
+    //     if(nik.length >= 6){
+    //         // let kode_prov = nik.slice(-2);
+    //         let kode_kecamatan = nik.slice(0, 6);
+            
+    //         $.ajax({
+    //             url: "{{ url('master_kecamatan') }}",
     //             dataType: 'json',
-    //             delay: 500,
-    //             data: function(params) {
-    //                 console.log(params.term)
-    //                 return {
-    //                     search: params.term
-    //                 };
-    //             },
-    //             processResults: function(data) {
+    //             data: { search: kode_kecamatan },
+    //             success: function(data) {
     //                 console.log(data)
-    //                 return {
-    //                     results: data
-    //                         // .filter(function(item){
-    //                         //     return item.petugas && item.petugas.nama != null;
-    //                         // })
-    //                         .map(function(item) {
-    //                             return {
-    //                                 id: item.id,
-    //                                 text: item.nama,
-    //                             };
-    //                         })
-    //                 };
+    //                 if (data.length == 1) {
+    //                     $('#kecamatan').html(data[0].nama)
+    //                 }
+    //                 else{
+    //                     $('#kecamatan').html("")
+    //                 }
     //             },
     //             error: function(xhr, status, error) {
-    //                 console.error("AJAX error:", status, error);
+    //                 console.error("Error fetching province:", error);
+    //             }
+    //         });
+    //     }
+    // }
+
+    // function get_kelurahan(nik, kode_kelurahan) {
+    //     if(nik.length >= 6){
+    //         let kode_kecamatan = nik.slice(0, 6);
+
+    //         $('#kelurahan').select2({
+    //             placeholder: 'Cari...',
+    //             allowClear: true,
+    //             width: 'resolve',
+    //             theme: 'bootstrap4',
+    //             dropdownParent: $("#exampleModal"),
+    //             ajax: {
+    //                 url: "{{ url('master_kelurahan') }}",
+    //                 dataType: 'json',
+    //                 delay: 500,
+    //                 data: function(params) {
+    //                     console.log(params.term)
+    //                     return {
+    //                         search: params.term,
+    //                         kode_kecamatan: kode_kecamatan,
+    //                         kode_kelurahan: kode_kelurahan
+    //                     };
+    //                 },
+    //                 processResults: function(data) {
+    //                     console.log(data)
+    //                     return {
+    //                         results: data
+    //                             .map(function(item) {
+    //                                 return {
+    //                                     id: item.id,
+    //                                     text: item.nama,
+    //                                 };
+    //                             })
+    //                     };
+    //                 },
+    //                 error: function(xhr, status, error) {
+    //                     console.error("AJAX error:", status, error);
+    //                 },
+    //                 // cache: true
     //             },
-    //             cache: true
-    //         },
-    //         // minimumInputLength: 2,
-    //     });
+    //             // minimumInputLength: 2,
+    //         });
+    //     }
     // }
 
     function oc_fitur(fitur, id_riwayat){
@@ -698,7 +1194,18 @@
             let nama_pasien = $('#nama_pasien').val();
             let jenis_kelamin = $('#jenis_kelamin').val();
             let tgl_lahir = $('#tgl_lahir').val();
-            let alamat = $('#alamat').val();
+            let provinsi_ktp = $('#provinsi_ktp').val();
+            let kota_kab_ktp = $('#kota_kab_ktp').val();
+            let kecamatan_ktp = $('#kecamatan_ktp').val();
+            let kelurahan_ktp = $('#kelurahan_ktp').val();
+            let alamat_ktp = $('#alamat_ktp').val();
+
+            let provinsi_dom = $('#provinsi_dom').val();
+            let kota_kab_dom = $('#kota_kab_dom').val();
+            let kecamatan_dom = $('#kecamatan_dom').val();
+            let kelurahan_dom = $('#kelurahan_dom').val();
+            let alamat_dom = $('#alamat_dom').val();
+
             let no_hp = $('#no_hp').val();
 
             let hasil_pemeriksaan = ar_hasil_pemeriksaan
@@ -714,7 +1221,8 @@
             console.log(nik_pasien)
             console.log(jenis_kelamin)
             console.log(tgl_lahir)
-            console.log(alamat)
+            console.log(kota_kab_ktp)
+            console.log(alamat_ktp)
             console.log(no_hp)
             console.log(hasil_pemeriksaan)
             console.log(kesimpulan_hasil_pemeriksaan)
@@ -739,7 +1247,18 @@
                     nama_pasien: nama_pasien,
                     jenis_kelamin: jenis_kelamin,
                     tgl_lahir: tgl_lahir,
-                    alamat: alamat,
+                    provinsi_ktp: provinsi_ktp,
+                    kota_kab_ktp: kota_kab_ktp,
+                    kecamatan_ktp: kecamatan_ktp,
+                    kelurahan_ktp: kelurahan_ktp,
+                    alamat_ktp: alamat_ktp,
+
+                    provinsi_dom: provinsi_dom,
+                    kota_kab_dom: kota_kab_dom,
+                    kecamatan_dom: kecamatan_dom,
+                    kelurahan_dom: kelurahan_dom,
+                    alamat_dom: alamat_dom,
+
                     no_hp: no_hp,
 
                     ar_hasil_pemeriksaan: ar_hasil_pemeriksaan,

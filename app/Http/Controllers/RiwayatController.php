@@ -25,7 +25,10 @@ class RiwayatController extends Controller
         // dd("tes");
         $id_user = Auth::user()->id;
         // $data = Riwayat::with(['pasien', 'pemeriksa'])->get();
-        $data = Riwayat::with(['pasien', 'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
+        $data = Riwayat::with([
+            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+            'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
 
         // dd($data);
         return response()->json($data);
@@ -45,7 +48,18 @@ class RiwayatController extends Controller
             $pasien->nama = $request->nama_pasien;
             $pasien->jenis_kelamin = $request->jenis_kelamin;
             $pasien->tgl_lahir = $request->tgl_lahir;
-            $pasien->alamat = $request->alamat;
+            $pasien->provinsi_ktp = $request->provinsi_ktp;
+            $pasien->kota_kab_ktp = $request->kota_kab_ktp;
+            $pasien->kecamatan_ktp = $request->kecamatan_ktp;
+            $pasien->kelurahan_ktp = $request->kelurahan_ktp;
+            $pasien->alamat_ktp = $request->alamat_ktp;
+
+            $pasien->provinsi_dom = $request->provinsi_dom;
+            $pasien->kota_kab_dom = $request->kota_kab_dom;
+            $pasien->kecamatan_dom = $request->kecamatan_dom;
+            $pasien->kelurahan_dom = $request->kelurahan_dom;
+            $pasien->alamat_dom = $request->alamat_dom;
+
             $pasien->no_hp = $request->no_hp;
             $pasien->save();
             $id_pasien = $pasien->id;
@@ -54,11 +68,23 @@ class RiwayatController extends Controller
             $cari_pasien->nama = $request->nama_pasien;
             $cari_pasien->jenis_kelamin = $request->jenis_kelamin;
             $cari_pasien->tgl_lahir = $request->tgl_lahir;
-            $cari_pasien->alamat = $request->alamat;
+            $cari_pasien->provinsi_ktp = $request->provinsi_ktp;
+            $cari_pasien->kota_kab_ktp = $request->kota_kab_ktp;
+            $cari_pasien->kecamatan_ktp = $request->kecamatan_ktp;
+            $cari_pasien->kelurahan_ktp = $request->kelurahan_ktp;
+            $cari_pasien->alamat_ktp = $request->alamat_ktp;
+
+            $cari_pasien->provinsi_dom = $request->provinsi_dom;
+            $cari_pasien->kota_kab_dom = $request->kota_kab_dom;
+            $cari_pasien->kecamatan_dom = $request->kecamatan_dom;
+            $cari_pasien->kelurahan_dom = $request->kelurahan_dom;
+            $cari_pasien->alamat_dom = $request->alamat_dom;
+
             $cari_pasien->no_hp = $request->no_hp;
             $cari_pasien->save();
         }
 
+        // dd($cari_pasien);
         $cari_pemeriksa = Pemeriksa::where('nik', $request->nik_pemeriksa)->first();
         $id_pemeriksa = '';
         if ($cari_pemeriksa == null) {
@@ -97,13 +123,43 @@ class RiwayatController extends Controller
         $id_user = Auth::user()->id;
         $cari_pasien = Pasien::where('nik', $request->nik_pasien)->first();
         $id_pasien = '';
+        // if ($cari_pasien == null) {
+        //     $pasien = new Pasien();
+        //     $pasien->nik = $request->nik_pasien;
+        //     $pasien->nama = $request->nama_pasien;
+        //     $pasien->jenis_kelamin = $request->jenis_kelamin;
+        //     $pasien->tgl_lahir = $request->tgl_lahir;
+        //     $pasien->alamat = $request->alamat;
+        //     $pasien->no_hp = $request->no_hp;
+        //     $pasien->save();
+        //     $id_pasien = $pasien->id;
+        // } else {
+        //     $id_pasien = $cari_pasien->id;
+        //     $cari_pasien->nama = $request->nama_pasien;
+        //     $cari_pasien->jenis_kelamin = $request->jenis_kelamin;
+        //     $cari_pasien->tgl_lahir = $request->tgl_lahir;
+        //     $cari_pasien->alamat = $request->alamat;
+        //     $cari_pasien->no_hp = $request->no_hp;
+        //     $cari_pasien->save();
+        // }
         if ($cari_pasien == null) {
             $pasien = new Pasien();
             $pasien->nik = $request->nik_pasien;
             $pasien->nama = $request->nama_pasien;
             $pasien->jenis_kelamin = $request->jenis_kelamin;
             $pasien->tgl_lahir = $request->tgl_lahir;
-            $pasien->alamat = $request->alamat;
+            $pasien->provinsi_ktp = $request->provinsi_ktp;
+            $pasien->kota_kab_ktp = $request->kota_kab_ktp;
+            $pasien->kecamatan_ktp = $request->kecamatan_ktp;
+            $pasien->kelurahan_ktp = $request->kelurahan_ktp;
+            $pasien->alamat_ktp = $request->alamat_ktp;
+
+            $pasien->provinsi_dom = $request->provinsi_dom;
+            $pasien->kota_kab_dom = $request->kota_kab_dom;
+            $pasien->kecamatan_dom = $request->kecamatan_dom;
+            $pasien->kelurahan_dom = $request->kelurahan_dom;
+            $pasien->alamat_dom = $request->alamat_dom;
+
             $pasien->no_hp = $request->no_hp;
             $pasien->save();
             $id_pasien = $pasien->id;
@@ -112,7 +168,19 @@ class RiwayatController extends Controller
             $cari_pasien->nama = $request->nama_pasien;
             $cari_pasien->jenis_kelamin = $request->jenis_kelamin;
             $cari_pasien->tgl_lahir = $request->tgl_lahir;
-            $cari_pasien->alamat = $request->alamat;
+            
+            $cari_pasien->provinsi_ktp = $request->provinsi_ktp;
+            $cari_pasien->kota_kab_ktp = $request->kota_kab_ktp;
+            $cari_pasien->kecamatan_ktp = $request->kecamatan_ktp;
+            $cari_pasien->kelurahan_ktp = $request->kelurahan_ktp;
+            $cari_pasien->alamat_ktp = $request->alamat_ktp;
+
+            $cari_pasien->provinsi_dom = $request->provinsi_dom;
+            $cari_pasien->kota_kab_dom = $request->kota_kab_dom;
+            $cari_pasien->kecamatan_dom = $request->kecamatan_dom;
+            $cari_pasien->kelurahan_dom = $request->kelurahan_dom;
+            $cari_pasien->alamat_dom = $request->alamat_dom;
+
             $cari_pasien->no_hp = $request->no_hp;
             $cari_pasien->save();
         }
