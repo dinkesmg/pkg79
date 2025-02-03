@@ -74,7 +74,7 @@
     </div>
 <!-- @//endsection -->
 </body>
-<script src="{{ asset('AdminLTE-3.2.0/plugins/jquery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
 <script>
     function togglePasswordVisibility() {
         var passwordInput = document.getElementById('password');
