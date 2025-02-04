@@ -453,6 +453,9 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <div><h4>Total Per Puskesmas</h4></div>
+                                </div>
                                 <div class="card-body">
                                 <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
                                 <thead>
