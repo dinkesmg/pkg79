@@ -43,7 +43,7 @@
                 <div class="box" style="display:flex; justify-content:center; align-items:center; border-radius:10px">
                     <form method="POST" action="{{ route('auth.cek') }}" style="margin:5px; padding: 45px; text-align: center; box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24); background-color:#FFFFFF; border-radius:10px;">
                         @csrf
-                        <!-- <img class="nav-icon" src="{//{asset('asset')}}/apotek.png" style="width:70px; height:auto;"></img> -->
+                        <img class="nav-icon" src="{{asset('logo_semarpkg79.png')}}" style="width:70px; height:auto;"></img>
                         <h3 style="color:rgb(22 179 172); font-weight:bold">LOGIN</h3>
                         <hr></hr>
                         <div class="row" style="font-weight:bold; width:100%; margin-bottom:5px; margin-top:10px; display:inline-block; color:rgb(22 179 172)">Nama</div>

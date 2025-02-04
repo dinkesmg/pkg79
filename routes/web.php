@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\MasterController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,11 @@ Route::prefix('riwayat')->group(function () {
         Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
         
         // });
+});
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::post('/data', [DashboardController::class, 'data'])->name('dashboard.data');
 });
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
