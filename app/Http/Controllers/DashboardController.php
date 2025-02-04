@@ -70,10 +70,13 @@ class DashboardController extends Controller
         ];
 
         $data = [];
+
+
         foreach($v_kesimpulan_hasil_pemeriksaan as $ind => $v){
             if($ind==0){
                 $data[$ind]['status'] = "Proses";
-                $data[$ind]['total'] = Riwayat::where('id_user', $id_user)
+                if($role=="Puskesmas"){
+                    $data[$ind]['total'] = Riwayat::where('id_user', $id_user)
                     ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
                     ->where(function ($query) {
                         $query->where('kesimpulan_hasil_pemeriksaan', "")
@@ -81,13 +84,32 @@ class DashboardController extends Controller
                     })
                     ->get()
                     ->count();
+                }
+                else if($role=="Admin"){
+                    $data[$ind]['total'] = Riwayat::whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+                    ->where(function ($query) {
+                        $query->where('kesimpulan_hasil_pemeriksaan', "")
+                              ->orWhereNull('kesimpulan_hasil_pemeriksaan');
+                    })
+                    ->get()
+                    ->count();
+                }
             }
             $data[$ind+1]['status'] = $v;
-            $data[$ind+1]['total'] = Riwayat::where('id_user', $id_user)
-                ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+            if($role=="Puskesmas"){
+                $data[$ind+1]['total'] = Riwayat::where('id_user', $id_user)
+                    ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+                    ->where('kesimpulan_hasil_pemeriksaan', $v)
+                    ->get()
+                    ->count();
+            }
+            else if($role=="Admin"){
+                $data[$ind+1]['total'] = Riwayat::whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
                 ->where('kesimpulan_hasil_pemeriksaan', $v)
                 ->get()
                 ->count();
+            }
+            
         }
 
         return response()->json($data);
