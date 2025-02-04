@@ -23,13 +23,24 @@ class RiwayatController extends Controller
     public function data()
     {
         // dd("tes");
+        $role = Auth::user()->role;
         $id_user = Auth::user()->id;
+        // dd($role);
         // $data = Riwayat::with(['pasien', 'pemeriksa'])->get();
-        $data = Riwayat::with([
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-            'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
+        if($role=="Puskesmas"){
+            $data = Riwayat::with([
+                'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+                'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+                'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
+        }
+        else if($role=="Admin"){
+            $data = Riwayat::with([
+                'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+                'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+                'pemeriksa'])->orderBy('tanggal_pemeriksaan', 'desc')->get();
+        }
 
+        
         // dd($data);
         return response()->json($data);
     }
