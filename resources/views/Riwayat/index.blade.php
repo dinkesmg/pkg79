@@ -1463,6 +1463,7 @@
                     <div class="col-8">\
                         <select id="indeks_bbu" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'indeks_bbu\')">\
                             <option value="">Pilih</option>\
+                            <option value="Berat badan normal">Berat badan normal</option>\
                             <option value="Berat badan kurang (tanpa stunting)">Berat badan kurang (tanpa stunting)</option>\
                             <option value="Berat badan sangat kurang (tanpa stunting)">Berat badan sangat kurang (tanpa stunting)</option>\
                             <option value="Risiko berat badan lebih">Risiko berat badan lebih</option>\

@@ -33,12 +33,12 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
-                <!-- <li class="nav-item">
+                <li class="nav-item">
                     <a href="{{ url('dashboard') }}"
                         class="nav-link {{ request()->routeIs('dashboard*') == 1 ? 'active' : '' }}">
                         <p style="color:#fff; font-weight:bold">Dashboard</p>
                     </a>
-                </li> -->
+                </li>
                 @if (Auth::user()->role == 'Admin')
                     <!-- <li class="nav-item">
                         <a href="{{ url('user') }}"

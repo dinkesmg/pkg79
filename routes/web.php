@@ -34,6 +34,8 @@ Route::prefix('riwayat')->group(function () {
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::post('/data', [DashboardController::class, 'data'])->name('dashboard.data');
+    Route::get('/data_per_puskesmas', [DashboardController::class, 'data_per_puskesmas'])->name('dashboard.data_per_puskesmas');
+    Route::get('/data_kesimpulan_hasil', [DashboardController::class, 'data_kesimpulan_hasil'])->name('dashboard.data_kesimpulan_hasil');
 });
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
