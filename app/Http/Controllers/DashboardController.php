@@ -46,7 +46,7 @@ class DashboardController extends Controller
         $data = [];
         foreach($puskesmas as $ind => $pusk){
             $data[$ind]['nama'] = $pusk->nama;
-            $data[$ind]['total'] = Riwayat::where('id_user', $pusk->id)
+            $data[$ind]['total'] = Riwayat::where('id_user', $pusk->id+1)
                 ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
                 ->get()
                 ->count();
