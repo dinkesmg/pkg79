@@ -270,9 +270,14 @@
                 }
             },
             { 'render': function (data, type, row, meta) {
-                let pasien = (row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "");
+                let tgl = (row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "");
 
-                return pasien
+                if (tgl != "") {
+                    let dateParts = tgl.split("-");
+                    let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+                    return formattedDate;
+                }
+                return "";
                 }
             },
             { 'data': 'hasil_pemeriksaan' },
@@ -851,7 +856,7 @@
     }
 
     function get_provinsi_dom(kode, nama) {
-        console.log("provinsi dom"+kode+nama)
+        // console.log("provinsi dom"+kode+nama)
             $('#provinsi_dom')
             .empty()
             .append($("<option/>")
