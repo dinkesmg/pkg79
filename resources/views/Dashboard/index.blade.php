@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Semar PKG79</title>
+  <link rel="icon" href="{{ asset('logo_semarpkg79.png')}}" type="image/x-icon">
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
   @include('layouts.header')
@@ -477,7 +478,73 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <div><h4>Kesimpulan Hasil Pemeriksaan</h4></div>
+                                    <div><h4>Per Kelompok Usia</h4></div>
+                                </div>
+                                <div class="card-body">
+                                <!-- <table id="idtabel_per_usia" class="table table-bordered table-striped example" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>BBL</th>
+                                        <th>Balita dan Pra Sekolah</th>
+                                        <th>Dewasa 18-19 Tahun</th>
+                                        <th>Dewasa 30-39 Tahun</th>
+                                        <th>Dewasa 40-59 Tahun</th>
+                                        <th>Lansia</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                </table> -->
+                                <div class="d-flex">
+                                    <div class="small-box bg-blue" style="width:100%; margin-right:1px">
+                                        <div class="inner text-center">
+                                            <p>BBL</p>
+                                            <h3 id="total_bbl"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="small-box bg-blue" style="width:100%; margin-left:1px">
+                                        <div class="inner text-center">
+                                            <p>Balita dan Pra Sekolah</p>
+                                            <h3 id="total_balita_dan_pra_sekolah"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="small-box bg-blue" style="width:100%; margin-right:1px">
+                                        <div class="inner text-center">
+                                            <p>Dewasa 18-29 Tahun</p>
+                                            <h3 id="total_dewasa_18_29_tahun"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="small-box bg-blue" style="width:100%; margin-right:1px; margin-left:1px">
+                                        <div class="inner text-center">
+                                            <p>Dewasa 30-39 Tahun</p>
+                                            <h3 id="total_dewasa_30_39_tahun"></h3>
+                                        </div>
+                                    </div>
+                                    <div class="small-box bg-blue" style="width:100%; margin-left:1px">
+                                        <div class="inner text-center">
+                                            <p>Dewasa 40-59 Tahun</p>
+                                            <h3 id="total_dewasa_40_59_tahun"></h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="small-box bg-blue" style="width:100%">
+                                    <div class="inner text-center">
+                                        <p>Lansia</p>
+                                        <h3 id="total_lansia"></h3>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div><h4>Total Kesimpulan Hasil Pemeriksaan</h4></div>
                                 </div>
                                 <div class="card-body">
                                 <table id="idtabel_kesimpulan_hasil" class="table table-bordered table-striped example" style="width:100%">
@@ -540,6 +607,7 @@
         if(role_auth == "Admin"){
             tabel_per_puskesmas()
         }
+        per_kelompok_usia()
         tabel_kesimpulan_hasil()
         
         // peta()
@@ -550,6 +618,7 @@
         if(role_auth == "Admin"){
             tabel_per_puskesmas()
         }
+        per_kelompok_usia()
         tabel_kesimpulan_hasil()
     }
     
@@ -584,6 +653,65 @@
             },
             columns: col
         });
+    }
+
+    function per_kelompok_usia(){
+        let tgl_dari = $('#dari').val();
+        let tgl_sampai = $('#sampai').val();
+
+        $.ajax({
+            url: `{{url('dashboard/data_per_usia')}}`,
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                tgl_dari : $('#dari').val(),
+                tgl_sampai : $('#sampai').val(),
+            },
+            success: function(response) {
+                console.log(response)
+                // $('#bbl').val(res);
+                $('#total_bbl').html(response.bbl);
+                $('#total_balita_dan_pra_sekolah').html(response.balita_dan_pra_sekolah);
+                $('#total_dewasa_18_29_tahun').html(response.dewasa_18_29_tahun);
+                $('#total_dewasa_30_39_tahun').html(response.dewasa_30_39_tahun);
+                $('#total_dewasa_40_59_tahun').html(response.dewasa_40_59_tahun);
+                $('#total_lansia').html(response.lansia);
+                
+                // Loop through response array
+                // response.map(item => {
+                //     if (item.bbl !== undefined) {
+                //         $('#total_bbl').val(item.bbl);
+                //     }
+                //     if (item.dewasa_18_29_tahun !== undefined) {
+                //         console.log("dewasa")
+                //         $('#total_dewasa_18_29_tahun').val(item.dewasa_18_29_tahun);
+                //     }
+                // });
+            }
+        })
+        // $('#idtabel_per_usia').dataTable( {
+        //     destroy : true,
+        //     scrollX : true,
+        //     ajax :  {
+        //         url: "{{url('dashboard/data_per_usia')}}",
+        //         type: "GET",
+        //         data: function (d) {
+        //             d.tgl_dari = $('#dari').val();
+        //             d.tgl_sampai = $('#sampai').val();
+        //         },
+        //         // dataSrc: '',
+        //         dataSrc: function(json) {
+        //             // let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
+                    
+        //             // $('#total_kunjungan_pasien').text(totalSum);
+
+        //             return json; // Return data for DataTable
+        //         },
+        //     },
+        //     columns: col
+        // });
     }
 
     function tabel_kesimpulan_hasil(){

@@ -56,6 +56,60 @@ class DashboardController extends Controller
         return response()->json($data);
     }
 
+    public function data_per_usia(Request $request)
+    {
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+
+        $data = [
+            "bbl" => 0,
+            "balita_dan_pra_sekolah" => 0,
+            "dewasa_18_29_tahun" => 0,
+            "dewasa_30_39_tahun" => 0,
+            "dewasa_40_59_tahun" => 0,
+            "lansia" => 0
+        ];
+
+        $queryBbl = Riwayat::with('pasien')->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+            ->whereHas('pasien', function ($query) {
+                $query->whereRaw("DATEDIFF(tanggal_pemeriksaan, tgl_lahir) BETWEEN 0 AND 28");
+            });
+
+        if ($role == "Puskesmas") {
+            $queryBbl->where('id_user', $id_user);
+        }
+
+        $data['bbl'] = $queryBbl->count();
+        // $data['bbl'] = $queryBbl->get();
+
+        $ageGroups = [
+            'balita_dan_pra_sekolah' => [1, 6],
+            'dewasa_18_29_tahun' => [18, 29],
+            'dewasa_30_39_tahun' => [30, 39],
+            'dewasa_40_59_tahun' => [40, 59],
+            'lansia' => [60, 150]
+        ];
+
+        foreach ($ageGroups as $key => [$min, $max]) {
+            $query = Riwayat::with('pasien')->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+                ->whereHas('pasien', function ($query) use ($min, $max) {
+                    $query->whereRaw("TIMESTAMPDIFF(YEAR, tgl_lahir, tanggal_pemeriksaan) BETWEEN ? AND ?", [$min, $max]);
+                });
+
+            if ($role == "Puskesmas") {
+                $query->where('id_user', $id_user);
+            }
+
+            $data[$key] = $query->count();
+            // $data[$key] = $query->get();
+        }
+
+
+
+        return response()->json($data);
+    }
+
+
     public function data_kesimpulan_hasil(Request $request)
     {
         // dd($request->all());
