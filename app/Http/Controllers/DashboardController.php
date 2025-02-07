@@ -31,6 +31,31 @@ class DashboardController extends Controller
     //     return response()->json($data);
     // }
 
+    public function data_grafik_per_periode(Request $request)
+    {
+        // dd($request->all());
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+        
+        $ar_x = $request->x_grafik;
+        $data = [];
+        foreach ($ar_x as $ind => $tgl) {
+            // dd($ind);
+            $q_riwayat = Riwayat::where('tanggal_pemeriksaan', $tgl);
+            if ($role == "Admin") {
+                // $data[$ind] =  $q_riwayat->get();
+                $data[$ind] =  $q_riwayat->count();
+            } else if ($role == "Puskesmas") {
+                // $data[$ind] = $q_riwayat->where('id_user', $id_user+1)->get();
+                $data[$ind] = $q_riwayat->where('id_user', $id_user+1)->count();
+            } 
+            
+        }
+        // dd($data);
+
+        return response()->json($data);
+    }
+
     public function data_per_puskesmas(Request $request)
     {
         // dd($request->all());
@@ -108,7 +133,6 @@ class DashboardController extends Controller
 
         return response()->json($data);
     }
-
 
     public function data_kesimpulan_hasil(Request $request)
     {

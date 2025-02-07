@@ -443,6 +443,13 @@
                             </div>
                         </div>
                     </div> -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div id="id_grafik_per_periode"></div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="small-box bg-yellow" style="width:100%">
                         <div class="inner text-center">
                             <p>Total Kunjungan Pasien : </p>
@@ -481,21 +488,6 @@
                                     <div><h4>Per Kelompok Usia</h4></div>
                                 </div>
                                 <div class="card-body">
-                                <!-- <table id="idtabel_per_usia" class="table table-bordered table-striped example" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>BBL</th>
-                                        <th>Balita dan Pra Sekolah</th>
-                                        <th>Dewasa 18-19 Tahun</th>
-                                        <th>Dewasa 30-39 Tahun</th>
-                                        <th>Dewasa 40-59 Tahun</th>
-                                        <th>Lansia</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                                </table> -->
                                 <div class="d-flex">
                                     <div class="small-box bg-blue" style="width:100%; margin-right:1px">
                                         <div class="inner text-center">
@@ -607,6 +599,7 @@
         if(role_auth == "Admin"){
             tabel_per_puskesmas()
         }
+        grafik_per_periode()
         per_kelompok_usia()
         tabel_kesimpulan_hasil()
         
@@ -618,8 +611,146 @@
         if(role_auth == "Admin"){
             tabel_per_puskesmas()
         }
+        grafik_per_periode()
         per_kelompok_usia()
         tabel_kesimpulan_hasil()
+    }
+
+    // function grafik_per_periode(){
+
+    // }
+
+    function ar_x_grafik(dari, sampai) {
+        var startDate = new Date(dari);
+        var endDate = new Date(sampai);
+        var dateArray = [];
+
+        while (startDate <= endDate) {
+            var formattedDate = startDate.getFullYear() + '-' +
+                                ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' +
+                                ('0' + startDate.getDate()).slice(-2);
+            dateArray.push(formattedDate);
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        return dateArray;
+    }
+
+    function ar_x_grafik_ubah_format(dari, sampai) {
+        var startDate = new Date(dari);
+        var endDate = new Date(sampai);
+        var dateArray = [];
+
+        while (startDate <= endDate) {
+            var formattedDate = ('0' + startDate.getDate()).slice(-2) + '-' +
+                                ('0' + (startDate.getMonth() + 1)).slice(-2) + '-' +
+                                startDate.getFullYear();
+            dateArray.push(formattedDate);
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        return dateArray;
+    }
+
+    function grafik_per_periode(){
+        var dari = $('#dari').val()
+        var sampai = $('#sampai').val()
+        var x_grafik = ar_x_grafik(dari, sampai);
+        var x_grafik_format = ar_x_grafik_ubah_format(dari, sampai);
+        console.log(x_grafik)
+        console.log(x_grafik_format)
+        // $('#div_loading').css('display', 'flex').show();
+        // $('#konten').hide()
+
+        $.ajax({
+            url: "{{url('dashboard/data_grafik_per_periode')}}",
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                // 'jenis':jenis,
+                'dari':dari,
+                'sampai':sampai,
+                'x_grafik':x_grafik
+            },
+            dataType: 'json',
+            async: true,
+            success: function(data) {
+                // console.log(data.grafik)
+                console.log(data)
+                // console.log(jenis)
+                // $('#div_loading').hide();
+                // $('#konten').show()
+                // var dari = $('#dari').val()
+                // var sampai = $('#sampai').val()
+                // var periode_format = ar_x_grafik_ubah_format(dari, sampai);
+                // var ar_periode = ar_x_grafik(dari, sampai);
+
+                var col_tanggal = []
+                for (var i = 0; i < x_grafik.length; i++) {
+                    (function(i) {
+                        col_tanggal.push({
+                                data: i
+                            });
+                    })(i);
+                }
+
+                // var semua_data = data
+
+                
+                Highcharts.chart('id_grafik_per_periode', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Grafik Total Kunjungan Pasien',
+                    },
+                    xAxis: {
+                        categories: x_grafik_format,
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Total Pasien'
+                        }
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.1,
+                            borderWidth: 0
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'Total Pasien',
+                            color: '#ffc107',
+                            data: data
+                        },
+                    ]
+                });
+
+                // var dt = data
+                // var total_pasien = dt.length
+                // var total_pasien_msn = 0
+                // if(total_pasien!=0){
+                //     total_pasien_msn = dt.filter(item => item.msn != null && item.msn !="null").length;
+                //     diagram_pie_total_pasien_dan_pasien_msn(dt);
+                // }
+                // var persen_total_pasien_msn = (total_pasien_msn/total_pasien)*100
+                // persen_total_pasien_msn = persen_total_pasien_msn.toFixed(2);
+                // persen_total_pasien_msn = parseFloat(persen_total_pasien_msn);
+
+                // // console.log(total_pasien)
+                // $('#total_pasien').html(total_pasien);
+                // $('#total_pasien_msn').html(total_pasien_msn+" ("+persen_total_pasien_msn+" %)");
+
+                // kelompok_umur(data)
+                // deteksi_dini(data)
+                // tempat_pemeriksaan(data)
+                // tabel(data)
+            }
+        })
     }
     
     function tabel_per_puskesmas(){
@@ -679,39 +810,8 @@
                 $('#total_dewasa_40_59_tahun').html(response.dewasa_40_59_tahun);
                 $('#total_lansia').html(response.lansia);
                 
-                // Loop through response array
-                // response.map(item => {
-                //     if (item.bbl !== undefined) {
-                //         $('#total_bbl').val(item.bbl);
-                //     }
-                //     if (item.dewasa_18_29_tahun !== undefined) {
-                //         console.log("dewasa")
-                //         $('#total_dewasa_18_29_tahun').val(item.dewasa_18_29_tahun);
-                //     }
-                // });
             }
         })
-        // $('#idtabel_per_usia').dataTable( {
-        //     destroy : true,
-        //     scrollX : true,
-        //     ajax :  {
-        //         url: "{{url('dashboard/data_per_usia')}}",
-        //         type: "GET",
-        //         data: function (d) {
-        //             d.tgl_dari = $('#dari').val();
-        //             d.tgl_sampai = $('#sampai').val();
-        //         },
-        //         // dataSrc: '',
-        //         dataSrc: function(json) {
-        //             // let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
-                    
-        //             // $('#total_kunjungan_pasien').text(totalSum);
-
-        //             return json; // Return data for DataTable
-        //         },
-        //     },
-        //     columns: col
-        // });
     }
 
     function tabel_kesimpulan_hasil(){

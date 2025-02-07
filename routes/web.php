@@ -34,6 +34,7 @@ Route::prefix('riwayat')->group(function () {
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::post('/data', [DashboardController::class, 'data'])->name('dashboard.data');
+    Route::post('/data_grafik_per_periode', [DashboardController::class, 'data_grafik_per_periode'])->name('dashboard.data_grafik_per_periode');
     Route::get('/data_per_puskesmas', [DashboardController::class, 'data_per_puskesmas'])->name('dashboard.data_per_puskesmas');
     Route::get('/data_per_usia', [DashboardController::class, 'data_per_usia'])->name('dashboard.data_per_usia');
     Route::get('/data_kesimpulan_hasil', [DashboardController::class, 'data_kesimpulan_hasil'])->name('dashboard.data_kesimpulan_hasil');
