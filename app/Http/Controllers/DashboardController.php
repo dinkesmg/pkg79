@@ -47,7 +47,7 @@ class DashboardController extends Controller
                 $data[$ind] =  $q_riwayat->count();
             } else if ($role == "Puskesmas") {
                 // $data[$ind] = $q_riwayat->where('id_user', $id_user+1)->get();
-                $data[$ind] = $q_riwayat->where('id_user', $id_user+1)->count();
+                $data[$ind] = $q_riwayat->where('id_user', $id_user)->count();
             } 
             
         }
