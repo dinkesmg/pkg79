@@ -532,6 +532,23 @@
                             </div>
                         </div>
                     </div>
+                    <!-- <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <div><h4>Total Per Jenis Pemeriksaan</h4></div>
+                                </div>
+                                <div class="card-body">
+                                <table id="idtabel_per_jenis_pemeriksaan" class="table table-bordered table-striped example" style="width:100%">
+                                <thead id="idtabel_header_per_jenis_pemeriksaan">
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                </table>
+                            </div>
+                            </div>
+                        </div>
+                    </div> -->
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -602,7 +619,7 @@
         grafik_per_periode()
         per_kelompok_usia()
         tabel_kesimpulan_hasil()
-        
+        tabel_per_jenis_pemeriksaan()
         // peta()
     })
 
@@ -614,11 +631,8 @@
         grafik_per_periode()
         per_kelompok_usia()
         tabel_kesimpulan_hasil()
+        tabel_per_jenis_pemeriksaan()
     }
-
-    // function grafik_per_periode(){
-
-    // }
 
     function ar_x_grafik(dari, sampai) {
         var startDate = new Date(dari);
@@ -815,8 +829,6 @@
     }
 
     function tabel_kesimpulan_hasil(){
-        // semua_riwayat = []
-       console.log("tabel kesimpulan")
         let col = 
         [
             {
@@ -828,9 +840,7 @@
             { 'data': 'total' },
         ]
 
-        let tgl_dari = $('#dari').val();
-        let tgl_sampai = $('#sampai').val();
-
+        
         $('#idtabel_kesimpulan_hasil').dataTable( {
             destroy : true,
             scrollX : true,
@@ -852,6 +862,80 @@
             },
             columns: col
         });
+    }
+
+    function tabel_per_jenis_pemeriksaan(){
+        console.log("tabel per jenis pemeriksaan")
+        let tgl_dari = $('#dari').val();
+        let tgl_sampai = $('#sampai').val();
+
+        let x_grafik = ar_x_grafik(tgl_dari, tgl_sampai);
+        let x_grafik_format = ar_x_grafik_ubah_format(tgl_dari, tgl_sampai);
+
+        let html_header = 
+                        '<tr>\
+                            <th>Sasaran</th>\
+                            <th>No</th>\
+                            <th>Jenis Pemeriksaan</th>\
+                            <th>Jumlah Sasaran</th>';
+        x_grafik_format.forEach(tgl => {
+            html_header += `<th>${tgl}</th>`;
+        });
+        html_header += `</tr>`;
+        
+        $('#idtabel_header_per_jenis_pemeriksaan').html(html_header);
+
+        let col = 
+        [
+            // {
+            //     render: function(data, type, row, meta) {
+            //         return meta.row + meta.settings._iDisplayStart + 1;
+            //     },
+            // },
+            { 'data': 'sasaran' },
+            { 'data': 'no' },
+            { 'data': 'jenis_pemeriksaan' },
+            { 'data': 'jumlah_sasaran' },
+            { 'data': 'tgl' },
+        ]
+
+        $.ajax({
+            url: `{{url('dashboard/data_per_jenis_pemeriksaan')}}`,
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                tgl_dari : $('#dari').val(),
+                tgl_sampai : $('#sampai').val(),
+                ar_tgl : x_grafik,
+            },
+            success: function(response) {
+                console.log(response)
+            }
+        })
+        // $('#idtabel_per_jenis_pemeriksaan').dataTable( {
+        //     destroy : true,
+        //     scrollX : true,
+        //     ajax :  {
+        //         url: "{{url('dashboard/data_per_jenis_pemeriksaan')}}",
+        //         type: "GET",
+        //         data: function (d) {
+        //             d.tgl_dari = $('#dari').val();
+        //             d.tgl_sampai = $('#sampai').val();
+        //             d.ar_tgl = x_grafik;
+        //         },
+        //         // dataSrc: '',
+        //         dataSrc: function(json) {
+        //             // let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
+                    
+        //             // $('#total_kunjungan_pasien').text(totalSum);
+
+        //             return json; // Return data for DataTable
+        //         },
+        //     },
+        //     columns: col
+        // });
     }
 
 </script>

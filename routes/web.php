@@ -38,6 +38,7 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/data_per_puskesmas', [DashboardController::class, 'data_per_puskesmas'])->name('dashboard.data_per_puskesmas');
     Route::get('/data_per_usia', [DashboardController::class, 'data_per_usia'])->name('dashboard.data_per_usia');
     Route::get('/data_kesimpulan_hasil', [DashboardController::class, 'data_kesimpulan_hasil'])->name('dashboard.data_kesimpulan_hasil');
+    Route::get('/data_per_jenis_pemeriksaan', [DashboardController::class, 'data_per_jenis_pemeriksaan'])->name('dashboard.data_per_jenis_pemeriksaan');
 });
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');

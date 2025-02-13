@@ -193,4 +193,163 @@ class DashboardController extends Controller
         return response()->json($data);
     }
     
+    public function data_per_jenis_pemeriksaan(Request $request)
+    {
+        $ar_tgl = $request->ar_tgl;
+
+        // dd($ar_tgl);
+        // $role = Auth::user()->role;
+        // $id_user = Auth::user()->id;
+
+        $data = [
+            "bbl" => 0,
+            // "balita_dan_pra_sekolah" => 0,
+            // "dewasa_18_29_tahun" => 0,
+            // "dewasa_30_39_tahun" => 0,
+            // "dewasa_40_59_tahun" => 0,
+            // "lansia" => 0
+        ];
+
+        $queryBbl = Riwayat::with('pasien')->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+            ->whereHas('pasien', function ($query) {
+                $query->whereRaw("DATEDIFF(tanggal_pemeriksaan, tgl_lahir) BETWEEN 0 AND 28");
+            });
+
+        // if ($role == "Puskesmas") {
+        //     $queryBbl->where('id_user', $id_user);
+        // }
+
+        // $data['bbl'] = $queryBbl->count();
+        // $data['bbl'] = $queryBbl->get();
+        $data_bbl = $queryBbl->get();
+        // $total_pasien_per_tanggal=0;
+        
+        $jp_bbl = ['kekurangan_hormon_tiroid','kekurangan_enzim_d6pd','kekurangan_hormon_adrenal',
+                        'penyakit_jantung_bawaan','kelainan_saluran_empedu','pertumbuhan_bb'];
+        
+        $dt_bbl = [];
+        foreach ($data_bbl as $ind => $v_bbl) {
+            $dt_bbl[$ind]['sasaran'] = "bbl";
+            $dt_bbl[$ind]['hasil_pemeriksaan'] = json_decode($v_bbl->hasil_pemeriksaan, true);
+        
+            if (is_array($dt_bbl[$ind]['hasil_pemeriksaan'])) {
+                foreach ($dt_bbl[$ind]['hasil_pemeriksaan'] as $item) {
+                    foreach ($jp_bbl as $v_jp_bbl) {
+                        if (!isset($dt_bbl[$ind][$v_jp_bbl])) {
+                            $dt_bbl[$ind][$v_jp_bbl] = 0;
+                        }
+        
+                        if (isset($item[$v_jp_bbl]) && $item[$v_jp_bbl] !== null) {
+                            $dt_bbl[$ind][$v_jp_bbl] = 1;
+                        }
+                    }
+                }
+            }
+            else{
+                foreach($jp_bbl as $v_jp_bbl){
+                    $dt_bbl[$ind][$v_jp_bbl] = 0;
+                }
+            }
+            
+            $dt_bbl[$ind]['tgl'] = $v_bbl->tanggal_pemeriksaan;
+        }
+
+        // dd($dt_bbl);
+
+        // $data = [
+        //     // 'sasaran' => 'bbl',
+        //     // 'pertumbuhan' => $pertumbuhan_count
+        // ];
+        // foreach ($jp_bbl as $ind => $v_jp_bbl) {
+        //     $data[$ind]['sasaran'] = 'bbl';
+        //     $data[$ind][$v_jp_bbl] = 0;
+        // }
+
+        // foreach ($dt_bbl as $item) {
+        //     // dd($item);
+        //     foreach($jp_bbl as $v_jp_bbl){
+        //         // dd()
+        //         if (isset($item[$v_jp_bbl]) && $item[$v_jp_bbl] == '1') {
+        //             $data[$v_jp_bbl]++;
+        //         }
+        //     }
+        // }
+        $data = [];
+
+        $total_jenis_pemeriksaan_bbl = [];
+        $total_per_tanggal_bbl = [];
+        foreach ($jp_bbl as $v_jp_bbl) {
+            $total_jenis_pemeriksaan_bbl[$v_jp_bbl] = 0;
+        }
+        
+        foreach ($ar_tgl as $v_ar_tgl) {
+            $total_per_tanggal_bbl[$v_ar_tgl] = 0;
+        }
+
+        foreach ($dt_bbl as $item) {
+            foreach ($jp_bbl as $v_jp_bbl) {
+                if (isset($item[$v_jp_bbl]) && $item[$v_jp_bbl] == '1') {
+                    dd($item,$total_jenis_pemeriksaan_bbl);
+                    $total_jenis_pemeriksaan_bbl[$v_jp_bbl]++;
+                    foreach($ar_tgl as $v_ar_tgl){
+                        // dd($v_ar_tgl);
+                        if($item['tgl'] == $v_ar_tgl){
+                            $total_per_tanggal_bbl[$v_ar_tgl]++;
+                        }
+                        
+                    }
+                }
+            }
+
+        }
+
+        foreach ($jp_bbl as $v_jp_bbl) {
+            $data[] = [
+                'sasaran' => 'bbl',
+                $v_jp_bbl => $total_jenis_pemeriksaan_bbl[$v_jp_bbl],
+                $total_per_tanggal_bbl,
+            ];
+        }
+
+
+        // foreach($data_bbl as $d){
+        //     $d = 
+        // }
+        // $ageGroups = [
+        //     'balita_dan_pra_sekolah' => [1, 6],
+        //     'dewasa_18_29_tahun' => [18, 29],
+        //     'dewasa_30_39_tahun' => [30, 39],
+        //     'dewasa_40_59_tahun' => [40, 59],
+        //     'lansia' => [60, 150]
+        // ];
+
+        // foreach ($ageGroups as $key => [$min, $max]) {
+        //     $query = Riwayat::with('pasien')->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+        //         ->whereHas('pasien', function ($query) use ($min, $max) {
+        //             $query->whereRaw("TIMESTAMPDIFF(YEAR, tgl_lahir, tanggal_pemeriksaan) BETWEEN ? AND ?", [$min, $max]);
+        //         });
+
+        //     // if ($role == "Puskesmas") {
+        //     //     $query->where('id_user', $id_user);
+        //     // }
+
+        //     // $data[$key] = $query->count();
+        //     $data[$key] = $query->get();
+        // }
+
+        // $data = [
+        //     ["sasaran" => "bbl", "total" => 1],
+        //     ["sasaran" => "balita_dan_pra_sekolah", "total" => 0],
+        //     ["sasaran" => "dewasa_18_29_tahun", "total" => 0],
+        //     ["sasaran" => "dewasa_30_39_tahun", "total" => 0],
+        //     ["sasaran" => "dewasa_40_59_tahun", "total" => 0],
+        //     ["sasaran" => "lansia", "total" => 0]
+        // ];
+
+        // dd($data);
+
+
+
+        return response()->json($data);
+    }
 }

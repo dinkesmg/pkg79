@@ -391,21 +391,6 @@
             // console.log(edukasi)
             var html='\
             <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tanggal Pemeriksaan:'+dt.tanggal_pemeriksaan+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tempat Periksa:'+dt.tempat_periksa+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Nama FKTP PJ:'+dt.nama_fktp_pj+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Nama:'+dt.pemeriksa_nama+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pasien</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
@@ -428,6 +413,21 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12">No HP:'+dt.pasien_no_hp+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Tanggal Pemeriksaan:'+dt.tanggal_pemeriksaan+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Tempat Periksa:'+dt.tempat_periksa+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Nama FKTP PJ:'+dt.nama_fktp_pj+'</div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12">Nama:'+dt.pemeriksa_nama+'</div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
@@ -454,37 +454,6 @@
         }
         else{
             var html='\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">Tanggal Pemeriksaan</div>\
-                <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="'+((dt.tanggal_pemeriksaan != "") != ""?dt.tanggal_pemeriksaan:"")+'" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">Tempat Periksa</div>\
-                <div class="col-8">\
-                    <select id="tempat_periksa" style="width:100%">\
-                        <option value="Puskesmas" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Puskesmas") ? "selected" : ""))+'>Puskesmas</option>\
-                        <option value="Klinik" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Klinik") ? "selected" : ""))+'>Klinik</option>\
-                        <option value="Praktek Dokter Mandiri" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Praktek Dokter Mandiri") ? "selected" : ""))+'>Praktek Dokter Mandiri</option>\
-                        <option value="Pustu" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Pustu") ? "selected" : ""))+'>Pustu</option>\
-                        <option value="Lainnya" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Lainnya") ? "selected" : ""))+'>Lainnya</option>\
-                    </select>\
-                </div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">Nama FKTP PJ</div>\
-                <div class="col-8"><input id="nama_fktp_pj" type="text" value="'+((dt.nama_fktp_pj != "") != ""?dt.nama_fktp_pj:"")+'" style="width:100%"></input></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pemeriksa" type="text" value="'+((dt.pemeriksa_nik != "")?dt.pemeriksa_nik:"")+'" style="width:100%"></input></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">Nama</div>\
-                <div class="col-8"><input id="nama_pemeriksa" type="text" value="'+((dt.pemeriksa_nama != "")?dt.pemeriksa_nama:"")+'" style="width:100%"></input></div>\
-            </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pasien</b></div>\
             </div>\
@@ -529,6 +498,9 @@
                 <div class="col-4">Alamat</div>\
                 <div class="col-8"><input id="alamat_ktp" type="text" value="'+((dt.pasien_alamat_ktp != "")?dt.pasien_alamat_ktp:"")+'" style="width: 100%;"></input></div>\
             </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><input type="checkbox" id="alamat_sama" name="alamat_sama" value="alamat_sama" onchange="oc_alamat_ktp_sama_domisili()"><label for="l_alamat_sama" style="margin-left:5px"> Alamat domisili sama dengan alamat ktp</label></div>\
+            </div>\
             <div class="row mb-3">\
                 <div class="col-12"><b>Domisili</b></div>\
             </div>\
@@ -559,6 +531,37 @@
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">No HP</div>\
                 <div class="col-8"><input id="no_hp" type="text" value="'+((dt.pasien_no_hp != "")?dt.pasien_no_hp:"")+'" style="width:100%"></input></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Tanggal Pemeriksaan</div>\
+                <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="'+((dt.tanggal_pemeriksaan != "") != ""?dt.tanggal_pemeriksaan:"")+'" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Tempat Periksa</div>\
+                <div class="col-8">\
+                    <select id="tempat_periksa" style="width:100%">\
+                        <option value="Puskesmas" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Puskesmas") ? "selected" : ""))+'>Puskesmas</option>\
+                        <option value="Klinik" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Klinik") ? "selected" : ""))+'>Klinik</option>\
+                        <option value="Praktek Dokter Mandiri" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Praktek Dokter Mandiri") ? "selected" : ""))+'>Praktek Dokter Mandiri</option>\
+                        <option value="Pustu" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Pustu") ? "selected" : ""))+'>Pustu</option>\
+                        <option value="Lainnya" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Lainnya") ? "selected" : ""))+'>Lainnya</option>\
+                    </select>\
+                </div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Nama FKTP PJ</div>\
+                <div class="col-8"><input id="nama_fktp_pj" type="text" value="'+((dt.nama_fktp_pj != "") != ""?dt.nama_fktp_pj:"")+'" style="width:100%"></input></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">NIK</div>\
+                <div class="col-8"><input id="nik_pemeriksa" type="text" value="'+((dt.pemeriksa_nik != "")?dt.pemeriksa_nik:"")+'" style="width:100%"></input></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-4">Nama</div>\
+                <div class="col-8"><input id="nama_pemeriksa" type="text" value="'+((dt.pemeriksa_nama != "")?dt.pemeriksa_nama:"")+'" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
@@ -617,12 +620,12 @@
     }
 
     function oi_nik(){
-    //     let nik = $('#nik_pasien').val()
-        
-    //     get_provinsi(nik)
-    //     get_kota_kab(nik)
-    //     get_kecamatan(nik)
-    //     // get_kelurahan(nik, kode_kelurahan)
+        //     let nik = $('#nik_pasien').val()
+            
+        //     get_provinsi(nik)
+        //     get_kota_kab(nik)
+        //     get_kecamatan(nik)
+        //     // get_kelurahan(nik, kode_kelurahan)
     }
 
     function get_provinsi_ktp(kode, nama) {
@@ -646,7 +649,7 @@
             //         console.error("Error fetching province:", error);
             //     }
             // });
-            console.log("provinsi ktp"+kode+nama)
+            // console.log("provinsi ktp"+kode+nama)
             $('#provinsi_ktp')
             .empty()
             .append($("<option/>")
@@ -1065,99 +1068,32 @@
         });
     }
 
-    // function get_kota_kab(nik) {
-    //     if(nik.length >= 6){
-    //         // let kode_prov = nik.slice(-2);
-    //         let kode_kota_kab = nik.slice(0, 4);
-            
-    //         $.ajax({
-    //             url: "{{ url('master_kota_kab') }}",
-    //             dataType: 'json',
-    //             data: { search: kode_kota_kab },
-    //             success: function(data) {
-    //                 console.log(data)
-    //                 if (data.length == 1) {
-    //                     $('#kota_kab').html(data[0].nama)
-    //                 }
-    //                 else{
-    //                     $('#kota_kab').html("")
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("Error fetching province:", error);
-    //             }
-    //         });
-    //     }
-    // }
+    function oc_alamat_ktp_sama_domisili(){
+        console.log("oc alamat domisisli")
+        let kode_provinsi = $('#provinsi_ktp').val();
+        let nama_provinsi = $('#provinsi_ktp').find(':selected').text();
 
-    // function get_kecamatan(nik) {
-    //     if(nik.length >= 6){
-    //         // let kode_prov = nik.slice(-2);
-    //         let kode_kecamatan = nik.slice(0, 6);
-            
-    //         $.ajax({
-    //             url: "{{ url('master_kecamatan') }}",
-    //             dataType: 'json',
-    //             data: { search: kode_kecamatan },
-    //             success: function(data) {
-    //                 console.log(data)
-    //                 if (data.length == 1) {
-    //                     $('#kecamatan').html(data[0].nama)
-    //                 }
-    //                 else{
-    //                     $('#kecamatan').html("")
-    //                 }
-    //             },
-    //             error: function(xhr, status, error) {
-    //                 console.error("Error fetching province:", error);
-    //             }
-    //         });
-    //     }
-    // }
+        get_provinsi_dom(kode_provinsi, nama_provinsi)
 
-    // function get_kelurahan(nik, kode_kelurahan) {
-    //     if(nik.length >= 6){
-    //         let kode_kecamatan = nik.slice(0, 6);
+        let kode_kota_kab = $('#kota_kab_ktp').val();
+        let nama_kota_kab = $('#kota_kab_ktp').find(':selected').text();
 
-    //         $('#kelurahan').select2({
-    //             placeholder: 'Cari...',
-    //             allowClear: true,
-    //             width: 'resolve',
-    //             theme: 'bootstrap4',
-    //             dropdownParent: $("#exampleModal"),
-    //             ajax: {
-    //                 url: "{{ url('master_kelurahan') }}",
-    //                 dataType: 'json',
-    //                 delay: 500,
-    //                 data: function(params) {
-    //                     console.log(params.term)
-    //                     return {
-    //                         search: params.term,
-    //                         kode_kecamatan: kode_kecamatan,
-    //                         kode_kelurahan: kode_kelurahan
-    //                     };
-    //                 },
-    //                 processResults: function(data) {
-    //                     console.log(data)
-    //                     return {
-    //                         results: data
-    //                             .map(function(item) {
-    //                                 return {
-    //                                     id: item.id,
-    //                                     text: item.nama,
-    //                                 };
-    //                             })
-    //                     };
-    //                 },
-    //                 error: function(xhr, status, error) {
-    //                     console.error("AJAX error:", status, error);
-    //                 },
-    //                 // cache: true
-    //             },
-    //             // minimumInputLength: 2,
-    //         });
-    //     }
-    // }
+        get_kota_kab_dom(kode_kota_kab, nama_kota_kab)
+
+        let kode_kecamatan = $('#kecamatan_ktp').val();
+        let nama_kecamatan = $('#kecamatan_ktp').find(':selected').text();
+
+        get_kecamatan_dom(kode_kecamatan, nama_kecamatan)
+
+        let kode_kelurahan = $('#kelurahan_ktp').val();
+        let nama_kelurahan = $('#kelurahan_ktp').find(':selected').text();
+
+        get_kelurahan_dom(kode_kelurahan, nama_kelurahan)
+
+        let alamat = $('#alamat_ktp').val();
+        $('#alamat_dom').val(alamat);
+
+    }
 
     function oc_fitur(fitur, id_riwayat){
         console.log(fitur)
@@ -1297,13 +1233,134 @@
         var tgl_lahir = $('#tgl_lahir').val()
         var tanggal_pemeriksaan = $('#tanggal_pemeriksaan').val()
         
-        // console.log(tgl_lahir)
-        // console.log(tanggal_pemeriksaan)
-        if(tgl_lahir!="" && tanggal_pemeriksaan!=""){
+
+        console.log(tgl_lahir)
+        console.log(tanggal_pemeriksaan)
+        // if(tgl_lahir!=""){
+        //     const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
+
+        //     var hari_ini = new Date();
+        //     let tahun_ini = hari_ini.getFullYear();
+        //     console.log(tahun_ini)
+        //     var lahir = new Date(tgl_lahir);
+        //     console.log("hari ini"+hari_ini)
+        //     console.log("lahir date"+lahir)
+                        
+        //     // let tgl_lahir_hari = lahir.getDate();
+        //     let tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
+        //     // let tgl_lahir_bulan = lahir.getMonth();
+        //     let tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
+        //     console.log("tgl lahir"+ tgl_lahir_hari+"/"+tgl_lahir_bulan)
+
+        //     let tgl_pemeriksaan_min_format = tahun_ini+"-"+tgl_lahir_bulan+"-"+tgl_lahir_hari
+        //     console.log("tgl pemeriksaan min"+ tgl_pemeriksaan_min_format)
+
+        //     let tgl_pemeriksaan_min_date = new Date(tgl_pemeriksaan_min_format);
+        //     tgl_pemeriksaan_min_date.setDate(tgl_pemeriksaan_min_date.getDate() + 30);
+        //     let tgl_pemeriksaan_max_format = tgl_pemeriksaan_min_date.toISOString().split('T')[0];
+        //     console.log("Tanggal Pemeriksaan Max (+30 hari):", tgl_pemeriksaan_max_format);
+        //     tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
+        //     tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
+        // }
+        // if (tgl_lahir !== "") {
+        //     const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
+
+        //     const hari_ini = new Date();
+        //     const tahun_ini = hari_ini.getFullYear();
+
+        //     var lahir = new Date(tgl_lahir);
+
+        //     // Ambil hari dan bulan dari tanggal lahir dalam format dua digit
+        //     const tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
+        //     const tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
+
+        //     // console.log("Tanggal Lahir:", tgl_lahir_hari + "/" + tgl_lahir_bulan);
+
+        //     // Konversi bulan lahir ke angka untuk mempermudah pengecekan
+        //     const bulan_lahir_num = parseInt(tgl_lahir_bulan, 10);
+
+        //     let tgl_pemeriksaan_min_format;
+        //     let tgl_pemeriksaan_max_format;
+
+        //     if (bulan_lahir_num >= 1 && bulan_lahir_num <= 3) {
+        //         // Jika lahir antara Januari - Maret
+        //         tgl_pemeriksaan_min_format = `${tahun_ini}-02-01`;  // Mulai dari 1 Februari tahun ini
+        //         tgl_pemeriksaan_max_format = `${tahun_ini}-04-30`;  // Hingga 30 April tahun ini
+        //         // console.log("Lahir Jan-Mar: Pemeriksaan dari Feb hingga April");
+        //     } else {
+        //         // Jika lahir antara April - Desember
+        //         const tgl_ulang_tahun = new Date(`${tahun_ini}-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
+
+        //         // Tanggal pemeriksaan minimum = tanggal ulang tahun
+        //         tgl_pemeriksaan_min_format = tgl_ulang_tahun.toISOString().split('T')[0];
+
+        //         // Tanggal pemeriksaan maksimum = 30 hari setelah ulang tahun
+        //         tgl_ulang_tahun.setDate(tgl_ulang_tahun.getDate() + 30);
+        //         tgl_pemeriksaan_max_format = tgl_ulang_tahun.toISOString().split('T')[0];
+
+        //         // console.log("Lahir Apr-Des: Pemeriksaan dari ulang tahun hingga +30 hari");
+        //     }
+
+        //     // Set atribut min dan max pada input tanggal pemeriksaan
+        //     // console.log("Tanggal Pemeriksaan Min:", tgl_pemeriksaan_min_format);
+        //     // console.log("Tanggal Pemeriksaan Max:", tgl_pemeriksaan_max_format);
+        //     tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
+        //     tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
+        // }
+        if (tgl_lahir !== "") {
+            const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
+
+            const hari_ini = new Date();
+            const tahun_ini = hari_ini.getFullYear();
+
             var lahir = new Date(tgl_lahir);
+
+            // Ambil hari dan bulan dari tanggal lahir dalam format dua digit
+            const tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
+            const tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
+
+            console.log("Tanggal Lahir:", tgl_lahir_hari + "/" + tgl_lahir_bulan);
+
+            // Konversi bulan lahir ke angka untuk pengecekan
+            const bulan_lahir_num = parseInt(tgl_lahir_bulan, 10);
+
+            let tgl_pemeriksaan_min_format;
+            let tgl_pemeriksaan_max_format;
+
+            if (bulan_lahir_num >= 1 && bulan_lahir_num <= 2) {
+                // Jika lahir antara Januari - Februari
+                const tgl_ulang_tahun_2025 = new Date(`2025-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
+                const tgl_max_pemeriksaan = new Date(`2025-04-30`);  // 30 April 2025
+
+                tgl_pemeriksaan_min_format = tgl_ulang_tahun_2025.toISOString().split('T')[0];
+                tgl_pemeriksaan_max_format = tgl_max_pemeriksaan.toISOString().split('T')[0];
+
+                console.log("Lahir Jan-Feb: Pemeriksaan dari", tgl_pemeriksaan_min_format, "hingga", tgl_pemeriksaan_max_format);
+            } else {
+                // Jika lahir antara Maret - Desember
+                const tgl_ulang_tahun_ini = new Date(`${tahun_ini}-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
+
+                // Tanggal pemeriksaan minimum = tanggal ulang tahun tahun ini
+                tgl_pemeriksaan_min_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
+
+                // Tanggal pemeriksaan maksimum = 30 hari setelah ulang tahun
+                tgl_ulang_tahun_ini.setDate(tgl_ulang_tahun_ini.getDate() + 30);
+                tgl_pemeriksaan_max_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
+
+                console.log("Lahir Mar-Des: Pemeriksaan dari ulang tahun hingga +30 hari");
+            }
+
+            // Set atribut min dan max pada input tanggal pemeriksaan
+            console.log("Tanggal Pemeriksaan Min:", tgl_pemeriksaan_min_format);
+            console.log("Tanggal Pemeriksaan Max:", tgl_pemeriksaan_max_format);
+            tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
+            tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
+        }
+
+        if(tgl_lahir!="" && tanggal_pemeriksaan!=""){
+            // var lahir = new Date(tgl_lahir);
             var periksa = new Date(tanggal_pemeriksaan);
 
-            // Hitung selisih tahun dan bulan
             var tahun = periksa.getFullYear() - lahir.getFullYear();
             var bulan = periksa.getMonth() - lahir.getMonth();
             var hari = periksa.getDate() - lahir.getDate();
@@ -1315,7 +1372,6 @@
 
             if (hari < 0) {
                 bulan--;
-                // Dapatkan jumlah hari dalam bulan sebelumnya
                 var lastMonth = new Date(periksa.getFullYear(), periksa.getMonth(), 0);
                 hari += lastMonth.getDate();
             }
@@ -1341,6 +1397,13 @@
                 lansia()
             }
         }
+    }
+
+    function formatDate(date) {
+        var day = ("0" + date.getDate()).slice(-2);
+        var month = ("0" + (date.getMonth() + 1)).slice(-2);
+        var year = date.getFullYear();
+        return day + '/' + month + '/' + year;
     }
 
     function bbl(){
