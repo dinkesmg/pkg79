@@ -532,7 +532,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="row">
+                    <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
@@ -548,7 +548,7 @@
                             </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -865,7 +865,10 @@
     }
 
     function tabel_per_jenis_pemeriksaan(){
-        console.log("tabel per jenis pemeriksaan")
+        if ($.fn.DataTable.isDataTable("#idtabel_per_jenis_pemeriksaan")) {
+            $("#idtabel_per_jenis_pemeriksaan").DataTable().destroy();
+            $("#idtabel_per_jenis_pemeriksaan").empty(); // ✅ Remove old table content
+        }
         let tgl_dari = $('#dari').val();
         let tgl_sampai = $('#sampai').val();
 
@@ -874,6 +877,7 @@
 
         let html_header = 
                         '<tr>\
+                            <th>No</th>\
                             <th>Sasaran</th>\
                             <th>No</th>\
                             <th>Jenis Pemeriksaan</th>\
@@ -882,22 +886,75 @@
             html_header += `<th>${tgl}</th>`;
         });
         html_header += `</tr>`;
+
+        // console.log(html_header);
         
         $('#idtabel_header_per_jenis_pemeriksaan').html(html_header);
 
-        let col = 
-        [
-            // {
-            //     render: function(data, type, row, meta) {
-            //         return meta.row + meta.settings._iDisplayStart + 1;
-            //     },
-            // },
-            { 'data': 'sasaran' },
-            { 'data': 'no' },
-            { 'data': 'jenis_pemeriksaan' },
-            { 'data': 'jumlah_sasaran' },
-            { 'data': 'tgl' },
-        ]
+        let col = [
+            {
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                },
+            },
+            { data: "sasaran", title: "Sasaran", width: "150px" },
+            { data: "no", title: "No", width: "50px" },
+            { data: "jenis_pemeriksaan", title: "Jenis Pemeriksaan", width: "200px" },
+            { data: "total", title: "Jumlah Sasaran", width: "120px" },
+
+            // { data: "total", title: "Jumlah Sasaran", width: "120px" }
+            
+        ];
+        // let col = 
+        // [
+        //     // {
+        //     //     render: function(data, type, row, meta) {
+        //     //         return meta.row + meta.settings._iDisplayStart + 1;
+        //     //     },
+        //     // },
+        //     { 'data': 'sasaran' },
+        //     { 'data': 'no' },
+        //     { 'data': 'jenis_pemeriksaan' },
+        //     { 'data': 'total' },
+        //     // { 'data': 'tgl' },
+        // ]
+
+        // x_grafik.forEach(tgl => {
+        //     // console.log("tgl"+tgl)
+        //     // col.push({ 'data': tgl });
+        //     col.push({
+        //         render: function(data, type, row, meta) {
+        //             console.log(row.per_tgl[tgl])
+        //             return row.per_tgl[tgl]; // Handle undefined cases
+        //         }
+        //     });
+        // });
+        // x_grafik.forEach(tgl => {
+        //     col.push({
+        //         data: `per_tgl.${tgl}`,
+        //         title: tgl,
+        //         render: function(data, type, row) {
+        //             console.log(`Processing date ${tgl}:`, row.per_tgl); // Debugging
+        //             return row.per_tgl && row.per_tgl[tgl] !== undefined ? row.per_tgl[tgl] : '-';
+        //         }
+        //     });
+        // });
+        x_grafik.forEach(tgl => {
+            let format_tgl = tgl.split("-").reverse().join("-");
+
+            col.push({
+                data: `per_tgl.${tgl}`, // ✅ Matches JSON structure
+                title: format_tgl,
+                width: "100px", // ✅ Ensures proper width assignment
+                defaultContent: "-",
+                render: function (data, type, row) {
+                    return row.per_tgl && row.per_tgl[tgl] != undefined ? row.per_tgl[tgl] : "-";
+                }
+            });
+        });
+
+        console.log("col")
+        console.log(col)
 
         $.ajax({
             url: `{{url('dashboard/data_per_jenis_pemeriksaan')}}`,
@@ -914,9 +971,12 @@
                 console.log(response)
             }
         })
+
         // $('#idtabel_per_jenis_pemeriksaan').dataTable( {
         //     destroy : true,
         //     scrollX : true,
+        //     autoWidth: false,
+        //     columnDefs: [{ width: "120px", targets: "_all" }],
         //     ajax :  {
         //         url: "{{url('dashboard/data_per_jenis_pemeriksaan')}}",
         //         type: "GET",
@@ -930,12 +990,34 @@
         //             // let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
                     
         //             // $('#total_kunjungan_pasien').text(totalSum);
-
+        //             console.log("AJAX Data Response:", json);
         //             return json; // Return data for DataTable
         //         },
         //     },
         //     columns: col
-        // });
+        // }, 1000);
+        // setTimeout(() => {
+            $("#idtabel_per_jenis_pemeriksaan").DataTable({
+                destroy: true,
+                scrollX: true, // ✅ Fixes horizontal scrolling issues
+                // autoWidth: false, // ✅ Prevents sWidth undefined error
+                // columnDefs: [{ width: "120px", targets: "_all" }],
+                ajax: {
+                    url: "{{url('dashboard/data_per_jenis_pemeriksaan')}}",
+                    type: "GET",
+                    data: function (d) {
+                        d.tgl_dari = $("#dari").val();
+                        d.tgl_sampai = $("#sampai").val();
+                        d.ar_tgl = x_grafik;
+                    },
+                    dataSrc: function (json) {
+                        console.log("AJAX Data Response:", json); // ✅ Debug response
+                        return json;
+                    },
+                },
+                columns: col
+            });
+        // }, 1000);
     }
 
 </script>
