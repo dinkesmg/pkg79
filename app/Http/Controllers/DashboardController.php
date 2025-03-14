@@ -538,4 +538,5 @@ class DashboardController extends Controller
 
         return $total_jenis_pemeriksaan;
     }
+
 }

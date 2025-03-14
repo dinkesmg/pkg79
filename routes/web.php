@@ -27,7 +27,7 @@ Route::prefix('riwayat')->group(function () {
         Route::post('/edit', [RiwayatController::class, 'edit'])->name('riwayat.edit');
         Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
         Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
-        
+        Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
         // });
 });
 

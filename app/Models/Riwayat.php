@@ -20,5 +20,10 @@ class Riwayat extends Model
     {
         return $this->belongsTo(Pemeriksa::class, 'id_pemeriksa', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
+    }
  
 }
