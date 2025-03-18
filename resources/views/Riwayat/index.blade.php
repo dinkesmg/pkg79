@@ -48,7 +48,7 @@
                                     <th>Nama</th>
                                     <th>Jenis Kelamin</th>
                                     <th>Tanggal Lahir</th>
-                                    <th>Hasil Pemeriksaan Kesehatan</th>
+                                    <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
                                     <th>Kesimpulan Hasil</th>
                                     <th>Program Tindak Lanjut</th>
                                 </tr>
@@ -179,6 +179,7 @@
 
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
+                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya,
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                         program_tindak_lanjut: program_tindak_lanjut,
                     };
@@ -218,6 +219,7 @@
 
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
+                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya,
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                         program_tindak_lanjut: program_tindak_lanjut,
                     });
@@ -280,7 +282,7 @@
                 return "";
                 }
             },
-            { 'data': 'hasil_pemeriksaan' },
+            // { 'data': 'hasil_pemeriksaan' },
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
             { 'data': 'program_tindak_lanjut' },
         ]
@@ -347,6 +349,7 @@
 
                 pasien_no_hp: '',
                 hasil_pemeriksaan: '',
+                hasil_pemeriksaan_lainnya: '',
                 kesimpulan_hasil: '',
                 program_tindak_lanjut: '',
             }
@@ -453,6 +456,9 @@
             </div>'
         }
         else{
+            // let hasil_pemeriksaan_lainnya = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan_lainnya));
+            console.log(dt.hasil_pemeriksaan_lainnya)
+
             var html='\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pasien</b></div>\
@@ -568,6 +574,12 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" id="id_hasil_pemeriksaan" style="width:100%"></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
+            </div>\
+            <div class="row mb-3" style="display:flex">\
+                <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>'+dt.hasil_pemeriksaan_lainnya+'</textarea></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Kesimpulan Hasil</b></div>\
