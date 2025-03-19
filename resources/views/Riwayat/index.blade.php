@@ -34,7 +34,14 @@
                     <div class="col-lg-12">
                         <div class="card">
                         <div class="card-body">
-                            <div style="display:flex; justify-content:center; margin-bottom:10px"><button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i class="fa fa-plus"></i> Tambah Pasien</button></a></div>
+                            <div class="row">
+                                <div class="col-md-2">Periode dari</div>
+                                <div class="col-md-2"><input id="periode_dari" type="date"></input></div>
+                                <div class="col-md-2 text-center">sampai</div>
+                                <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
+                                <div class="col-md-4"><button onclick="tabel()">Cari</button></div>
+                            </div>
+                            <div style="display:flex; justify-content:center; margin-bottom:10px; margin-top:10px"><button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i class="fa fa-plus"></i> Tambah Pasien</button></a></div>
                             <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
                             <thead>
                                 <tr>
@@ -88,6 +95,11 @@
     var role_auth = "{{Auth::user()->role}}";
 
     $(document).ready(function () {
+        let hari_ini = new Date().toISOString().split('T')[0];
+
+        $('#periode_dari').val(hari_ini);
+        $('#periode_sampai').val(hari_ini);
+        
         tabel()
         Toast = Swal.mixin({
             toast: true,
@@ -296,8 +308,16 @@
         $('#idtabel').dataTable( {
             destroy : true,
             scrollX : true,
-            ajax :  {
+            // ajax :  {
+            //     url: "{{url('riwayat/data')}}",
+            //     dataSrc: ''
+            // },
+            ajax: {
                 url: "{{url('riwayat/data')}}",
+                data: function(d) {
+                    d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
+                    d.periode_sampai = $('#periode_sampai').val();
+                },
                 dataSrc: ''
             },
             columns: col
