@@ -33,6 +33,7 @@ Route::prefix('riwayat')->group(function () {
 
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/detail', [DashboardController::class, 'detail_pasien_hasil_pemeriksaan'])->name('dashboard.pasien_hasil_pemeriksaan.index');
     Route::post('/data', [DashboardController::class, 'data'])->name('dashboard.data');
     Route::post('/data_grafik_per_periode', [DashboardController::class, 'data_grafik_per_periode'])->name('dashboard.data_grafik_per_periode');
     Route::get('/data_per_puskesmas', [DashboardController::class, 'data_per_puskesmas'])->name('dashboard.data_per_puskesmas');
@@ -40,6 +41,7 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/data_kesimpulan_hasil', [DashboardController::class, 'data_kesimpulan_hasil'])->name('dashboard.data_kesimpulan_hasil');
     Route::get('/data_per_jenis_pemeriksaan', [DashboardController::class, 'data_per_jenis_pemeriksaan'])->name('dashboard.data_per_jenis_pemeriksaan');
     Route::get('/data_hasil_pemeriksaan', [DashboardController::class, 'data_hasil_pemeriksaan'])->name('dashboard.data_hasil_pemeriksaan');
+    Route::get('/data_pasien_hasil_pemeriksaan', [DashboardController::class, 'data_pasien_hasil_pemeriksaan'])->name('dashboard.data_pasien_hasil_pemeriksaan');
 });
 
 Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');

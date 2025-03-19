@@ -19,6 +19,14 @@ class DashboardController extends Controller
         return view('Dashboard.index');
     }
 
+    public function detail_pasien_hasil_pemeriksaan(Request $request)
+    {
+        $props = $request->query('props');
+        // dd($props);
+
+        return view('Dashboard.Pasien_Hasil_Pemeriksaan.index', compact('props'));
+    }
+
     // public function data(Request $request)
     // {
     //     $role = Auth::user()->role;
@@ -126,6 +134,35 @@ class DashboardController extends Controller
                     'APCS 2-3 Risiko sedang' => 0,
                     'APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua' => 0,
                     'APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif' => 0
+                ],
+            ],
+            'paru' => [
+                'tuberkulosis' => [
+                    'Tidak terdapat tanda, gejala dan Kontak erat TB' => 0,
+                    'Terdapat kontak erat TB Positif tanpa gejala' => 0,
+                    'Terdapat kontak erat TB positif dengan gejala' => 0
+                ]
+            ],
+            'jiwa' => [
+                'kesehatan_jiwa' => [
+                    'Normal' => 0,
+                    'Tidak ada gangguan jiwa' => 0,
+                    'Ada gangguan jiwa' => 0,
+                    'Ada gangguan jiwa dengan penyulit' => 0
+                ]
+            ],
+            'hati' => [
+                'hepatitis_b' => [
+                    'HBsAg Non Reaktif' => 0,
+                    'HBsAg Reaktif' => 0
+                ],
+                'hepatitis_c' => [
+                    'Anti HCV Non Reaktif' => 0,
+                    'Anti HCV Reaktif' => 0
+                ],
+                'fibrosis_sirosis' => [
+                    'APRI Score ≤ 0.5' => 0,
+                    'APRI Score >0.5' => 0
                 ]
             ]
         ];
@@ -138,6 +175,9 @@ class DashboardController extends Controller
                     $keys = ['status_gizi', 'gula_darah', 'tekanan_darah', 'merokok', 'aktivitas_fisik', 'gigi', 'risiko_stroke', 'risiko_jantung', 'fungsi_ginjal'];
                     $indera_keys = ['tes_penglihatan', 'tes_pendengaran'];
                     $kanker_keys = ['kanker_leher_rahim', 'kanker_payudara', 'kanker_paru', 'kanker_usus'];
+                    $paru_keys = ['tuberkulosis'];
+                    $jiwa_keys = ['kesehatan_jiwa'];
+                    $hati_keys = ['hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis'];
     
                     foreach ($keys as $key) {
                         if (isset($pemeriksaan[$key])) {
@@ -166,11 +206,62 @@ class DashboardController extends Controller
                         }
                     }
                 }
+
+                foreach ($paru_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['paru'][$key][$value])) {
+                            $result['paru'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($jiwa_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['jiwa'][$key][$value])) {
+                            $result['jiwa'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($hati_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['hati'][$key][$value])) {
+                            $result['hati'][$key][$value]++;
+                        }
+                    }
+                }
             }
         }
     
         return response()->json($result);
     }
+
+    public function data_pasien_hasil_pemeriksaan(Request $request)
+    {
+        $props = $request->query('props'); // Ambil parameter dari request
+    
+        if (!$props) {
+            return response()->json(['error' => 'Parameter props diperlukan'], 400);
+        }
+    
+        \Log::info("Props yang diterima: " . $props);
+    
+        // Menggunakan JSON_EXTRACT() karena MariaDB tidak mendukung JSON_CONTAINS()
+        $data = \DB::table('riwayat')
+            ->whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$[*].$props') IS NOT NULL")
+            ->get();
+    
+        if ($data->isEmpty()) {
+            \Log::warning("Data tidak ditemukan untuk props: " . $props);
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+    
+        return response()->json($data);
+    }
+
 
     public function data_grafik_per_periode(Request $request)
     {
