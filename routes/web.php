@@ -28,6 +28,8 @@ Route::prefix('riwayat')->group(function () {
         Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
         Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
         Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
+        Route::get('/cari_nik_pasien', [RiwayatController::class, 'cari_nik_pasien'])->name('cari_nik_pasien');
+        
         // });
 });
 

@@ -43,14 +43,14 @@
                                     <th>Tanggal Pemeriksaan</th>
                                     <th>Tempat Periksa</th>
                                     <th>Nama FKTP PJ</th>
-                                    <th>Pemeriksa</th>
+                                    <!-- <th>Pemeriksa</th> -->
                                     <th>NIK</th>
                                     <th>Nama</th>
                                     <th>Jenis Kelamin</th>
                                     <th>Tanggal Lahir</th>
                                     <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
                                     <th>Kesimpulan Hasil</th>
-                                    <th>Program Tindak Lanjut</th>
+                                    <!-- <th>Program Tindak Lanjut</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -85,12 +85,7 @@
 </body>
 <script>
     var Toast
-
     var role_auth = "{{Auth::user()->role}}";
-
-    // document.addEventListener('wheel', function(e) {
-    //     e.preventDefault();
-    // }, { passive: true });
 
     $(document).ready(function () {
         tabel()
@@ -157,15 +152,26 @@
                         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
                         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
                         
-                        pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
-                        pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
-                        pasien_kota_kab_ktp: row.pasien && row.pasien.kota_kab_ktp ? row.pasien.kota_kab_ktp : "",
-                        pasien_kota_kab_ktp_nama: row.pasien && row.pasien.kota_kab_ktp && row.pasien.ref_kota_kab_ktp.nama ? row.pasien.ref_kota_kab_ktp.nama : "",
-                        pasien_kecamatan_ktp: row.pasien && row.pasien.kecamatan_ktp ? row.pasien.kecamatan_ktp : "",
-                        pasien_kecamatan_ktp_nama: row.pasien && row.pasien.kecamatan_ktp && row.pasien.ref_kecamatan_ktp.nama ? row.pasien.ref_kecamatan_ktp.nama : "",
-                        pasien_kelurahan_ktp: row.pasien && row.pasien.kelurahan_ktp ? row.pasien.kelurahan_ktp : "",
-                        pasien_kelurahan_ktp_nama: row.pasien && row.pasien.kelurahan_ktp && row.pasien.ref_kelurahan_ktp.nama ? row.pasien.ref_kelurahan_ktp.nama : "",
+                        // pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
+                        // pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
+                        // pasien_kota_kab_ktp: row.pasien && row.pasien.kota_kab_ktp ? row.pasien.kota_kab_ktp : "",
+                        // pasien_kota_kab_ktp_nama: row.pasien && row.pasien.kota_kab_ktp && row.pasien.ref_kota_kab_ktp.nama ? row.pasien.ref_kota_kab_ktp.nama : "",
+                        // pasien_kecamatan_ktp: row.pasien && row.pasien.kecamatan_ktp ? row.pasien.kecamatan_ktp : "",
+                        // pasien_kecamatan_ktp_nama: row.pasien && row.pasien.kecamatan_ktp && row.pasien.ref_kecamatan_ktp.nama ? row.pasien.ref_kecamatan_ktp.nama : "",
+                        // pasien_kelurahan_ktp: row.pasien && row.pasien.kelurahan_ktp ? row.pasien.kelurahan_ktp : "",
+                        // pasien_kelurahan_ktp_nama: row.pasien && row.pasien.kelurahan_ktp && row.pasien.ref_kelurahan_ktp.nama ? row.pasien.ref_kelurahan_ktp.nama : "",
+                        // pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
+                        
+                        pasien_provinsi_ktp: row.pasien?.provinsi_ktp || "",
+                        pasien_provinsi_ktp_nama: row.pasien?.ref_provinsi_ktp?.nama || "",
+                        pasien_kota_kab_ktp: row.pasien?.kota_kab_ktp || "",
+                        pasien_kota_kab_ktp_nama: row.pasien?.ref_kota_kab_ktp?.nama || "",
+                        pasien_kecamatan_ktp: row.pasien?.kecamatan_ktp || "",
+                        pasien_kecamatan_ktp_nama: row.pasien?.ref_kecamatan_ktp?.nama || "",
+                        pasien_kelurahan_ktp: row.pasien?.kelurahan_ktp || "",
+                        pasien_kelurahan_ktp_nama: row.pasien?.ref_kelurahan_ktp?.nama || "",
                         pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
+                        
                         
                         pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
                         pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
@@ -179,7 +185,7 @@
 
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
-                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya,
+                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya?row.hasil_pemeriksaan_lainnya:"",
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                         program_tindak_lanjut: program_tindak_lanjut,
                     };
@@ -197,16 +203,16 @@
                         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
                         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
                         
-                        pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
-                        pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
-                        pasien_kota_kab_ktp: row.pasien && row.pasien.kota_kab_ktp ? row.pasien.kota_kab_ktp : "",
-                        pasien_kota_kab_ktp_nama: row.pasien && row.pasien.kota_kab_ktp && row.pasien.ref_kota_kab_ktp.nama ? row.pasien.ref_kota_kab_ktp.nama : "",
-                        pasien_kecamatan_ktp: row.pasien && row.pasien.kecamatan_ktp ? row.pasien.kecamatan_ktp : "",
-                        pasien_kecamatan_ktp_nama: row.pasien && row.pasien.kecamatan_ktp && row.pasien.ref_kecamatan_ktp.nama ? row.pasien.ref_kecamatan_ktp.nama : "",
-                        pasien_kelurahan_ktp: row.pasien && row.pasien.kelurahan_ktp ? row.pasien.kelurahan_ktp : "",
-                        pasien_kelurahan_ktp_nama: row.pasien && row.pasien.kelurahan_ktp && row.pasien.ref_kelurahan_ktp.nama ? row.pasien.ref_kelurahan_ktp.nama : "",
+                        pasien_provinsi_ktp: row.pasien?.provinsi_ktp || "",
+                        pasien_provinsi_ktp_nama: row.pasien?.ref_provinsi_ktp?.nama || "",
+                        pasien_kota_kab_ktp: row.pasien?.kota_kab_ktp || "",
+                        pasien_kota_kab_ktp_nama: row.pasien?.ref_kota_kab_ktp?.nama || "",
+                        pasien_kecamatan_ktp: row.pasien?.kecamatan_ktp || "",
+                        pasien_kecamatan_ktp_nama: row.pasien?.ref_kecamatan_ktp?.nama || "",
+                        pasien_kelurahan_ktp: row.pasien?.kelurahan_ktp || "",
+                        pasien_kelurahan_ktp_nama: row.pasien?.ref_kelurahan_ktp?.nama || "",
                         pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
-
+                        
                         pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
                         pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
                         pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien.kota_kab_dom : "",
@@ -219,7 +225,7 @@
 
                         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                         hasil_pemeriksaan: hasil_pemeriksaan,
-                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya,
+                        hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya?row.hasil_pemeriksaan_lainnya:"",
                         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                         program_tindak_lanjut: program_tindak_lanjut,
                     });
@@ -252,7 +258,7 @@
             },
             { 'data': 'tempat_periksa' },
             { 'data': 'nama_fktp_pj' },
-            { 'data': 'pemeriksa.nama' },
+            // { 'data': 'pemeriksa.nama' },
             { 'render': function (data, type, row, meta) {
                 let pasien = (row.pasien && row.pasien.nik ? row.pasien.nik : "");
 
@@ -284,7 +290,7 @@
             },
             // { 'data': 'hasil_pemeriksaan' },
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
-            { 'data': 'program_tindak_lanjut' },
+            // { 'data': 'program_tindak_lanjut' },
         ]
 
         $('#idtabel').dataTable( {
@@ -465,7 +471,8 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
+                <div class="col-6"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
+                <div class="col-2"><button onclick="oc_cari_nik()">Cari</button></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
@@ -532,7 +539,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Usia</div>\
-                <div class="col-8"><input id="usia" type="text" style="width: 100%;"></input></div>\
+                <div class="col-8"><input id="usia" type="text" style="width: 100%;" readonly></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">No HP</div>\
@@ -574,14 +581,17 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" id="id_hasil_pemeriksaan" style="width:100%"></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>'+dt.hasil_pemeriksaan_lainnya+'</textarea></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
+            </div>'
+            if(fitur=="Edit"){
+                html+=
+                '<div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>'+dt.hasil_pemeriksaan_lainnya+'</textarea></div>\
+                </div>'
+            }
+        html+='<div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Kesimpulan Hasil</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
@@ -1248,77 +1258,6 @@
 
         console.log(tgl_lahir)
         console.log(tanggal_pemeriksaan)
-        // if(tgl_lahir!=""){
-        //     const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
-
-        //     var hari_ini = new Date();
-        //     let tahun_ini = hari_ini.getFullYear();
-        //     console.log(tahun_ini)
-        //     var lahir = new Date(tgl_lahir);
-        //     console.log("hari ini"+hari_ini)
-        //     console.log("lahir date"+lahir)
-                        
-        //     // let tgl_lahir_hari = lahir.getDate();
-        //     let tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
-        //     // let tgl_lahir_bulan = lahir.getMonth();
-        //     let tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
-        //     console.log("tgl lahir"+ tgl_lahir_hari+"/"+tgl_lahir_bulan)
-
-        //     let tgl_pemeriksaan_min_format = tahun_ini+"-"+tgl_lahir_bulan+"-"+tgl_lahir_hari
-        //     console.log("tgl pemeriksaan min"+ tgl_pemeriksaan_min_format)
-
-        //     let tgl_pemeriksaan_min_date = new Date(tgl_pemeriksaan_min_format);
-        //     tgl_pemeriksaan_min_date.setDate(tgl_pemeriksaan_min_date.getDate() + 30);
-        //     let tgl_pemeriksaan_max_format = tgl_pemeriksaan_min_date.toISOString().split('T')[0];
-        //     console.log("Tanggal Pemeriksaan Max (+30 hari):", tgl_pemeriksaan_max_format);
-        //     tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
-        //     tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
-        // }
-        // if (tgl_lahir !== "") {
-        //     const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
-
-        //     const hari_ini = new Date();
-        //     const tahun_ini = hari_ini.getFullYear();
-
-        //     var lahir = new Date(tgl_lahir);
-
-        //     // Ambil hari dan bulan dari tanggal lahir dalam format dua digit
-        //     const tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
-        //     const tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
-
-        //     // console.log("Tanggal Lahir:", tgl_lahir_hari + "/" + tgl_lahir_bulan);
-
-        //     // Konversi bulan lahir ke angka untuk mempermudah pengecekan
-        //     const bulan_lahir_num = parseInt(tgl_lahir_bulan, 10);
-
-        //     let tgl_pemeriksaan_min_format;
-        //     let tgl_pemeriksaan_max_format;
-
-        //     if (bulan_lahir_num >= 1 && bulan_lahir_num <= 3) {
-        //         // Jika lahir antara Januari - Maret
-        //         tgl_pemeriksaan_min_format = `${tahun_ini}-02-01`;  // Mulai dari 1 Februari tahun ini
-        //         tgl_pemeriksaan_max_format = `${tahun_ini}-04-30`;  // Hingga 30 April tahun ini
-        //         // console.log("Lahir Jan-Mar: Pemeriksaan dari Feb hingga April");
-        //     } else {
-        //         // Jika lahir antara April - Desember
-        //         const tgl_ulang_tahun = new Date(`${tahun_ini}-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
-
-        //         // Tanggal pemeriksaan minimum = tanggal ulang tahun
-        //         tgl_pemeriksaan_min_format = tgl_ulang_tahun.toISOString().split('T')[0];
-
-        //         // Tanggal pemeriksaan maksimum = 30 hari setelah ulang tahun
-        //         tgl_ulang_tahun.setDate(tgl_ulang_tahun.getDate() + 30);
-        //         tgl_pemeriksaan_max_format = tgl_ulang_tahun.toISOString().split('T')[0];
-
-        //         // console.log("Lahir Apr-Des: Pemeriksaan dari ulang tahun hingga +30 hari");
-        //     }
-
-        //     // Set atribut min dan max pada input tanggal pemeriksaan
-        //     // console.log("Tanggal Pemeriksaan Min:", tgl_pemeriksaan_min_format);
-        //     // console.log("Tanggal Pemeriksaan Max:", tgl_pemeriksaan_max_format);
-        //     tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
-        //     tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
-        // }
         if (tgl_lahir !== "") {
             const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
 
@@ -2382,7 +2321,8 @@
                         <select id="kanker_paru" style="width:100%" onchange="oc_hasil_pemeriksaan_kesehatan(\'kanker_paru\')">\
                             <option value="">Pilih</option>\
                             <option value="Risiko ringan">Risiko ringan</option>\
-                            <option value="Risiko sedang atau tinggi">Risiko sedang atau tinggi</option>\
+                            <option value="Risiko sedang">Risiko sedang</option>\
+                            <option value="Risiko tinggi">Risiko tinggi</option>\
                         </select>\
                     </div>\
                 </div>\
@@ -2870,5 +2810,61 @@
             })
         }
     }
+
+    function oc_cari_nik(){
+        let nik = $('#nik_pasien').val()
+        
+        console.log(nik)
+        $.ajax({
+            url: "{{url('riwayat/cari_nik_pasien')}}",
+            type: 'GET',
+            data: {
+                'nik':nik,
+            },
+            dataType: 'json',
+            async: true,
+            success: function(data) {
+                console.log(data)
+                $('#nik_pasien').val(data.nik)
+                $('#nama_pasien').val(data.nama)
+                $('#jenis_kelamin').val(data.jenis_kelamin)
+                $('#tgl_lahir').val(data.tgl_lahir)
+                if(data.ref_provinsi_ktp){
+                    get_provinsi_ktp(data.ref_provinsi_ktp.kode_provinsi, data.ref_provinsi_ktp.nama)
+                }
+                if (data.ref_kota_kab_ktp) {
+                    get_kota_kab_ktp(data.ref_kota_kab_ktp.kode_kota_kab, data.ref_kota_kab_ktp.nama);
+                }
+                if (data.ref_kecamatan_ktp) {
+                    get_kecamatan_ktp(data.ref_kecamatan_ktp.kode_kecamatan, data.ref_kecamatan_ktp.nama);
+                }
+                if (data.ref_kelurahan_ktp) {
+                    get_kelurahan_ktp(data.ref_kelurahan_ktp.kode_kelurahan, data.ref_kelurahan_ktp.nama);
+                }
+
+                // Cek dan set data Domisili
+                if (data.ref_provinsi_dom) {
+                    get_provinsi_dom(data.ref_provinsi_dom.kode_provinsi, data.ref_provinsi_dom.nama);
+                }
+                if (data.ref_kota_kab_dom) {
+                    get_kota_kab_dom(data.ref_kota_kab_dom.kode_kota_kab, data.ref_kota_kab_dom.nama);
+                }
+                if (data.ref_kecamatan_dom) {
+                    get_kecamatan_dom(data.ref_kecamatan_dom.kode_kecamatan, data.ref_kecamatan_dom.nama);
+                }
+                if (data.ref_kelurahan_dom) {
+                    get_kelurahan_dom(data.ref_kelurahan_dom.kode_kelurahan, data.ref_kelurahan_dom.nama);
+                }
+                
+                $('#alamat_ktp').val(data.alamat_ktp)
+                $('#alamat_dom').val(data.alamat_dom)
+                $('#no_hp').val(data.no_hp)
+                
+        
+
+            }
+        })
+    }
+
 </script>
 </html>
