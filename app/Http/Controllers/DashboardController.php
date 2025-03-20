@@ -247,15 +247,14 @@ class DashboardController extends Controller
             return response()->json(['error' => 'Parameter props diperlukan'], 400);
         }
     
-        \Log::info("Props yang diterima: " . $props);
+        // \Log::info("Props yang diterima: " . $props);
     
         // Menggunakan JSON_EXTRACT() karena MariaDB tidak mendukung JSON_CONTAINS()
-        $data = \DB::table('riwayat')
-            ->whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$[*].$props') IS NOT NULL")
+        $data = Riwayat::whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$[*].$props') IS NOT NULL")
             ->get();
     
         if ($data->isEmpty()) {
-            \Log::warning("Data tidak ditemukan untuk props: " . $props);
+            // \Log::warning("Data tidak ditemukan untuk props: " . $props);
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
     
@@ -497,12 +496,15 @@ class DashboardController extends Controller
             $dt_bbl[$ind]['sasaran'] = "bbl";
             $dt_bbl[$ind]['hasil_pemeriksaan'] = json_decode($v_bbl->hasil_pemeriksaan, true);
         
+            foreach ($jp_bbl as $v_jp_bbl) {
+                $dt_bbl[$ind][$v_jp_bbl] = 0;
+            }
             if (is_array($dt_bbl[$ind]['hasil_pemeriksaan'])) {
                 foreach ($dt_bbl[$ind]['hasil_pemeriksaan'] as $item) {
                     foreach ($jp_bbl as $v_jp_bbl) {
-                        if (!isset($dt_bbl[$ind][$v_jp_bbl])) {
-                            $dt_bbl[$ind][$v_jp_bbl] = 0;
-                        }
+                        // if (!isset($dt_bbl[$ind][$v_jp_bbl])) {
+                        //     $dt_bbl[$ind][$v_jp_bbl] = 0;
+                        // }
         
                         if (isset($item[$v_jp_bbl]) && $item[$v_jp_bbl] !== null) {
                             $dt_bbl[$ind][$v_jp_bbl] = 1;
@@ -564,19 +566,25 @@ class DashboardController extends Controller
             $dt[$ind]['sasaran'] = "balita_dan_pra_sekolah";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
         
-            if (is_array($dt[$ind]['hasil_pemeriksaan'])) {
+            foreach ($jp as $v_jp) {
+                $dt[$ind][$v_jp] = 0;
+            }
+            if (is_array($dt[$ind]['hasil_pemeriksaan'])) {   
                 foreach ($dt[$ind]['hasil_pemeriksaan'] as $item) {
                     foreach ($jp as $v_jp) {
-                        if (!isset($dt[$ind][$v_jp])) {
-                            $dt[$ind][$v_jp] = 0;
-                            // $dt[$ind][$v_jp] = [];
-                        }
+                        // if (!isset($dt[$ind][$v_jp])) {
+                        //     $dt[$ind][$v_jp] = 0;
+                        //     // $dt[$ind][$v_jp] = [];
+                        // }
         
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;
                             // dd($v);
                             // $dt[$ind][$v_jp][] = $v;
                             // dd($dt);
+                        }
+                        else{
+                            $dt[$ind][$v_jp] = 0;
                         }
                     }
                 }
@@ -638,13 +646,16 @@ class DashboardController extends Controller
             $dt[$ind]['sasaran'] = "dewasa";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
         
+            foreach ($jp as $v_jp) {
+                $dt[$ind][$v_jp] = 0;
+            }
             if (is_array($dt[$ind]['hasil_pemeriksaan'])) {
                 foreach ($dt[$ind]['hasil_pemeriksaan'] as $item) {
                     foreach ($jp as $v_jp) {
-                        if (!isset($dt[$ind][$v_jp])) {
-                            $dt[$ind][$v_jp] = 0;
-                            // $dt[$ind][$v_jp] = [];
-                        }
+                        // if (!isset($dt[$ind][$v_jp])) {
+                        //     $dt[$ind][$v_jp] = 0;
+                        //     // $dt[$ind][$v_jp] = [];
+                        // }
         
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;
@@ -712,13 +723,16 @@ class DashboardController extends Controller
             $dt[$ind]['sasaran'] = "lansia";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
         
+            foreach ($jp as $v_jp) {
+                $dt[$ind][$v_jp] = 0;
+            }
             if (is_array($dt[$ind]['hasil_pemeriksaan'])) {
                 foreach ($dt[$ind]['hasil_pemeriksaan'] as $item) {
                     foreach ($jp as $v_jp) {
-                        if (!isset($dt[$ind][$v_jp])) {
-                            $dt[$ind][$v_jp] = 0;
-                            // $dt[$ind][$v_jp] = [];
-                        }
+                        // if (!isset($dt[$ind][$v_jp])) {
+                        //     $dt[$ind][$v_jp] = 0;
+                        //     // $dt[$ind][$v_jp] = [];
+                        // }
         
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;

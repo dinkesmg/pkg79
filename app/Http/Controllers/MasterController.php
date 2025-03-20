@@ -12,6 +12,7 @@ use App\Models\MasterProvinsi;
 use App\Models\MasterKotaKab;
 use App\Models\MasterKelurahan;
 use App\Models\MasterKecamatan;
+use App\Models\MasterInstrumen;
 use Illuminate\Support\Facades\Validator;
 
 class MasterController extends Controller
@@ -132,6 +133,33 @@ class MasterController extends Controller
                     return [
                         'kode' => $item->kode_kelurahan,
                         'nama' => $item->nama
+                    ];
+                })
+            );
+        }
+        // $data = $data->get();
+        
+        // dd($data);
+        // return response()->json($data);
+        return response()->json([]);
+    }
+
+    public function instrumen(Request $request)
+    {
+        // dd()
+        $search = $request->get('search');
+        // $id = $request->get('id');
+
+        $data = MasterInstrumen::where('val', 'like', '%' . $search . '%')
+            ->get();
+        // dd($data);
+     
+        if ($data->isNotEmpty()) {
+            return response()->json(
+                $data->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'val' => $item->val
                     ];
                 })
             );

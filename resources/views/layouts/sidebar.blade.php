@@ -73,6 +73,12 @@
                         <p style="color:#fff; font-weight:bold">Riwayat</p>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ url('laporan') }}"
+                        class="nav-link {{ request()->routeIs('laporan*') == 1 ? 'active' : '' }}">
+                        <p style="color:#fff; font-weight:bold">Laporan</p>
+                    </a>
+                </li>
                 <!-- <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->routeIs('laporan*') == 1 ? 'active' : '' }}">
                         <img src="{{ asset('gambar/laporan.png') }}" style="width: 25.59px; height: auto;">

@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LaporanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,6 +34,12 @@ Route::prefix('riwayat')->group(function () {
         // });
 });
 
+Route::prefix('laporan')->group(function () {
+    Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/data', [LaporanController::class, 'data'])->name('laporan.data');
+    Route::get('/export', [LaporanController::class, 'export'])->name('laporan.export');
+});
+
 Route::prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('/detail', [DashboardController::class, 'detail_pasien_hasil_pemeriksaan'])->name('dashboard.pasien_hasil_pemeriksaan.index');
@@ -51,5 +58,4 @@ Route::get('master_provinsi', [MasterController::class, 'provinsi'])->name('mast
 Route::get('master_kota_kab', [MasterController::class, 'kota_kab'])->name('master_kota_kab.data');
 Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('master_kecamatan.data');
 Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('master_kelurahan.data');
-
-
+Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('master_instrumen.data');
