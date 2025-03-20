@@ -479,7 +479,6 @@
                         <div>
                             <div class="row">
                                 <div class="col p-2">
-                                    <a href="{{ url('dashboard/detail?props=tekanan_darah') }}">
                                         <div class="card card-shadow text-dark" style="height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -523,10 +522,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </a>
                                 </div>
                                 <div class="col p-2" >
-                                    <a href="{{ url('dashboard/detail?props=gula_darah') }}">
                                         <div class="card card-shadow text-dark" style="height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -556,10 +553,8 @@
                                                     </div>
                                             </div>
                                         </div>
-                                    </a>
                                 </div>
                                 <div class="col p-2" >
-                                    <a href="{{ url('dashboard/detail?props=status_gizi') }}">
                                         <div class="card card-shadow text-dark" style="height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -587,14 +582,13 @@
                                                     </div>
                                             </div>
                                         </div>
-                                    </a>
                                 </div>
                             </div>
                             <div class="">
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                 <div class="col p-2">
-                                    <div class="card" style="height: 240px;">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Merokok
@@ -630,7 +624,7 @@
                                     </div>
                                 </div>
                                 <div class="col p-2">
-                                    <div class="card" style="height: 240px;">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Aktivitas Fisik
@@ -669,7 +663,7 @@
                             </div>
                             <div class="row">
                                 <div class="col p-2">
-                                    <div class="card" style="height: 240px;">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Gigi
@@ -705,7 +699,7 @@
                                     </div>
                                 </div>
                                 <div class="col p-2" >
-                                    <div class="card" style="height: 240px;">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
                                         <div class ="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Risiko Jantung
@@ -731,7 +725,7 @@
                                     </div>
                                 </div>
                                 <div class="col p-2" >
-                                    <div class="card" style="height: 240px;">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
                                         <div class ="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Fungsi Ginjal
@@ -756,7 +750,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-8 p-2">
-                                    <div class="card" style="height: 280px;">
+                                    <div class="card card-shadow text-dark" style="height: 280px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Risiko Stroke
@@ -833,7 +827,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                 <div class="col p-2">
-                                    <div class="card" style="height: 260px;">
+                                    <div class="card card-shadow text-dark" style="height: 260px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Mata (Tes Penglihatan)
@@ -891,7 +885,7 @@
                                     </div>
                                 </div>
                                 <div class="col p-2">
-                                    <div class="card" style="height: 260px;">
+                                    <div class="card card-shadow text-dark" style="height: 260px;">
                                         <div class="card-body">
                                             <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                 Telinga (Tes Pendengaran)
@@ -948,7 +942,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col p-2">
-                                        <div class="card" style="height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kanker Leher Rahim
@@ -1006,7 +1000,7 @@
                                         </div>
                                     </div>
                                     <div class="col p-2">
-                                        <div class="card" style="height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kanker Payudara
@@ -1075,7 +1069,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col p-2">
-                                        <div class="card" style="height: 280px;">
+                                        <div class="card card-shadow text-dark" style="height: 280px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kanker Paru
@@ -1111,7 +1105,7 @@
                                         </div>
                                     </div>
                                     <div class="col p-2">
-                                        <div class="card" style="height: 280px;">
+                                        <div class="card card-shadow text-dark" style="height: 280px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kanker Usus
@@ -1177,7 +1171,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-8 p-2">
-                                        <div class="card" style="height: 260px;">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Tuberkuloasis
@@ -1236,7 +1230,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-8 p-2">
-                                        <div class="card" style="height: 260px;">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Jiwa
@@ -1304,7 +1298,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col p-2">
-                                        <div class="card" style="height: 260px;">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Hepatitis B
@@ -1340,7 +1334,7 @@
                                         </div>
                                     </div>
                                     <div class="col p-2" >
-                                        <div class="card" style="height: 260px;">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Hepatitis C
@@ -1366,7 +1360,7 @@
                                         </div>
                                     </div>
                                     <div class="col p-2" >
-                                        <div class="card" style="height: 260px;">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Fibrosis/Sirosis
