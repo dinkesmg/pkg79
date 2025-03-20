@@ -22,6 +22,22 @@
     .c_diagram_pie_jenis_kelamin {
         width:80%;
     }
+    
+    .spinner-svg {
+        width: 1rem; /* Ukuran kecil */
+        height: 1rem;
+        animation: spin 1s linear infinite; /* Animasi putar */
+    }
+
+    .card-shadow:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
     @media (max-width: 768px) {
         .c_periode_sampai {
@@ -76,7 +92,7 @@
                                             <div style="margin-right:10px">Sampai</div>
                                             <input type="date" id="sampai"></input>
                                         </div>
-                                        <button class="btn btn-sm btn-info" onclick="oc_cari()"> Cari</button>
+                                        <button id="btnCari" class="btn btn-sm btn-info" onclick="oc_cari()">Cari</button>
                                     </div>
                                     <!-- <div id="peta" style="min-width: 310px; height: 400px; margin: 0 auto"></div> -->
                                     <!-- <div id="div_loading" style="display: none; justify-content: center;">
@@ -456,12 +472,924 @@
                             <h3 id="total_kunjungan_pasien"></h3>
                         </div>
                     </div>
-                    
+
+                    <div class="my-5">
+                        <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4>
+                        <h5 class="text-center bg-primary py-1">Kardiovaskular</h5>
+                        <div>
+                            <div class="row">
+                                <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Tekanan Darah
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-tekanan-darah">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tidak Hipertensi atau Prehipertensi: <span id="td-tidak-hipertensi">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Hipertensi tanpa tanda bahaya: <span id="td-hipertensi-tanpa-bahaya">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Hipertensi dengan tanda bahaya: <span id="td-hipertensi-dengan-bahaya">0</span>
+                                                    </p>
+                                                </div>
+        
+                                                <div class="progress">
+                                                    <div id="progress-td-tidak-hipertensi" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-td-hipertensi-tanpa-bahaya" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-td-hipertensi-dengan-bahaya" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="col p-2" >
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Gula Darah
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-gula-darah">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal (GDS < 100): <span id="gd-normal">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Prediabetes (140 - 199): <span id="gd-prediabetes">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Hiperglikemia (GDS < 200): <span id="gd-hiperglikemia">0</span>
+                                                        </p>    
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-gd-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gd-prediabetes" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gd-hiperglikemia" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                <div class="col p-2" >
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Status Gizi
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-status-gizi">0</span>Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div> 
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal: <span id="sg-normal">0</span></p>
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Overweight: <span id="sg-overweight">0</span></p>
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Underrweight: <span id="sg-underweight">0</span></p>
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Obesitas: <span id="sg-obesitas">0</span></p>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-sg-normal" class="progress-bar bg-warning" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        <div id="progress-sg-overweight" class="progress-bar bg-primary" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        <div id="progress-sg-underweight" class="progress-bar bg-danger" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            <div id="progress-sg-obesitas" class="progress-bar bg-success" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                </div>
+                            </div>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                <div class="col p-2">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Merokok
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-merokok">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Tidak Merokok: <span id="tidak-merokok">0</span>
+                                                </p>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Merokok: <span id="merokok">0</span>
+                                                </p>
+                                            </div>
+        
+                                            <div class="progress">
+                                                <div id="progress-tidak-merokok" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-merokok" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col p-2">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Aktivitas Fisik
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-aktivitas-fisik">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Cukup: <span id="af-cukup">0</span>
+                                                </p>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Kurang: <span id="af-kurang">0</span>
+                                                </p>
+                                            </div>
+        
+                                            <div class="progress">
+                                                <div id="progress-af-cukup" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-af-kurang" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col p-2">
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Gigi
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-gigi">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Tidak ada karies (normal): <span id="gg-normal">0</span>
+                                                </p>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Ada karies, gigi goyang: <span id="gg-karies">0</span>
+                                                </p>
+                                            </div>
+    
+                                            <div class="progress">
+                                                <div id="progress-gg-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-gg-karies" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col p-2" >
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
+                                        <div class ="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Risiko Jantung
+                                            </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-risiko-jantung">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                    <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Normal: <span id="rj-normal">0</span>
+                                                    </p>    
+                                                
+                                                    <p>
+                                                    <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Tidak normal: <span id="rj-tidak-normal">0</span>
+                                                    </p>      
+                                                </div>
+                                                <div class="progress">
+                                                    <div id="progress-rj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-rj-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col p-2" >
+                                    <div class="card card-shadow text-dark" style="height: 240px;">
+                                        <div class ="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Fungsi Ginjal
+                                            </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-fungsi-ginjal">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div> 
+                                                    <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal: <span id="fg-normal">0</span></p>
+                                                    <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak normal: <span id="fg-tidak-normal">0</span></p>
+                                                </div>
+                                                <div class="progress">
+                                                    <div id="progress-fg-normal" class="progress-bar bg-warning" role="progressbar"
+                                                        style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                    <div id="progress-fg-tidak-normal" class="progress-bar bg-primary" role="progressbar"
+                                                        style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 p-2">
+                                    <div class="card card-shadow text-dark" style="height: 280px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Risiko Stroke
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-risiko-stroke">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div class="d-flex justify-content-start">
+                                                <div class="mr-3">
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Normal: <span id="rs-normal">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tinggi: <span id="rs-tinggi">0</span>
+                                                    </p>
+                                                    
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang: <span id="rs-ptm-rendah">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi: <span id="rs-ptm-sedang">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah: <span id="rs-ptm-tinggi">0</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+    
+                                            <div class="progress">
+                                                <div id="progress-rs-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-rs-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-rs-ptm-rendah" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-rs-ptm-sedang" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-rs-ptm-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col p-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-info py-1">Fungsi Indera</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                <div class="col p-2">
+                                    <div class="card card-shadow text-dark" style="height: 260px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Mata (Tes Penglihatan)
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-tes-penglihatan">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div class="d-flex justify-content-around">
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Visus (6/6 - 6/12): <span id="tm-visus-66-612">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Abnormal (Visus < 6/12): <span id="tm-abnormal">0</span>
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Visus Membaik: <span id="tm-visus-membaik">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Visus Membaik: <span id="tm-visus-tidak-membaik">0</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+        
+                                            <div class="progress">
+                                                <div id="progress-tm-visus-66-612" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-tm-abnormal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-tm-visus-membaik" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-tm-visus-tidak-membaik" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col p-2">
+                                    <div class="card card-shadow text-dark" style="height: 260px;">
+                                        <div class="card-body">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Telinga (Tes Pendengaran)
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-tes-pendengaran">0</span> Orang</p>
+                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                            </div>
+                                            <div class="d-flex justify-content-around">
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Lulus: <span id="tt-lulus">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tidak lulus (Hasil normal): <span id="tt-tidak-lulus-normal">0</span>
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tidak lulus (ditemukan gangguan atau kelainan): <span id="tt-tidak-lulus-gangguan">0</span>
+                                                    </p>
+                                                </div>
+                                            </div>
+        
+                                            <div class="progress">
+                                                <div id="progress-tt-lulus" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-tt-tidak-lulus-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div id="progress-tt-tidak-lulus-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-success py-1">Kanker</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                    <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Kanker Leher Rahim
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-leher_rahim">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tidak ada faktor resiko: <span id="kl-tidak-ada-faktor">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif: <span id="kl-ada-faktor-semua-negatif">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif: <span id="kl-ada-faktor-salah-satu-negatif">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Curiga kanker: <span id="kl-curiga-kanker">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-kl-tidak-ada-faktor" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kl-ada-faktor-semua-negatif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kl-ada-faktor-salah-satu-negatif" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kl-curiga-kanker" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Kanker Payudara
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-payudara">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Sadanis Negatif: <span id="kp-negatif">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Sadanis Positif pemeriksaan USG Normal: <span id="kp-positif-usg-normal">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Sadanis Positif pemeriksaan USG Simple Cyst: <span id="kp-positif-usg-simple-cyst">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Sadanis Positif pemeriksaan USG Non Simple cyst: <span id="kp-positif-usg-non-symple-cyst">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="grey" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Sadanis Positif resiko sangat tinggi: <span id="kp-positif-resiko-tinggi">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-kp-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kp-positif-usg-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kp-positif-usg-simple-cyst" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kp-positif-usg-non-symple-cyst" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kp-positif-resiko-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 280px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Kanker Paru
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-paru">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Risiko ringan: <span id="kp-risiko-ringan">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Risiko sedang atau tinggi: <span id="kp-risiko-sedang-tinggi">0</span>
+                                                        </p>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-kp-risiko-ringan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kp-risiko-sedang-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 280px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Kanker Usus
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-usus">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            APCS 0-1 Risiko rendah: <span id="ku-risiko-rendah">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            APCS 2-3 Risiko sedang: <span id="ku-risiko-sedang">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua: <span id="ku-risiko-tinggi-negatif-semua">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif: <span id="ku-risiko-rendah-salah-satu-positif">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-ku-risiko-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-ku-risiko-sedang" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-ku-risiko-tinggi-negatif-semua" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-ku-risiko-rendah-salah-satu-positif" class="progress-bar bg-green" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-secondary py-1">Paru</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                    <div class="col-8 p-2">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Tuberkuloasis
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-tuberkulosis">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tidak terdapat tanda, gejala dan Kontak erat TB: <span id="tb-tidak-terdapat">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Terdapat kontak erat TB Positif tanpa gejala: <span id="tb-terdapat-positif-tanpa-gejala">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Terdapat kontak erat TB positif dengan gejala: <span id="tb-terdapat-dengan-gejala">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-tb-tidak-terdapat" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tb-terdapat-positif-tanpa-gejala" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tb-terdapat-dengan-gejala" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-warning py-1">Jiwa</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                    <div class="col-8 p-2">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Jiwa
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-kesehatan-jiwa">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Normal: <span id="kj-normal">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tidak ada gangguan jiwa: <span id="kj-tidak-ada-gangguan">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Ada gangguan jiwa: <span id="kj-ada-gangguan">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Ada gangguan jiwa dengan penyulit: <span id="kj-ada-gangguan-penyulit">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-kj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kj-tidak-ada-gangguan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kj-ada-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-kj-ada-gangguan-penyulit" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4"></div>
+                                    <!-- <div class="col"></div> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-primary py-1">Hati</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                    <div class="col p-2">
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Hepatitis B
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-hepatitis-b">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        HBsAg Non Reaktif: <span id="hb-non-reaktif">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        HBsAg Reaktif: <span id="hb-reaktif">0</span>
+                                                    </p>
+                                                </div>
+        
+                                                <div class="progress">
+                                                    <div id="progress-hb-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-hb-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-2" >
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Hepatitis C
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-hepatitis-c">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Non Reaktif: <span id="hc-non-reaktif">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Reaktif: <span id="hc-reaktif">0</span>
+                                                        </p>     
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-hc-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-hc-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col p-2" >
+                                        <div class="card card-shadow text-dark" style="height: 260px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Fibrosis/Sirosis
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-fibrosis-sirosis">0</span>Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div> 
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>APRI Score ≤ 0.5: <span id="fs-kurang">0</span></p>
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>APRI Score >0.5: <span id="fs-lebih">0</span></p>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-fs-kurang" class="progress-bar bg-warning" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        <div id="progress-fs-lebih" class="progress-bar bg-primary" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                     @if (Auth::user()->role == 'Admin')
                     <div class="row">
                         <div class="col-12">
-                            <div class="card">
-                                <div class="card-header">
+                          
                                     <div><h4>Total Per Puskesmas</h4></div>
                                 </div>
                                 <div class="card-body">
@@ -616,6 +1544,7 @@
         if(role_auth == "Admin"){
             tabel_per_puskesmas()
         }
+        hasil_pemeriksaan()
         grafik_per_periode()
         per_kelompok_usia()
         tabel_kesimpulan_hasil()
@@ -623,16 +1552,44 @@
         // peta()
     })
 
-    function oc_cari(){
-        // grafik();
-        if(role_auth == "Admin"){
-            tabel_per_puskesmas()
-        }
-        grafik_per_periode()
-        per_kelompok_usia()
-        tabel_kesimpulan_hasil()
-        tabel_per_jenis_pemeriksaan()
+    $(document).ready(function(){
+        $('[data-toggle="tooltip"]').tooltip(); 
+    });
+
+    async function oc_cari() {
+        const btn = document.getElementById("btnCari");
+
+        // Tambahkan efek loading dengan SVG spinner
+        btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Gray_circles_rotate.gif" class="spinner-svg"> Loading...`;
+        btn.disabled = true;
+
+        // Gunakan setTimeout agar perubahan tombol dirender lebih dulu
+        setTimeout(async () => {
+            try {
+                let tasks = [];
+
+                if (role_auth === "Admin") {
+                    tasks.push(tabel_per_puskesmas());
+                }
+
+                tasks.push(hasil_pemeriksaan());
+                tasks.push(grafik_per_periode());
+                tasks.push(per_kelompok_usia());
+                tasks.push(tabel_kesimpulan_hasil());
+                tasks.push(tabel_per_jenis_pemeriksaan());
+
+                // Tunggu semua fungsi selesai sebelum menghilangkan efek loading
+                await Promise.all(tasks);
+            } catch (error) {
+                console.error("Terjadi kesalahan:", error);
+            } finally {
+                // Kembalikan tombol ke kondisi semula
+                btn.innerHTML = "Cari";
+                btn.disabled = false;
+            }
+        }, 100); // Beri jeda agar spinner bisa muncul sebelum tugas berjalan
     }
+
 
     function ar_x_grafik(dari, sampai) {
         var startDate = new Date(dari);
@@ -671,8 +1628,8 @@
         var sampai = $('#sampai').val()
         var x_grafik = ar_x_grafik(dari, sampai);
         var x_grafik_format = ar_x_grafik_ubah_format(dari, sampai);
-        console.log(x_grafik)
-        console.log(x_grafik_format)
+        // console.log(x_grafik)
+        // console.log(x_grafik_format)
         // $('#div_loading').css('display', 'flex').show();
         // $('#konten').hide()
 
@@ -692,7 +1649,7 @@
             async: true,
             success: function(data) {
                 // console.log(data.grafik)
-                console.log(data)
+                // console.log(data)
                 // console.log(jenis)
                 // $('#div_loading').hide();
                 // $('#konten').show()
@@ -769,7 +1726,7 @@
     
     function tabel_per_puskesmas(){
         // semua_riwayat = []
-       console.log("tabel")
+    //    console.log("tabel")
         let col = 
         [
             {
@@ -800,6 +1757,380 @@
         });
     }
 
+    const idMapping = {
+        "tekanan_darah": {
+            "Tidak terdiagnosis Hipertensi atau prehipertensi": "td-tidak-hipertensi",
+            "Terdiagnosis hipertensi tanpa tanda bahaya": "td-hipertensi-tanpa-bahaya",
+            "Terdiagnosis hipertensi dengan tanda bahaya": "td-hipertensi-dengan-bahaya"
+        },
+        "gula_darah": {
+            "Normal (GDS<100)": "gd-normal",
+            "Prediabetes (GDS 140 - 199)": "gd-prediabetes",
+            "Hiperglikemia (GDS > 200)": "gd-hiperglikemia"
+        },
+        "status_gizi": {
+            "Normal": "sg-normal",
+            "Overweight": "sg-overweight",
+            "Underweight": "sg-underweight",
+            "Obesitas": "sg-obesitas"
+        },
+        "merokok": {
+            "Tidak merokok": "tidak-merokok",
+            "Merokok": "merokok"
+        },
+        "aktivitas_fisik": {
+            "Cukup": "af-cukup",
+            "Kurang": "af-kurang"
+        },
+        "gigi": {
+            "Tidak ada karies (normal)": "gg-normal",
+            "Ada karies, gigi goyang": "gg-karies"
+        },
+        "risiko_stroke": {
+            "Normal": "rs-normal",
+            "Tinggi": "rs-tinggi",
+            "Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah": "rs-ptm-rendah",
+            "Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang": "rs-ptm-sedang",
+            "Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi": "rs-ptm-tinggi"
+        },
+        "risiko_jantung": {
+            "EKG Normal": "rj-normal",
+            "EKG Tidak normal": "rj-tidak-normal"
+        },
+        "fungsi_ginjal": {
+            "Normal": "fg-normal",
+            "Tidak normal": "fg-tidak-normal"
+        },
+        
+    };
+
+    const idMappingFungsiIndera = {
+        "tes_penglihatan": {
+            "Visus (6\/6 - 6\/12)": "tm-visus-66-612",
+            "Abnormal (Visus <6\/12)": "tm-abnormal",
+            "Visus membaik": "tm-visus-membaik",
+            "Visus tidak membaik": "tm-visus-tidak-membaik"
+            },
+        "tes_pendengaran": {
+            "Lulus": "tt-lulus",
+            "Tidak lulus (Hasil normal)": "tt-tidak-lulus-normal",
+            "Tidak lulus (ditemukan gangguan atau kelainan)": "tt-tidak-lulus-gangguan"
+        }
+    }
+
+    const idMappingKanker = {
+        "kanker_leher_rahim": {
+            "Tidak ada faktor resiko": "kl-tidak-ada-faktor",
+            "Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif": "kl-ada-faktor-semua-negatif",
+            "Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif": "kl-ada-faktor-salah-satu-negatif",
+            "Curiga kanker": "kl-curiga-kanker"
+        },
+        "kanker_payudara": {
+            "Sadanis Negatif": "kp-negatif",
+            "Sadanis Positif pemeriksaan USG Normal": "kp-positif-usg-normal",
+            "Sadanis Positif pemeriksaan USG Simple Cyst": "kp-positif-usg-simple-cyst",
+            "Sadanis Positif pemeriksaan USG Non Simple cyst": "kp-positif-usg-non-symple-cyst",
+            "Sadanis Positif resiko sangat tinggi": "kp-positif-resiko-tinggi"
+        },
+        "kanker_paru": {
+            "Risiko ringan": "kp-risiko-ringan",
+            "Risiko sedang atau tinggi": "kp-risiko-sedang-tinggi"
+        },
+        "kanker_usus": {
+            "APCS 0-1 Risiko rendah": "ku-risiko-rendah",
+            "APCS 2-3 Risiko sedang": "ku-risiko-sedang",
+            "APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua": "ku-risiko-tinggi-negatif-semua",
+            "APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif": "ku-risiko-rendah-salah-satu-positif"
+        }
+    }
+
+    const idMappingParu = {
+        "tuberkulosis": {
+            'Tidak terdapat tanda, gejala dan Kontak erat TB': "tb-tidak-terdapat",
+            'Terdapat kontak erat TB Positif tanpa gejala': "tb-terdapat-positif-tanpa-gejala",
+            'Terdapat kontak erat TB positif dengan gejala': "tb-terdapat-dengan-gejala"
+        }
+    }
+
+    const idMappingJiwa = {
+        "kesehatan_jiwa": {
+            "Normal": "kj-normal",
+            "Tidak ada gangguan jiwa": "kj-tidak-ada-gangguan",
+            "Ada gangguan jiwa": "kj-ada-gangguan",
+            "Ada gangguan jiwa dengan penyulit": "kj-ada-gangguan-penyulit"
+        }
+    }
+
+    const idMappingHati = {
+        "hepatitis_b": {
+            "HBsAg Non Reaktif": "hb-non-reaktif",
+            "HBsAg Reaktif": "hb-reaktif"
+        },
+        "hepatitis_c": {
+            "Anti HCV Non Reaktif": "hc-non-reaktif",
+            "Anti HCV Reaktif": "hc-reaktif"
+        },
+        "fibrosis_sirosis": {
+            "APRI Score ≤ 0.5": "fs-kurang",
+            "APRI Score >0.5": "fs-lebih"
+        }
+    }
+
+
+    function hasil_pemeriksaan() {
+        let tgl_dari = $('#dari').val();
+        let tgl_sampai = $('#sampai').val();
+
+        $.ajax({
+            url: `{{url('dashboard/data_hasil_pemeriksaan')}}`,
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: { tgl_dari, tgl_sampai },
+            success: function(response) {
+                console.log("API Response:", response);
+
+                if (!response.kardiovaskular) {
+                    console.error("Data kardiovaskular tidak ditemukan!");
+                    return;
+                }
+
+                if (!response.fungsi_indera) {
+                    console.error("Data fungsi_indera tidak ditemukan!");
+                    return;
+                }
+
+                if (!response.kanker) {
+                    console.error("Data kanker tidak ditemukan!");
+                    return;
+                }
+
+                // 🔹 Memproses Data Kardiovaskular
+                Object.keys(idMapping).forEach(category => {
+                    let data = response.kardiovaskular[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMapping[category]).forEach(key => {
+                        let elementId = idMapping[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                // 🔹 Memproses Data Fungsi Indera
+                Object.keys(idMappingFungsiIndera).forEach(category => {
+                    let data = response.fungsi_indera[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingFungsiIndera[category]).forEach(key => {
+                        let elementId = idMappingFungsiIndera[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                // 🔹 Memproses Data Kanker
+                Object.keys(idMappingKanker).forEach(category => {
+                    let data = response.kanker[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingKanker[category]).forEach(key => {
+                        let elementId = idMappingKanker[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                Object.keys(idMappingParu).forEach(category => {
+                    let data = response.paru[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingParu[category]).forEach(key => {
+                        let elementId = idMappingParu[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                Object.keys(idMappingJiwa).forEach(category => {
+                    let data = response.jiwa[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingJiwa[category]).forEach(key => {
+                        let elementId = idMappingJiwa[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                Object.keys(idMappingHati).forEach(category => {
+                    let data = response.hati[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingHati[category]).forEach(key => {
+                        let elementId = idMappingHati[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                // Re-initialize tooltips
+                $('[data-toggle="tooltip"]').tooltip('dispose').tooltip();
+            },
+            error: function(xhr, status, error) {
+                console.error("API Error:", status, error);
+            }
+        });
+    }
+
+
+
+
     function per_kelompok_usia(){
         let tgl_dari = $('#dari').val();
         let tgl_sampai = $('#sampai').val();
@@ -815,7 +2146,7 @@
                 tgl_sampai : $('#sampai').val(),
             },
             success: function(response) {
-                console.log(response)
+                // console.log(response)
                 // $('#bbl').val(res);
                 $('#total_bbl').html(response.bbl);
                 $('#total_balita_dan_pra_sekolah').html(response.balita_dan_pra_sekolah);
@@ -953,8 +2284,8 @@
             });
         });
 
-        console.log("col")
-        console.log(col)
+        // console.log("col")
+        // console.log(col)
 
         $.ajax({
             url: `{{url('dashboard/data_per_jenis_pemeriksaan')}}`,
@@ -968,7 +2299,7 @@
                 ar_tgl : x_grafik,
             },
             success: function(response) {
-                console.log(response)
+                // console.log(response)
             }
         })
 
@@ -1011,7 +2342,7 @@
                         d.ar_tgl = x_grafik;
                     },
                     dataSrc: function (json) {
-                        console.log("AJAX Data Response:", json); // ✅ Debug response
+                        // console.log("AJAX Data Response:", json);
                         return json;
                     },
                 },

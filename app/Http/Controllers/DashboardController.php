@@ -19,6 +19,14 @@ class DashboardController extends Controller
         return view('Dashboard.index');
     }
 
+    public function detail_pasien_hasil_pemeriksaan(Request $request)
+    {
+        $props = $request->query('props');
+        // dd($props);
+
+        return view('Dashboard.Pasien_Hasil_Pemeriksaan.index', compact('props'));
+    }
+
     // public function data(Request $request)
     // {
     //     $role = Auth::user()->role;
@@ -30,6 +38,230 @@ class DashboardController extends Controller
 
     //     return response()->json($data);
     // }
+
+    public function data_hasil_pemeriksaan(Request $request)
+    {
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+        
+
+        $data = Riwayat::select('hasil_pemeriksaan')
+            ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])->get();
+
+        // if ($role == "Admin") {
+        //     $query->where('id_user', $id_user);
+        // }
+
+        $result = [
+            'kardiovaskular' => [
+                'status_gizi' => [
+                    'Normal' => 0,
+                    'Overweight' => 0,
+                    'Underweight' => 0,
+                    'Obesitas' => 0,
+                ],
+                'gula_darah' => [
+                    'Normal (GDS<100)' => 0,
+                    'Prediabetes (GDS 140 - 199)' => 0,
+                    'Hiperglikemia (GDS > 200)' => 0,
+                ],
+                'tekanan_darah' => [
+                    'Tidak terdiagnosis Hipertensi atau prehipertensi' => 0,
+                    'Terdiagnosis hipertensi tanpa tanda bahaya' => 0,
+                    'Terdiagnosis hipertensi dengan tanda bahaya' => 0,
+                ],
+                'merokok' => [
+                    'Tidak merokok' => 0,
+                    'Merokok' => 0
+                ],
+                'aktivitas_fisik' => [
+                    'Cukup' => 0,
+                    'Kurang' => 0
+                ],
+                'gigi' => [
+                    'Tidak ada karies (normal)' => 0,
+                    'Ada karies, gigi goyang' => 0,
+                ],
+                'risiko_stroke' => [
+                    'Normal' => 0,
+                    'Tinggi' => 0,
+                    'Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah' => 0,
+                    'Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang' => 0,
+                    'Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi' => 0
+                ],
+                'risiko_jantung' => [
+                    'EKG Normal' => 0,
+                    'EKG Tidak normal' => 0
+                ],
+                'fungsi_ginjal' => [
+                    'Normal' => 0,
+                    'Tidak normal' => 0
+                ]
+            ],
+            'fungsi_indera' => [
+                'tes_penglihatan' => [
+                    'Visus (6/6 - 6/12)' => 0,
+                    'Abnormal (Visus <6/12)' => 0,
+                    'Visus membaik' => 0,
+                    'Visus tidak membaik' => 0
+                ],
+                'tes_pendengaran' => [
+                    'Lulus' => 0,
+                    'Tidak lulus (Hasil normal)' => 0,
+                    'Tidak lulus (ditemukan gangguan atau kelainan)' => 0
+                ]
+            ],
+            'kanker' => [
+                'kanker_leher_rahim' => [
+                    'Tidak ada faktor resiko' => 0,
+                    'Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif' => 0,
+                    'Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif' => 0,
+                    'Curiga kanker' => 0
+                ],
+                'kanker_payudara' => [
+                    'Sadanis Negatif' => 0,
+                    'Sadanis Positif pemeriksaan USG Normal' => 0,
+                    'Sadanis Positif pemeriksaan USG Simple Cyst' => 0,
+                    'Sadanis Positif pemeriksaan USG Non Simple cyst' => 0,
+                    'Sadanis Positif resiko sangat tinggi' => 0
+                ],
+                'kanker_paru' => [
+                    'Risiko ringan' => 0,
+                    'Risiko sedang atau tinggi' => 0
+                ],
+                'kanker_usus' => [
+                    'APCS 0-1 Risiko rendah' => 0,
+                    'APCS 2-3 Risiko sedang' => 0,
+                    'APCS 4-7 Risiko tinggi, colok dubur darah samar feses negatif semua' => 0,
+                    'APCS 4-7 Risiko tinggi, colok dubur darah samar feses salah satu positif' => 0
+                ],
+            ],
+            'paru' => [
+                'tuberkulosis' => [
+                    'Tidak terdapat tanda, gejala dan Kontak erat TB' => 0,
+                    'Terdapat kontak erat TB Positif tanpa gejala' => 0,
+                    'Terdapat kontak erat TB positif dengan gejala' => 0
+                ]
+            ],
+            'jiwa' => [
+                'kesehatan_jiwa' => [
+                    'Normal' => 0,
+                    'Tidak ada gangguan jiwa' => 0,
+                    'Ada gangguan jiwa' => 0,
+                    'Ada gangguan jiwa dengan penyulit' => 0
+                ]
+            ],
+            'hati' => [
+                'hepatitis_b' => [
+                    'HBsAg Non Reaktif' => 0,
+                    'HBsAg Reaktif' => 0
+                ],
+                'hepatitis_c' => [
+                    'Anti HCV Non Reaktif' => 0,
+                    'Anti HCV Reaktif' => 0
+                ],
+                'fibrosis_sirosis' => [
+                    'APRI Score ≤ 0.5' => 0,
+                    'APRI Score >0.5' => 0
+                ]
+            ]
+        ];
+
+        foreach ($data as $item) {
+            if ($item->hasil_pemeriksaan) {
+                $hasil = json_decode($item->hasil_pemeriksaan, true);
+    
+                foreach ($hasil as $pemeriksaan) {
+                    $keys = ['status_gizi', 'gula_darah', 'tekanan_darah', 'merokok', 'aktivitas_fisik', 'gigi', 'risiko_stroke', 'risiko_jantung', 'fungsi_ginjal'];
+                    $indera_keys = ['tes_penglihatan', 'tes_pendengaran'];
+                    $kanker_keys = ['kanker_leher_rahim', 'kanker_payudara', 'kanker_paru', 'kanker_usus'];
+                    $paru_keys = ['tuberkulosis'];
+                    $jiwa_keys = ['kesehatan_jiwa'];
+                    $hati_keys = ['hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis'];
+    
+                    foreach ($keys as $key) {
+                        if (isset($pemeriksaan[$key])) {
+                            $value = $pemeriksaan[$key];
+                            if (isset($result['kardiovaskular'][$key][$value])) {
+                                $result['kardiovaskular'][$key][$value]++;
+                            }
+                        }
+                    }
+                }
+
+                foreach ($indera_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['fungsi_indera'][$key][$value])) {
+                            $result['fungsi_indera'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($kanker_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['kanker'][$key][$value])) {
+                            $result['kanker'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($paru_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['paru'][$key][$value])) {
+                            $result['paru'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($jiwa_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['jiwa'][$key][$value])) {
+                            $result['jiwa'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($hati_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['hati'][$key][$value])) {
+                            $result['hati'][$key][$value]++;
+                        }
+                    }
+                }
+            }
+        }
+    
+        return response()->json($result);
+    }
+
+    public function data_pasien_hasil_pemeriksaan(Request $request)
+    {
+        $props = $request->query('props'); // Ambil parameter dari request
+    
+        if (!$props) {
+            return response()->json(['error' => 'Parameter props diperlukan'], 400);
+        }
+    
+        \Log::info("Props yang diterima: " . $props);
+    
+        // Menggunakan JSON_EXTRACT() karena MariaDB tidak mendukung JSON_CONTAINS()
+        $data = \DB::table('riwayat')
+            ->whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$[*].$props') IS NOT NULL")
+            ->get();
+    
+        if ($data->isEmpty()) {
+            \Log::warning("Data tidak ditemukan untuk props: " . $props);
+            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+        }
+    
+        return response()->json($data);
+    }
+
 
     public function data_grafik_per_periode(Request $request)
     {
