@@ -2828,7 +2828,17 @@
     }
 
     function oc_export(){
-        window.location.href = "{{url('laporan/export')}}";
+        // window.location.href = "{{url('laporan/export')}}";
+        let periodeDari = document.getElementById("periode_dari").value;
+        let periodeSampai = document.getElementById("periode_sampai").value;
+        let instrumen = $('#instrumen option:selected').text()
+
+        let url = "{{url('laporan/export')}}" + 
+                "?periode_dari=" + encodeURIComponent(periodeDari) + 
+                "&periode_sampai=" + encodeURIComponent(periodeSampai) + 
+                "&instrumen=" + encodeURIComponent(instrumen);
+
+        window.location.href = url;
     }
 
 </script>

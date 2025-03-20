@@ -104,8 +104,16 @@ class LaporanController extends Controller
         return response()->json($data);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        return Excel::download(new LaporanExport, 'riwayat.xlsx');
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+        $periodeDari = $request->periode_dari;
+        $periodeSampai = $request->periode_sampai;
+        $instrumen = $request->instrumen;
+        // dd($request->all());
+
+        // return Excel::download(new LaporanExport, 'riwayat.xlsx');
+        return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen), 'riwayat.xlsx');
     }
 }

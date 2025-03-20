@@ -11,16 +11,71 @@ use Carbon\Carbon;
 class LaporanExport implements FromCollection, WithHeadings, WithMapping
 {
     private $counter = 0;
+    protected $role, $id_user, $periodeDari, $periodeSampai, $instrumen;
+
+    public function __construct($role, $id_user, $periodeDari, $periodeSampai, $instrumen)
+    {
+        $this->role = $role;
+        $this->id_user = $id_user;
+        $this->periodeDari = $periodeDari;
+        $this->periodeSampai = $periodeSampai;
+        $this->instrumen = $instrumen;
+    }
 
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        $data = Riwayat::with(
+        // $data = Riwayat::with(
+        //     'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+        //     'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+        //     'pemeriksa','user')->get();
+
+        $query = Riwayat::with([
             'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
             'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-            'pemeriksa','user')->get();
+            'pemeriksa','user'
+        ])->whereBetween('tanggal_pemeriksaan', [$this->periodeDari, $this->periodeSampai])
+          ->orderBy('tanggal_pemeriksaan', 'desc');
+
+        $instrumen = $this->instrumen;
+    
+        // Filter berdasarkan role
+        if ($this->role == "Puskesmas") {
+            $query->where('id_user', $this->id_user);
+        }
+
+        if (!empty($instrumen)) {
+            $data = $query->get()->filter(function ($item) use ($instrumen) {
+                // Pastikan JSON tidak null atau kosong sebelum di-decode
+                if (empty($item->hasil_pemeriksaan)) {
+                    return false;
+                }
+            
+                // Decode JSON dengan error handling
+                $hasil_pemeriksaan = json_decode($item->hasil_pemeriksaan, true);
+            
+                // Jika JSON tidak valid, return false
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    return false;
+                }
+            
+                // Gunakan foreach untuk mencari instrumen dalam JSON array
+                foreach ($hasil_pemeriksaan as $pemeriksaan) {
+                    if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
+                        return true;
+                    }
+                }
+            
+                return false;
+            })->values();
+            
+        }
+        else{
+            $data = $query->get();
+        }
+
         return $data;
     }
 
