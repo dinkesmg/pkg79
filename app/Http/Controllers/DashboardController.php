@@ -43,10 +43,19 @@ class DashboardController extends Controller
     {
         $role = Auth::user()->role;
         $id_user = Auth::user()->id;
-        
 
-        $data = Riwayat::select('hasil_pemeriksaan')
-            ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])->get();
+        // dd($id_user);
+        
+        $query = Riwayat::select('hasil_pemeriksaan')
+            ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai]);
+        
+        if($role == 'Puskesmas') {
+            $query = $query->where('id_user', $id_user);
+        }
+
+        $data = $query->get();
+        // $data = Riwayat::select('hasil_pemeriksaan')
+        //     ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])->get();
 
         // if ($role == "Admin") {
         //     $query->where('id_user', $id_user);
@@ -164,6 +173,62 @@ class DashboardController extends Controller
                     'APRI Score ≤ 0.5' => 0,
                     'APRI Score >0.5' => 0
                 ]
+            ],
+            'bbl' => [
+                'pertumbuhan_bb' => [
+                    'BB Lahir ≥ 2500 gr' => 0,
+                    'BBLR (2000 - < 2500 gr) dan sehat' => 0,
+                    'BBLR (2000 - <2500 gr) dan sakit' => 0,
+                    'BBLR < 2000 gr' => 0
+                ],
+                'penyakit_jantung_bawaan' => [
+                    '>95%, Perbedaan <3% di tangan kanan dan kaki' => 0,
+                    '90-95% atau perbedaan >3% di tangan dan kaki' => 0,
+                    '<90%' => 0
+                ],
+                'kekurangan_hormon_tiroid' => [
+                    'TSH Normal' => 0,
+                    'TSH Tinggi' => 0
+                ],
+                'kekurangan_enzim_d6pd' => [
+                    'Negatif' => 0,
+                    'Positif' => 0
+                ],
+                'kekurangan_hormon_adrenal' => [
+                    'Negatif' => 0,
+                    'Positif' => 0
+                ],
+                'kelainan_saluran_empedu' => [
+                    'Warna tinja Normal' => 0,
+                    'Warna tinja Pucat' => 0
+                ]
+            ],
+            'lanjut_usia' => [
+                'ppok' => [
+                    'Resiko rendah (PUMA < 6)' => 0,
+                    'Resiko tinggi (PUMA ≥ 6)' => 0
+                ],
+                'gangguan_penglihatan' => [
+                    'Tidak ada gangguan' => 0,
+                    'Ditemukan ≥1 gangguan' => 0
+                ],
+                'gangguan_pendengaran' => [
+                    'Tidak ada gangguan' => 0,
+                    'Ditemukan ≥1 gangguan' => 0
+                ],
+                'gejala_depresi' => [
+                    'Tidak ada gangguan' => 0,
+                    'Tidak depresi' => 0,
+                    'Kemungkinan depresi' => 0,
+                    'Depresi' => 0
+                ],
+                'activity_daily_living' => [
+                    'Mandiri' => 0,
+                    'Ketergantungan ringan' => 0,
+                    'Ketergantungan Sedang' => 0,
+                    'Ketergantungan Berat' => 0,
+                    'Ketergantungan total' => 0
+                ]
             ]
         ];
 
@@ -178,6 +243,8 @@ class DashboardController extends Controller
                     $paru_keys = ['tuberkulosis'];
                     $jiwa_keys = ['kesehatan_jiwa'];
                     $hati_keys = ['hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis'];
+                    $bbl_keys = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu'];
+                    $lanjut_usia_keys = ['ppok', 'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living'];
     
                     foreach ($keys as $key) {
                         if (isset($pemeriksaan[$key])) {
@@ -230,6 +297,24 @@ class DashboardController extends Controller
                         $value = $pemeriksaan[$key];
                         if (isset($result['hati'][$key][$value])) {
                             $result['hati'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($bbl_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['bbl'][$key][$value])) {
+                            $result['bbl'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($lanjut_usia_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['lanjut_usia'][$key][$value])) {
+                            $result['lanjut_usia'][$key][$value]++;
                         }
                     }
                 }
