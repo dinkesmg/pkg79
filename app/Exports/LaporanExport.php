@@ -11,15 +11,16 @@ use Carbon\Carbon;
 class LaporanExport implements FromCollection, WithHeadings, WithMapping
 {
     private $counter = 0;
-    protected $role, $id_user, $periodeDari, $periodeSampai, $instrumen;
+    protected $role, $id_user, $periodeDari, $periodeSampai, $instrumen, $jenis;
 
-    public function __construct($role, $id_user, $periodeDari, $periodeSampai, $instrumen)
+    public function __construct($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $jenis)
     {
         $this->role = $role;
         $this->id_user = $id_user;
         $this->periodeDari = $periodeDari;
         $this->periodeSampai = $periodeSampai;
         $this->instrumen = $instrumen;
+        $this->jenis = $jenis;
     }
 
     /**
@@ -40,7 +41,12 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
           ->orderBy('tanggal_pemeriksaan', 'desc');
 
         $instrumen = $this->instrumen;
+        $jenis = $this->jenis;
     
+        if($jenis == "fktp_lain"){
+            $query->where('tempat_periksa', '!=', 'Puskesmas');
+        }
+        
         // Filter berdasarkan role
         if ($this->role == "Puskesmas") {
             $query->where('id_user', $this->id_user);
@@ -90,6 +96,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             'Nama Pasien',
             'Jenis Kelamin',
             // 'Tanggal Lahir',
+            'Umur',
             'Provinsi KTP',
             'Kota Kab KTP',
             'Kecamatan KTP',
@@ -129,6 +136,17 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             ? implode(', ', array_map(fn($item) => implode(', ', array_map(fn($key, $value) => "$key: $value", array_keys($item), $item)), $program_tindak_lanjut))
             : '-';
 
+        if (isset($riwayat->pasien) && isset($riwayat->pasien->tgl_lahir) && isset($riwayat->tanggal_pemeriksaan)) {
+            $tglLahir = Carbon::parse($riwayat->pasien->tgl_lahir);
+            $tglPeriksa = Carbon::parse($riwayat->tanggal_pemeriksaan);
+        
+            $diff = $tglLahir->diff($tglPeriksa);
+        
+            $umur = $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
+        } else {
+            $umur = '';
+        }
+
         return [
             ++$this->counter,
             $riwayat->user ? $riwayat->user->nama : "-",
@@ -139,6 +157,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             isset($riwayat->pasien->nama) ? $riwayat->pasien->nama:"-",
             isset($riwayat->pasien->jenis_kelamin) ? $riwayat->pasien->jenis_kelamin:"-", 
             // isset($riwayat->pasien->tgl_lahir) ? Carbon::parse($riwayat->pasien->tgl_lahir)->format('d-m-Y'):"-", 
+            $umur,
             isset($riwayat->pasien->ref_provinsi_ktp->nama) ? $riwayat->pasien->ref_provinsi_ktp->nama : '-',
             isset($riwayat->pasien->ref_kota_kab_ktp->nama) ? $riwayat->pasien->ref_kota_kab_ktp->nama : '-',
             isset($riwayat->pasien->ref_kecamatan_ktp->nama) ? $riwayat->pasien->ref_kecamatan_ktp->nama : '-',

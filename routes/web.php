@@ -36,7 +36,9 @@ Route::prefix('riwayat')->group(function () {
 
 Route::prefix('laporan')->group(function () {
     Route::get('/', [LaporanController::class, 'index'])->name('laporan.index');
+    Route::get('/fktp_lain', [LaporanController::class, 'index_fktp_lain'])->name('laporan.index_fktp_lain');
     Route::get('/data', [LaporanController::class, 'data'])->name('laporan.data');
+    Route::get('/data_fktp_lain', [LaporanController::class, 'data_fktp_lain'])->name('laporan.data_fktp_lain');
     Route::get('/export', [LaporanController::class, 'export'])->name('laporan.export');
 });
 
