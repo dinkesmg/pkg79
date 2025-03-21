@@ -286,8 +286,8 @@ class RiwayatController extends Controller
             }
 
             $data = [
-                // 'tgl_dari'   => $request->tgl_dari,
-                // 'tgl_sampai' => $request->tgl_sampai,
+                'tanggal_dari'   => $request->tanggal_dari,
+                'tanggal_sampai' => $request->tanggal_sampai,
                 // 'tgl_dari'   => "2025-03-08",
                 // 'tgl_sampai' => "2025-03-08",
             ];
