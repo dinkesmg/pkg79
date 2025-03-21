@@ -21,7 +21,7 @@
                             <div class="card" style="margin-bottom:0">
                                 <div class="card-header" style="display:flex; align-items:center; justify-content:center">
                                     <!-- <i class="fa-solid fa-chart-area fa-bounce mr-1"></i> -->
-                                    <h5 class="m-0">Riwayat</h5>
+                                    <h5 class="m-0">Laporan FKTP Lain</h5>
                                 </div>
                             </div>
                         </div>
@@ -35,35 +35,41 @@
                         <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-md-2">Periode dari</div>
+                                <div class="col-md-1 text-center">Periode dari</div>
                                 <div class="col-md-2"><input id="periode_dari" type="date"></input></div>
-                                <div class="col-md-2 text-center">sampai</div>
+                                <div class="col-md-1 text-center">sampai</div>
                                 <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
-                                <div class="col-md-4"><button onclick="tabel()">Cari</button></div>
+                                <div class="col-md-1 text-center">Instrumen Pemeriksaan</div>
+                                <div class="col-md-4"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
+                                <div class="col-md-1"><button onclick="tabel()">Cari</button></div>
                             </div>
-                            <div style="display:flex; justify-content:center; margin-bottom:10px; margin-top:10px"><button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i class="fa fa-plus"></i> Tambah Pasien</button></a></div>
-                            <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th style="width:150px;">Aksi</th>
-                                    <th>Tanggal Pemeriksaan</th>
-                                    <th>Tempat Periksa</th>
-                                    <th>Nama FKTP PJ</th>
-                                    <!-- <th>Pemeriksa</th> -->
-                                    <th>NIK</th>
-                                    <th>Nama</th>
-                                    <th>Jenis Kelamin</th>
-                                    <!-- <th>Tanggal Lahir</th> -->
-                                    <th>Umur</th>
-                                    <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
-                                    <th>Kesimpulan Hasil</th>
-                                    <!-- <th>Program Tindak Lanjut</th> -->
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                            </table>
+                            <div style="display:flex; justify-content:center; margin-top:30px">
+                                <button class= "btn btn-sm btn-success" onclick="oc_export()">Export</button>
+                            </div>
+                            <div style="margin-top:30px">
+                                <table id="idtabel" class="table table-bordered table-striped example" style="width:100%; margin-top:30px">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th style="width:150px;">Aksi</th>
+                                        <th>Tanggal Pemeriksaan</th>
+                                        <th>Tempat Periksa</th>
+                                        <th>Nama FKTP</th>
+                                        <!-- <th>Pemeriksa</th> -->
+                                        <!-- <th>NIK</th> -->
+                                        <th>Nama</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Umur</th>
+                                        <!-- <th>Tanggal Lahir</th> -->
+                                        <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
+                                        <th>Kesimpulan Hasil</th>
+                                        <!-- <th>Program Tindak Lanjut</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                </table>
+                            </div>
                         </div>
                         </div>
                     </div>
@@ -101,7 +107,42 @@
         $('#periode_dari').val(hari_ini);
         $('#periode_sampai').val(hari_ini);
         
+        $('#instrumen').select2({
+            placeholder: 'Cari...',
+            allowClear: true,
+            width: 'resolve',
+            theme: 'bootstrap4',
+            // dropdownParent: $(".modal-body"),
+            ajax: {
+                url: "{{ url('master_instrumen') }}",
+                dataType: 'json',
+                delay: 500,
+                data: function(params) {
+                    return {
+                        search: params.term,
+                    };
+                },
+                processResults: function(data) {
+                    let results = data.map(item => ({
+                        id: item.id,
+                        text: item.val
+                    }));
+                    
+
+                    console.log("Final Results for Select2:", results); // Debugging
+
+                    return { results };
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX error:", status, error);
+                },
+                // cache: true
+            },
+            // minimumInputLength: 2,
+        });
+
         tabel()
+        
         Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -248,10 +289,7 @@
                 
                 // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
                     
-                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Edit\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Edit</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-secondary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"> PDF</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Detail\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
                     
                     // }
                 
@@ -272,12 +310,12 @@
             { 'data': 'tempat_periksa' },
             { 'data': 'nama_fktp_pj' },
             // { 'data': 'pemeriksa.nama' },
-            { 'render': function (data, type, row, meta) {
-                let pasien = (row.pasien && row.pasien.nik ? row.pasien.nik : "");
+            // { 'render': function (data, type, row, meta) {
+            //     let pasien = (row.pasien && row.pasien.nik ? row.pasien.nik : "");
 
-                return pasien
-                }
-            },
+            //     return pasien
+            //     }
+            // },
             { 'render': function (data, type, row, meta) {
                 let pasien = (row.pasien && row.pasien.nama ? row.pasien.nama : "");
 
@@ -290,17 +328,6 @@
                 return pasien
                 }
             },
-            // { 'render': function (data, type, row, meta) {
-            //     let tgl = (row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "");
-
-            //     if (tgl != "") {
-            //         let dateParts = tgl.split("-");
-            //         let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
-            //         return formattedDate;
-            //     }
-            //     return "";
-            //     }
-            // },
             { 'render': function (data, type, row, meta) {
                 let tglLahir = row.pasien?.tgl_lahir;
                 let tglPeriksa = row.tanggal_pemeriksaan;
@@ -329,6 +356,17 @@
                 return `${tahun} tahun ${bulan} bulan ${hari} hari`;
                 }
             },
+            // { 'render': function (data, type, row, meta) {
+            //     let tgl = (row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "");
+
+            //     if (tgl != "") {
+            //         let dateParts = tgl.split("-");
+            //         let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0];
+            //         return formattedDate;
+            //     }
+            //     return "";
+            //     }
+            // },
             // { 'data': 'hasil_pemeriksaan' },
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
             // { 'data': 'program_tindak_lanjut' },
@@ -337,15 +375,12 @@
         $('#idtabel').dataTable( {
             destroy : true,
             scrollX : true,
-            // ajax :  {
-            //     url: "{{url('riwayat/data')}}",
-            //     dataSrc: ''
-            // },
             ajax: {
-                url: "{{url('riwayat/data')}}",
+                url: "{{url('laporan/data_fktp_lain')}}",
                 data: function(d) {
                     d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
                     d.periode_sampai = $('#periode_sampai').val();
+                    d.instrumen = $('#instrumen option:selected').text();
                 },
                 dataSrc: ''
             },
@@ -418,99 +453,7 @@
         // var role_auth = "{{ Auth::user()->role }}";
         // console.log(role_auth)
         $('#exampleModal .modal-title').text(fitur+' Pasien');
-        if(fitur=="Detail"){
-            let tgl_lahir = dt.pasien_tgl_lahir;
-            let parts = tgl_lahir.split("-");
-            let format_tgl_lahir = parts[2] + "-" + parts[1] + "-" + parts[0];
-
-            let hasil_pemeriksaan = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan)); 
-            let l_ar_hasil_pemeriksaan = ""
-            if(hasil_pemeriksaan!="" && hasil_pemeriksaan!=null){
-                for (let i = 0; i < hasil_pemeriksaan.length; i++) {   
-                    let formattedString = Object.entries(hasil_pemeriksaan[i])
-                        .map(([key, value]) => `${key}: ${value}`)
-                        .join(", ");
-                    
-                    l_ar_hasil_pemeriksaan += '-'+formattedString+'</br>'
-                }
-            }
-            
-            let edukasi = ""
-            let rujuk_fktrl = "" 
-            let program_tl = dt.program_tindak_lanjut?dt.program_tindak_lanjut:""
-            if(program_tl){
-                edukasi = dt.program_tindak_lanjut.find(item => item.edukasi !== undefined && item.edukasi !== null)?.edukasi;
-                rujuk_fktrl = dt.program_tindak_lanjut.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)?.rujuk_fktrl;
-            }
-            
-            // console.log(JSON.stringify(l_ar_hasil_pemeriksaan))
-            // console.log(dt.program_tindak_lanjut)
-            // console.log("edukasi")
-            // console.log(edukasi)
-            var html='\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Identitas Pasien</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>KTP</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">NIK:'+dt.pasien_nik+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Nama:'+dt.pasien_nama+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Jenis Kelamin:'+dt.pasien_jenis_kelamin+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tanggal Lahir:'+format_tgl_lahir+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Alamat:'+dt.pasien_alamat_ktp+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">No HP:'+dt.pasien_no_hp+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tanggal Pemeriksaan:'+dt.tanggal_pemeriksaan+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Tempat Periksa:'+dt.tempat_periksa+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Nama FKTP PJ:'+dt.nama_fktp_pj+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Identitas Pemeriksa</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Nama:'+dt.pemeriksa_nama+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12" style="width:100%">'+l_ar_hasil_pemeriksaan+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Kesimpulan Hasil</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-4">Hasil Pemeriksaan</div>\
-                <div class="col-12">'+dt.kesimpulan_hasil_pemeriksaan+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Program Tindak Lanjut</b></div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Edukasi yang diberikan:'+edukasi+'</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12">Rujuk FKTRL (disertai dengan keterangan):'+rujuk_fktrl+'</div>\
-            </div>'
-        }
-        else{
+        
             // let hasil_pemeriksaan_lainnya = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan_lainnya));
             console.log(dt.hasil_pemeriksaan_lainnya)
 
@@ -520,8 +463,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-6"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
-                <div class="col-2"><button onclick="oc_cari_nik()">Cari</button></div>\
+                <div class="col-8"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
@@ -666,10 +608,9 @@
                 <div class="col-4">Rujuk FKTRL (disertai dengan keterangan)</div>\
                 <div class="col-8"><input id="rujuk_fktrl" type="text" value="" oninput="oc_program_tindak_lanjut(\'rujuk_fktrl\')" style="width:100%"></input></div>\
             </div>'
-        }
 
         $('#exampleModal .modal-body').html(html);
-        $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\''+fitur+'\', \''+id_riwayat+'\')">'+fitur+'</button>');
+        // $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\''+fitur+'\', \''+id_riwayat+'\')">'+fitur+'</button>');
         
         oc_tgl_pemeriksaan_dan_lahir()
         get_program_tindak_lanjut()
@@ -2915,5 +2856,20 @@
         })
     }
 
+    function oc_export(){
+        // window.location.href = "{{url('laporan/export')}}";
+        let periodeDari = document.getElementById("periode_dari").value;
+        let periodeSampai = document.getElementById("periode_sampai").value;
+        let instrumen = $('#instrumen option:selected').text()
+        let jenis = "fktp_lain";
+
+        let url = "{{url('laporan/export')}}" + 
+                "?periode_dari=" + encodeURIComponent(periodeDari) + 
+                "&periode_sampai=" + encodeURIComponent(periodeSampai) + 
+                "&instrumen=" + encodeURIComponent(instrumen)+
+                "&jenis=" + encodeURIComponent(jenis);
+
+        window.location.href = url;
+    }
+
 </script>
-</html>

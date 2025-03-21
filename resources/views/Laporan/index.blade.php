@@ -60,11 +60,12 @@
                                         <th style="width:150px;">Aksi</th>
                                         <th>Tanggal Pemeriksaan</th>
                                         <th>Tempat Periksa</th>
-                                        <th>Nama FKTP PJ</th>
+                                        <th>Nama FKTP</th>
                                         <!-- <th>Pemeriksa</th> -->
                                         <!-- <th>NIK</th> -->
                                         <th>Nama</th>
                                         <th>Jenis Kelamin</th>
+                                        <th>Umur</th>
                                         <!-- <th>Tanggal Lahir</th> -->
                                         <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
                                         <th>Kesimpulan Hasil</th>
@@ -396,6 +397,35 @@
             //     return "";
             //     }
             // },
+            {
+            'render': function (data, type, row, meta) {
+                let tglLahir = row.pasien?.tgl_lahir;
+                let tglPeriksa = row.tanggal_pemeriksaan;
+                if (!tglLahir || !tglPeriksa) return "";
+                // console.log(tglLahir)
+                // console.log(tglPeriksa)
+
+                const tanggalLahir = new Date(tglLahir);
+                const tanggalPeriksa = new Date(tglPeriksa);
+
+                let tahun = tanggalPeriksa.getFullYear() - tanggalLahir.getFullYear();
+                let bulan = tanggalPeriksa.getMonth() - tanggalLahir.getMonth();
+                let hari = tanggalPeriksa.getDate() - tanggalLahir.getDate();
+
+                if (hari < 0) {
+                bulan--;
+                const prevMonth = new Date(tanggalPeriksa.getFullYear(), tanggalPeriksa.getMonth(), 0);
+                hari += prevMonth.getDate();
+                }
+
+                if (bulan < 0) {
+                tahun--;
+                bulan += 12;
+                }
+
+                return `${tahun} tahun ${bulan} bulan ${hari} hari`;
+                }
+            },
             // { 'data': 'hasil_pemeriksaan' },
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
             // { 'data': 'program_tindak_lanjut' },
@@ -2890,11 +2920,13 @@
         let periodeDari = document.getElementById("periode_dari").value;
         let periodeSampai = document.getElementById("periode_sampai").value;
         let instrumen = $('#instrumen option:selected').text()
+        let jenis = "semua";
 
         let url = "{{url('laporan/export')}}" + 
                 "?periode_dari=" + encodeURIComponent(periodeDari) + 
                 "&periode_sampai=" + encodeURIComponent(periodeSampai) + 
-                "&instrumen=" + encodeURIComponent(instrumen);
+                "&instrumen=" + encodeURIComponent(instrumen)+
+                "&jenis=" + encodeURIComponent(jenis);
 
         window.location.href = url;
     }
