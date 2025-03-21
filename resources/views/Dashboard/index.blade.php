@@ -34,7 +34,7 @@
         transition: box-shadow 0.3s ease-in-out;
     }
 
-    .card-body:hover {
+    .card-hasil:hover {
         background-color: #e5e7eb;
     }
 
@@ -485,7 +485,7 @@
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="tekanan_darah" data-idInstrumen="9">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Tekanan Darah
                                                 </div>
@@ -532,7 +532,7 @@
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="gula_darah">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gula Darah
                                                 </div>
@@ -565,7 +565,7 @@
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="status_gizi">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Status Gizi
                                                 </div>
@@ -600,7 +600,7 @@
                                 <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="merokok">
                                         <div class="card card-shadow text-dark" style="height: 240px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Merokok
                                                 </div>
@@ -638,7 +638,7 @@
                                 <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="aktivitas_fisik">
                                         <div class="card card-shadow text-dark" style="height: 240px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Aktivitas Fisik
                                                 </div>
@@ -679,7 +679,7 @@
                                 <div class="col-lg-4 p-2">
                                     <a class="linkRiwayat" data-instrumen="gigi">
                                         <div class="card card-shadow text-dark" style="height: 240px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gigi
                                                 </div>
@@ -717,7 +717,7 @@
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="risiko_jantung">
                                         <div class="card card-shadow text-dark" style="height: 240px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Risiko Jantung
                                                 </div>
@@ -745,7 +745,7 @@
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="fungsi_ginjal">
                                         <div class="card card-shadow text-dark" style="height: 240px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Fungsi Ginjal
                                                 </div>
@@ -772,7 +772,7 @@
                                 <div class="col-12 p-2">
                                     <a class="linkRiwayat" data-instrumen="risiko_Stroke">
                                         <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Risiko Stroke
                                                 </div>
@@ -851,7 +851,7 @@
                                 <div class="col-lg-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="tes_penglihatan">
                                         <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Mata (Tes Penglihatan)
                                                 </div>
@@ -911,7 +911,7 @@
                                 <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="tes_pendengaran">
                                         <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Telinga (Tes Pendengaran)
                                                 </div>
@@ -970,7 +970,7 @@
                                     <div class="col-md-12 col-lg-6 p-2">
                                         <a class="linkRiwayat" data-instrumen="kanker_leher_rahim">
                                             <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
-                                                <div class="card-body">
+                                                <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Kanker Leher Rahim
                                                     </div>
@@ -1030,7 +1030,7 @@
                                     <div class="col-md-6 col-lg-6 p-2">
                                         <a class="linkRiwayat" data-instrumen="kanker_payudara">
                                             <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
-                                                <div class="card-body">
+                                                <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Kanker Payudara
                                                     </div>
@@ -1101,7 +1101,7 @@
                                     <div class="col-md-12 col-lg-6 p-2">
                                         <a class="linkRiwayat" data-instrumen="kanker_paru">
                                             <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                                <div class="card-body">
+                                                <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Kanker Paru
                                                     </div>
@@ -1139,7 +1139,7 @@
                                     <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="kanker_usus">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kanker Usus
                                                 </div>
@@ -1207,7 +1207,7 @@
                                     <div class="col-md-12 col-lg-8 p-2">
                                     <a class="linkRiwayat" data-instrumen="tuberkulosis">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Tuberkulosis
                                                 </div>
@@ -1268,7 +1268,7 @@
                                     <div class="col-lg-12 col-lg-8 p-2">
                                     <a class="linkRiwayat" data-instrumen="kesehatan_jiwa">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kesehatan Jiwa
                                                 </div>
@@ -1338,7 +1338,7 @@
                                     <div class="col-md-12 col-lg-6 p-2">
                                         <a class="linkRiwayat" data-instrumen="hepatitis_b">
                                             <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                                <div class="card-body">
+                                                <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Hepatitis B
                                                     </div>
@@ -1376,7 +1376,7 @@
                                     <div class="col-md-12 col-lg-6 p-2" >
                                         <a class="linkRiwayat" data-instrumen="hepatitis_c">
                                             <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                                <div class ="card-body">
+                                                <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Hepatitis C
                                                     </div>
@@ -1404,7 +1404,7 @@
                                     <div class="col p-2" >
                                     <a class="linkRiwayat" data-instrumen="fibrosis_sirosis">
                                         <div class="card card-shadow text-dark" style="height: 260px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Fibrosis/Sirosis
                                                 </div>
@@ -1437,7 +1437,7 @@
                                     <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="pertumbuhan_bb">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Pertumbuhan (BB)
                                                 </div>
@@ -1493,7 +1493,7 @@
                                     <div class="col-md-12 col-lg-6 p-2" >
                                     <a class="linkRiwayat" data-instrumen="penyakit_jantung_bawaan">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Penyakit Jantung Bawaan Kritis
                                                 </div>
@@ -1526,7 +1526,7 @@
                                     <div class="col p-2" >
                                         <a class="linkRiwayat" data-instrumen="kekurangan_hormon_tiroid">
                                             <div class="card card-shadow text-dark" style="height: 320px;">
-                                                <div class ="card-body">
+                                                <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Kekurangan Hormon Tiroid Sejak Lahir (TSHS)
                                                     </div>
@@ -1553,7 +1553,7 @@
                                     <div class="col-md-12 col-lg-4 p-2">
                                     <a class="linkRiwayat" data-instrumen="kekurangan_enzim_d6pd">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kekurangan Enzim Pelindung Sel Darah Merah (D6PD)
                                                 </div>
@@ -1591,7 +1591,7 @@
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="kekurangan_hormon_adrenal">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kekurangan Hormon Adrenal Sejak Lahir
                                                 </div>
@@ -1619,7 +1619,7 @@
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="kelainan_saluran_empedu">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kelainan Saluran Empedu
                                                 </div>
@@ -1652,7 +1652,7 @@
                                     <div class="col-md-12 col-lg-4 p-2">
                                         <a class="linkRiwayat" data-instrumen="ppok">
                                             <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                                <div class="card-body">
+                                                <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         PPOK
                                                     </div>
@@ -1690,7 +1690,7 @@
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gangguan Penglihatan
                                                 </div>
@@ -1718,7 +1718,7 @@
                                     <div class="col-md-12 col-lg-4 p-2" >
                                         <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
                                             <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                                <div class ="card-body">
+                                                <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Gangguan Pendengaran
                                                     </div>
@@ -1745,12 +1745,12 @@
                                     <div class="col-md-12 col-lg-4 p-2">
                                     <a class="linkRiwayat" data-instrumen="gejala_depresi">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
+                                            <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gejala Depresi
                                                 </div>
                                                 <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-kekurangan-enzim_d6pd">0</span> Orang</p>
+                                                    <p><span style="font-size: 28px" id="total-hasil-gejala-depresi">0</span> Orang</p>
                                                     <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                 </div>
                                                 <div>
@@ -1789,8 +1789,10 @@
                                                 </div>
         
                                                 <div class="progress">
-                                                    <div id="progress-ed-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-ed-positif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-gr-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-gr-tidak-depresi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-gr-kemungkinan-depresi" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-gr-gr-depresi" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1799,12 +1801,12 @@
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="activity_daily_living">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
+                                            <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Activity Daily Living
                                                 </div>
                                                     <div class="card-text">
-                                                        <p><span style="font-size: 28px" id="total-hasil-kekurangan-hormon_adrenal">0</span> Orang</p>
+                                                        <p><span style="font-size: 28px" id="total-hasil-activity-daily_living">0</span> Orang</p>
                                                         <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                     </div>
                                                     <div>
