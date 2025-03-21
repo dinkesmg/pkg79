@@ -30,15 +30,21 @@
             </div>
             <div class="content">
                 <div class="container-fluid">
+                <!-- @php
+                    $instrumen = request('instrumen', ''); // Default ke string kosong jika tidak ada
+                    $tgl_dari = request('tgl_dari', ''); 
+                    $tgl_sampai = request('tgl_sampai', ''); 
+                @endphp -->
+
                     <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-1 text-center">Periode dari</div>
-                                <div class="col-md-2"><input id="periode_dari" type="date"></input></div>
+                                <div class="col-md-2"><input id="periode_dari" type="date" value="{{ request('tgl_dari', '') }}"></input></div>
                                 <div class="col-md-1 text-center">sampai</div>
-                                <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
+                                <div class="col-md-2"><input id="periode_sampai" type="date" value="{{ request('tgl_sampai', '') }}"></input></div>
                                 <div class="col-md-1 text-center">Instrumen Pemeriksaan</div>
                                 <div class="col-md-4"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
                                 <div class="col-md-1"><button onclick="tabel()">Cari</button></div>
@@ -96,22 +102,38 @@
     </div>
 @include('layouts.footer')
 </body>
+
 <script>
     var Toast
     var role_auth = "{{Auth::user()->role}}";
 
     $(document).ready(function () {
-        let hari_ini = new Date().toISOString().split('T')[0];
+        const urlParams = new URLSearchParams(window.location.search);
+        const instrumenFromURL = urlParams.get('instrumen') || "";
+        const idInstrumenFromURL = urlParams.get('id') || "";
 
-        $('#periode_dari').val(hari_ini);
-        $('#periode_sampai').val(hari_ini);
-        
+        // Jangan timpa tanggal dari blade
+        let hari_ini = new Date().toISOString().split('T')[0];
+        if (!$('#periode_dari').val()) {
+            $('#periode_dari').val(hari_ini);
+        }
+        if (!$('#periode_sampai').val()) {
+            $('#periode_sampai').val(hari_ini);
+        }
+
+        $('#instrumen')
+        .empty()
+        .append($("<option/>")
+            .val(idInstrumenFromURL)
+            .text(instrumenFromURL))
+        .val(idInstrumenFromURL)
+        .trigger("change");
+
         $('#instrumen').select2({
             placeholder: 'Cari...',
             allowClear: true,
             width: 'resolve',
             theme: 'bootstrap4',
-            // dropdownParent: $(".modal-body"),
             ajax: {
                 url: "{{ url('master_instrumen') }}",
                 dataType: 'json',
@@ -122,33 +144,69 @@
                     };
                 },
                 processResults: function(data) {
-                    let results = data.map(item => ({
-                        id: item.id,
-                        text: item.val
-                    }));
-                    
-
-                    console.log("Final Results for Select2:", results); // Debugging
-
-                    return { results };
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.val
+                        }))
+                    };
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX error:", status, error);
                 },
-                // cache: true
             },
-            // minimumInputLength: 2,
         });
 
-        tabel()
-        
+        // 🧩 Ini bagian penting: isi select2 dari parameter URL
+        if (instrumenFromURL) {
+            $.ajax({
+                url: "{{ url('master_instrumen_detail') }}/" + instrumenFromURL,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // Tambahkan sebagai opsi dan trigger change
+                    let option = new Option(data.val, data.id, true, true);
+                    $('#instrumen').append(option).trigger('change');
+
+                    // Setelah select terisi, cek tanggal — lalu jalankan tabel()
+                    if ($('#periode_dari').val() && $('#periode_sampai').val()) {
+                        tabel();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Gagal ambil detail instrumen:", error);
+                }
+            });
+        }
+
+        tabel();
+
         Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
             timer: 3000
         });
-    })
+    });
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     // Ambil parameter dari URL
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const instrumen = urlParams.get('instrumen') || "";
+    //     const tglDari = urlParams.get('tgl_dari') || "";
+    //     const tglSampai = urlParams.get('tgl_sampai') || "";
+
+    //     console.log(instrumen, tglDari, tglSampai);
+        
+    //     document.getElementById('periode_dari').value = tglDari;
+    //     document.getElementById('periode_sampai').value = tglSampai;
+    //     document.getElementById('instrumen').value = instrumen;
+
+    //     // Jalankan fungsi tabel() jika parameter ada
+    //     if (instrumen && tglDari && tglSampai) {
+    //         tabel();
+    //     }
+    // });
 
     var semua_riwayat = []
 

@@ -34,6 +34,10 @@
         transition: box-shadow 0.3s ease-in-out;
     }
 
+    .card-body:hover {
+        background-color: #e5e7eb;
+    }
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -479,6 +483,7 @@
                         <div>
                             <div class="row">
                                 <div class="col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="tekanan_darah" data-idInstrumen="9">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -522,8 +527,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                 </div>
                                 <div class="col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="gula_darah">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -553,8 +560,10 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                 </div>
                                 <div class="col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="status_gizi">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -582,192 +591,110 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                 </div>
                             </div>
                             <div class="">
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                 <div class="col-md-12 col-lg-6 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 240px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Merokok
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-merokok">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Tidak Merokok: <span id="tidak-merokok">0</span>
-                                                </p>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Merokok: <span id="merokok">0</span>
-                                                </p>
-                                            </div>
-        
-                                            <div class="progress">
-                                                <div id="progress-tidak-merokok" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-merokok" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <a class="linkRiwayat" data-instrumen="merokok">
+                                        <div class="card card-shadow text-dark" style="height: 240px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Merokok
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-merokok">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tidak Merokok: <span id="tidak-merokok">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Merokok: <span id="merokok">0</span>
+                                                    </p>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-tidak-merokok" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-merokok" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-12 col-lg-6 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 240px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Aktivitas Fisik
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-aktivitas-fisik">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Cukup: <span id="af-cukup">0</span>
-                                                </p>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Kurang: <span id="af-kurang">0</span>
-                                                </p>
-                                            </div>
-        
-                                            <div class="progress">
-                                                <div id="progress-af-cukup" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-af-kurang" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                    <a class="linkRiwayat" data-instrumen="aktivitas_fisik">
+                                        <div class="card card-shadow text-dark" style="height: 240px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Aktivitas Fisik
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-aktivitas-fisik">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Cukup: <span id="af-cukup">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Kurang: <span id="af-kurang">0</span>
+                                                    </p>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-af-cukup" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-af-kurang" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-lg-4 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 240px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Gigi
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-gigi">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Tidak ada karies (normal): <span id="gg-normal">0</span>
-                                                </p>
-                                                <p>
-                                                    <span class="mr-2">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                            <circle cx="8" cy="8" r="8" />
-                                                        </svg>
-                                                    </span>
-                                                    Ada karies, gigi goyang: <span id="gg-karies">0</span>
-                                                </p>
-                                            </div>
-    
-                                            <div class="progress">
-                                                <div id="progress-gg-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-gg-karies" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 p-2" >
-                                    <div class="card card-shadow text-dark" style="height: 240px;">
-                                        <div class ="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Risiko Jantung
-                                            </div>
+                                    <a class="linkRiwayat" data-instrumen="gigi">
+                                        <div class="card card-shadow text-dark" style="height: 240px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Gigi
+                                                </div>
                                                 <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-risiko-jantung">0</span> Orang</p>
+                                                    <p><span style="font-size: 28px" id="total-hasil-gigi">0</span> Orang</p>
                                                     <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                 </div>
                                                 <div>
-                                                    <p>
-                                                    <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Normal: <span id="rj-normal">0</span>
-                                                    </p>    
-                                                
-                                                    <p>
-                                                    <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Tidak normal: <span id="rj-tidak-normal">0</span>
-                                                    </p>      
-                                                </div>
-                                                <div class="progress">
-                                                    <div id="progress-rj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-rj-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 p-2" >
-                                    <div class="card card-shadow text-dark" style="height: 240px;">
-                                        <div class ="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Fungsi Ginjal
-                                            </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-fungsi-ginjal">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div> 
-                                                    <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal: <span id="fg-normal">0</span></p>
-                                                    <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak normal: <span id="fg-tidak-normal">0</span></p>
-                                                </div>
-                                                <div class="progress">
-                                                    <div id="progress-fg-normal" class="progress-bar bg-warning" role="progressbar"
-                                                        style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                    <div id="progress-fg-tidak-normal" class="progress-bar bg-primary" role="progressbar"
-                                                        style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Risiko Stroke
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-risiko-stroke">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div class="d-flex justify-content-start flex-md-row flex-column">
-                                                <div class="mr-3">
                                                     <p>
                                                         <span class="mr-2">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
                                                                 <circle cx="8" cy="8" r="8" />
                                                             </svg>
                                                         </span>
-                                                        Normal: <span id="rs-normal">0</span>
+                                                        Tidak ada karies (normal): <span id="gg-normal">0</span>
                                                     </p>
                                                     <p>
                                                         <span class="mr-2">
@@ -775,47 +702,142 @@
                                                                 <circle cx="8" cy="8" r="8" />
                                                             </svg>
                                                         </span>
-                                                        Tinggi: <span id="rs-tinggi">0</span>
-                                                    </p>
-                                                    
-                                                </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang: <span id="rs-ptm-rendah">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi: <span id="rs-ptm-sedang">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah: <span id="rs-ptm-tinggi">0</span>
+                                                        Ada karies, gigi goyang: <span id="gg-karies">0</span>
                                                     </p>
                                                 </div>
-                                            </div>
-    
-                                            <div class="progress">
-                                                <div id="progress-rs-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-rs-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-rs-ptm-rendah" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-rs-ptm-sedang" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-rs-ptm-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+        
+                                                <div class="progress">
+                                                    <div id="progress-gg-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-gg-karies" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="risiko_jantung">
+                                        <div class="card card-shadow text-dark" style="height: 240px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Risiko Jantung
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-risiko-jantung">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Normal: <span id="rj-normal">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Tidak normal: <span id="rj-tidak-normal">0</span>
+                                                        </p>      
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-rj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-rj-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="fungsi_ginjal">
+                                        <div class="card card-shadow text-dark" style="height: 240px;">
+                                            <div class ="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Fungsi Ginjal
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-fungsi-ginjal">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div> 
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal: <span id="fg-normal">0</span></p>
+                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak normal: <span id="fg-tidak-normal">0</span></p>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div id="progress-fg-normal" class="progress-bar bg-warning" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        <div id="progress-fg-tidak-normal" class="progress-bar bg-primary" role="progressbar"
+                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12 p-2">
+                                    <a class="linkRiwayat" data-instrumen="risiko_Stroke">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Risiko Stroke
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-risiko-stroke">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div class="d-flex justify-content-start flex-md-row flex-column">
+                                                    <div class="mr-3">
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Normal: <span id="rs-normal">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tinggi: <span id="rs-tinggi">0</span>
+                                                        </p>
+                                                        
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko sedang: <span id="rs-ptm-rendah">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko tinggi: <span id="rs-ptm-sedang">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="gray" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Prediksi risiko stroke dengan tabel prediksi PTM menunjukan resiko rendah: <span id="rs-ptm-tinggi">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+        
+                                                <div class="progress">
+                                                    <div id="progress-rs-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-rs-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-rs-ptm-rendah" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-rs-ptm-sedang" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-rs-ptm-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="col p-2">
                                 </div>
@@ -827,111 +849,115 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                 <div class="col-lg-12 col-lg-6 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Mata (Tes Penglihatan)
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-tes-penglihatan">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div class="d-flex justify-content-around">
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Visus (6/6 - 6/12): <span id="tm-visus-66-612">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Abnormal (Visus < 6/12): <span id="tm-abnormal">0</span>
-                                                    </p>
+                                    <a class="linkRiwayat" data-instrumen="tes_penglihatan">
+                                        <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Mata (Tes Penglihatan)
                                                 </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Visus Membaik: <span id="tm-visus-membaik">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Visus Membaik: <span id="tm-visus-tidak-membaik">0</span>
-                                                    </p>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-tes-penglihatan">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                 </div>
-                                            </div>
-        
-                                            <div class="progress">
-                                                <div id="progress-tm-visus-66-612" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-tm-abnormal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-tm-visus-membaik" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-tm-visus-tidak-membaik" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Visus (6/6 - 6/12): <span id="tm-visus-66-612">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Abnormal (Visus < 6/12): <span id="tm-abnormal">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Visus Membaik: <span id="tm-visus-membaik">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Visus Membaik: <span id="tm-visus-tidak-membaik">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-tm-visus-66-612" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tm-abnormal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tm-visus-membaik" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tm-visus-tidak-membaik" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 <div class="col-md-12 col-lg-6 p-2">
-                                    <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                        <div class="card-body">
-                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                Telinga (Tes Pendengaran)
-                                            </div>
-                                            <div class="card-text">
-                                                <p><span style="font-size: 28px" id="total-hasil-tes-pendengaran">0</span> Orang</p>
-                                                <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                            </div>
-                                            <div class="d-flex justify-content-around">
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Lulus: <span id="tt-lulus">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Tidak lulus (Hasil normal): <span id="tt-tidak-lulus-normal">0</span>
-                                                    </p>
+                                    <a class="linkRiwayat" data-instrumen="tes_pendengaran">
+                                        <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                            <div class="card-body">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Telinga (Tes Pendengaran)
                                                 </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Tidak lulus (ditemukan gangguan atau kelainan): <span id="tt-tidak-lulus-gangguan">0</span>
-                                                    </p>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-tes-pendengaran">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                 </div>
-                                            </div>
-        
-                                            <div class="progress">
-                                                <div id="progress-tt-lulus" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-tt-tidak-lulus-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                <div id="progress-tt-tidak-lulus-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="d-flex justify-content-around">
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Lulus: <span id="tt-lulus">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tidak lulus (Hasil normal): <span id="tt-tidak-lulus-normal">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Tidak lulus (ditemukan gangguan atau kelainan): <span id="tt-tidak-lulus-gangguan">0</span>
+                                                        </p>
+                                                    </div>
+                                                </div>
+            
+                                                <div class="progress">
+                                                    <div id="progress-tt-lulus" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tt-tidak-lulus-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div id="progress-tt-tidak-lulus-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </a>
                                 </div>
                                 </div>
                             </div>
@@ -942,169 +968,176 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6 p-2">
-                                        <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
-                                            <div class="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Kanker Leher Rahim
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-leher_rahim">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div class="d-flex justify-content-around">
-                                                    <div>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Tidak ada faktor resiko: <span id="kl-tidak-ada-faktor">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif: <span id="kl-ada-faktor-semua-negatif">0</span>
-                                                        </p>
+                                        <a class="linkRiwayat" data-instrumen="kanker_leher_rahim">
+                                            <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
+                                                <div class="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Kanker Leher Rahim
                                                     </div>
-                                                    <div>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif: <span id="kl-ada-faktor-salah-satu-negatif">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Curiga kanker: <span id="kl-curiga-kanker">0</span>
-                                                        </p>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-kanker-leher_rahim">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                     </div>
-                                                </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-kl-tidak-ada-faktor" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kl-ada-faktor-semua-negatif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kl-ada-faktor-salah-satu-negatif" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kl-curiga-kanker" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="d-flex justify-content-around">
+                                                        <div>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Tidak ada faktor resiko: <span id="kl-tidak-ada-faktor">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Ada faktor resiko, normal, tes IVA & HPV DNA semua negatif: <span id="kl-ada-faktor-semua-negatif">0</span>
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Ada faktor resiko, normal, tes IVA & HPV DNA salah satu positif: <span id="kl-ada-faktor-salah-satu-negatif">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Curiga kanker: <span id="kl-curiga-kanker">0</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                
+                                                    <div class="progress">
+                                                        <div id="progress-kl-tidak-ada-faktor" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kl-ada-faktor-semua-negatif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kl-ada-faktor-salah-satu-negatif" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kl-curiga-kanker" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                     <div class="col-md-6 col-lg-6 p-2">
-                                        <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
-                                            <div class="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Kanker Payudara
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-payudara">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div class="d-flex justify-content-around">
-                                                    <div>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Sadanis Negatif: <span id="kp-negatif">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Sadanis Positif pemeriksaan USG Normal: <span id="kp-positif-usg-normal">0</span>
-                                                        </p>
+                                        <a class="linkRiwayat" data-instrumen="kanker_payudara">
+                                            <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
+                                                <div class="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Kanker Payudara
                                                     </div>
-                                                    <div>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Sadanis Positif pemeriksaan USG Simple Cyst: <span id="kp-positif-usg-simple-cyst">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Sadanis Positif pemeriksaan USG Non Simple cyst: <span id="kp-positif-usg-non-symple-cyst">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="grey" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Sadanis Positif resiko sangat tinggi: <span id="kp-positif-resiko-tinggi">0</span>
-                                                        </p>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-kanker-payudara">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                     </div>
-                                                </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-kp-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kp-positif-usg-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kp-positif-usg-simple-cyst" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kp-positif-usg-non-symple-cyst" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kp-positif-resiko-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="d-flex justify-content-around">
+                                                        <div>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Sadanis Negatif: <span id="kp-negatif">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Sadanis Positif pemeriksaan USG Normal: <span id="kp-positif-usg-normal">0</span>
+                                                            </p>
+                                                        </div>
+                                                        <div>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Sadanis Positif pemeriksaan USG Simple Cyst: <span id="kp-positif-usg-simple-cyst">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Sadanis Positif pemeriksaan USG Non Simple cyst: <span id="kp-positif-usg-non-symple-cyst">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="grey" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Sadanis Positif resiko sangat tinggi: <span id="kp-positif-resiko-tinggi">0</span>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                
+                                                    <div class="progress">
+                                                        <div id="progress-kp-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kp-positif-usg-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kp-positif-usg-simple-cyst" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kp-positif-usg-non-symple-cyst" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kp-positif-resiko-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6 p-2">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Kanker Paru
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-kanker-paru">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Risiko ringan: <span id="kp-risiko-ringan">0</span>
-                                                        </p>
-                                                        <p>
-                                                            <span class="mr-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                    <circle cx="8" cy="8" r="8" />
-                                                                </svg>
-                                                            </span>
-                                                            Risiko sedang atau tinggi: <span id="kp-risiko-sedang-tinggi">0</span>
-                                                        </p>
-                                                </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-kp-risiko-ringan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kp-risiko-sedang-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <a class="linkRiwayat" data-instrumen="kanker_paru">
+                                            <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                                <div class="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Kanker Paru
+                                                    </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-kanker-paru">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Risiko ringan: <span id="kp-risiko-ringan">0</span>
+                                                            </p>
+                                                            <p>
+                                                                <span class="mr-2">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                        <circle cx="8" cy="8" r="8" />
+                                                                    </svg>
+                                                                </span>
+                                                                Risiko sedang atau tinggi: <span id="kp-risiko-sedang-tinggi">0</span>
+                                                            </p>
+                                                    </div>
+                
+                                                    <div class="progress">
+                                                        <div id="progress-kp-risiko-ringan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kp-risiko-sedang-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                     <div class="col-md-12 col-lg-6 p-2">
+                                    <a class="linkRiwayat" data-instrumen="kanker_usus">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1161,6 +1194,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                 </div>
                             </div>
@@ -1171,10 +1205,11 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-md-12 col-lg-8 p-2">
+                                    <a class="linkRiwayat" data-instrumen="tuberkulosis">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Tuberkuloasis
+                                                    Tuberkulosis
                                                 </div>
                                                 <div class="card-text">
                                                     <p><span style="font-size: 28px" id="total-hasil-tuberkulosis">0</span> Orang</p>
@@ -1219,6 +1254,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
@@ -1230,10 +1266,11 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-lg-12 col-lg-8 p-2">
+                                    <a class="linkRiwayat" data-instrumen="kesehatan_jiwa">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Jiwa
+                                                    Kesehatan Jiwa
                                                 </div>
                                                 <div class="card-text">
                                                     <p><span style="font-size: 28px" id="total-hasil-kesehatan-jiwa">0</span> Orang</p>
@@ -1286,6 +1323,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-4"></div>
                                     <!-- <div class="col"></div> -->
@@ -1298,68 +1336,73 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6 p-2">
-                                        <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                            <div class="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Hepatitis B
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-hepatitis-b">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        HBsAg Non Reaktif: <span id="hb-non-reaktif">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        HBsAg Reaktif: <span id="hb-reaktif">0</span>
-                                                    </p>
-                                                </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-hb-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-hb-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-lg-6 p-2" >
-                                        <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
-                                            <div class ="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Hepatitis C
-                                                </div>
+                                        <a class="linkRiwayat" data-instrumen="hepatitis_b">
+                                            <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                                <div class="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Hepatitis B
+                                                    </div>
                                                     <div class="card-text">
-                                                        <p><span style="font-size: 28px" id="total-hasil-hepatitis-c">0</span> Orang</p>
+                                                        <p><span style="font-size: 28px" id="total-hasil-hepatitis-b">0</span> Orang</p>
                                                         <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
                                                     </div>
                                                     <div>
                                                         <p>
-                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Non Reaktif: <span id="hc-non-reaktif">0</span>
-                                                        </p>    
-                                                    
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            HBsAg Non Reaktif: <span id="hb-non-reaktif">0</span>
+                                                        </p>
                                                         <p>
-                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Reaktif: <span id="hc-reaktif">0</span>
-                                                        </p>     
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            HBsAg Reaktif: <span id="hb-reaktif">0</span>
+                                                        </p>
                                                     </div>
+            
                                                     <div class="progress">
-                                                        <div id="progress-hc-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-hc-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-hb-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-hb-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
                                                     </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-12 col-lg-6 p-2" >
+                                        <a class="linkRiwayat" data-instrumen="hepatitis_c">
+                                            <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                                <div class ="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Hepatitis C
+                                                    </div>
+                                                        <div class="card-text">
+                                                            <p><span style="font-size: 28px" id="total-hasil-hepatitis-c">0</span> Orang</p>
+                                                            <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                        </div>
+                                                        <div>
+                                                            <p>
+                                                            <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Non Reaktif: <span id="hc-non-reaktif">0</span>
+                                                            </p>    
+                                                        
+                                                            <p>
+                                                            <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Reaktif: <span id="hc-reaktif">0</span>
+                                                            </p>     
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div id="progress-hc-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-hc-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
                                     <div class="col p-2" >
+                                    <a class="linkRiwayat" data-instrumen="fibrosis_sirosis">
                                         <div class="card card-shadow text-dark" style="height: 260px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1381,6 +1424,7 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                             </div>
                             </div>
@@ -1391,6 +1435,7 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6 p-2">
+                                    <a class="linkRiwayat" data-instrumen="pertumbuhan_bb">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1443,8 +1488,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-md-12 col-lg-6 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="penyakit_jantung_bawaan">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1474,33 +1521,37 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col p-2" >
-                                        <div class="card card-shadow text-dark" style="height: 320px;">
-                                            <div class ="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Kekurangan Hormon Tiroid Sejak Lahir (TSHS)
+                                        <a class="linkRiwayat" data-instrumen="kekurangan_hormon_tiroid">
+                                            <div class="card card-shadow text-dark" style="height: 320px;">
+                                                <div class ="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Kekurangan Hormon Tiroid Sejak Lahir (TSHS)
+                                                    </div>
+                                                        <div class="card-text">
+                                                            <p><span style="font-size: 28px" id="total-hasil-kekurangan-hormon_tiroid">0</span>Orang</p>
+                                                            <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                        </div>
+                                                        <div> 
+                                                            <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Normal: <span id="ht-normal">0</span></p>
+                                                            <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Tinggi: <span id="ht-tinggi">0</span></p>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div id="progress-ht-normal" class="progress-bar bg-warning" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            <div id="progress-ht-tinggi" class="progress-bar bg-primary" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                 </div>
-                                                    <div class="card-text">
-                                                        <p><span style="font-size: 28px" id="total-hasil-kekurangan-hormon_tiroid">0</span>Orang</p>
-                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                    </div>
-                                                    <div> 
-                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Normal: <span id="ht-normal">0</span></p>
-                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Tinggi: <span id="ht-tinggi">0</span></p>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div id="progress-ht-normal" class="progress-bar bg-warning" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-ht-tinggi" class="progress-bar bg-primary" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                    </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_enzim_d6pd">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1535,8 +1586,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_hormon_adrenal">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1561,8 +1614,10 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="kelainan_saluran_empedu">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1584,6 +1639,7 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                 </div>
                             </div>
@@ -1594,42 +1650,45 @@
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    PPOK
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-ppok">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Resiko rendah (PUMA < 6): <span id="po-rendah">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Resiko tinggi (PUMA >= 6): <span id="po-tinggi">0</span>
-                                                    </p>
-                                                </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-po-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-po-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                        <a class="linkRiwayat" data-instrumen="ppok">
+                                            <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                                <div class="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        PPOK
+                                                    </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-ppok">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Resiko rendah (PUMA < 6): <span id="po-rendah">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Resiko tinggi (PUMA >= 6): <span id="po-tinggi">0</span>
+                                                        </p>
+                                                    </div>
+            
+                                                    <div class="progress">
+                                                        <div id="progress-po-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-po-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1654,33 +1713,37 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class ="card-body">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Gangguan Pendengaran
+                                        <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
+                                            <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                                <div class ="card-body">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Gangguan Pendengaran
+                                                    </div>
+                                                        <div class="card-text">
+                                                            <p><span style="font-size: 28px" id="total-hasil-gangguan-pendengaran">0</span>Orang</p>
+                                                            <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                        </div>
+                                                        <div> 
+                                                            <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak ada gangguan: <span id="gd-tidak-ada-gangguan">0</span></p>
+                                                            <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Ditemukan >= 1 gangguan: <span id="gd-ditemukan-gangguan">0</span></p>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div id="progress-gd-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            <div id="progress-gd-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                 </div>
-                                                    <div class="card-text">
-                                                        <p><span style="font-size: 28px" id="total-hasil-gangguan-pendengaran">0</span>Orang</p>
-                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                    </div>
-                                                    <div> 
-                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak ada gangguan: <span id="gd-tidak-ada-gangguan">0</span></p>
-                                                        <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Ditemukan >= 1 gangguan: <span id="gd-ditemukan-gangguan">0</span></p>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div id="progress-gd-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-gd-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                    </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
+                                    <a class="linkRiwayat" data-instrumen="gejala_depresi">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1731,8 +1794,10 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="activity_daily_living">
                                         <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
                                             <div class ="card-body">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
@@ -1772,6 +1837,7 @@
                                                     </div>
                                             </div>
                                         </div>
+                                    </a>
                                     </div>
                                 </div>
                             </div>
@@ -1918,6 +1984,34 @@
 <script src="{{ asset('assets/highcharts/modules/exporting.js') }}"></script>
 <script src="{{ asset('assets/highcharts/modules/accessibility.js') }}"></script>
 <script src="{{ asset('assets/highcharts/modules/map.js') }}"></script>
+
+<script>
+    document.querySelectorAll(".linkRiwayat").forEach(function(link) {
+        link.addEventListener("click", function(event) {
+            event.preventDefault(); // Mencegah redirect langsung
+
+            // Ambil nilai periode dan sampai
+            let dari = document.getElementById("dari").value;
+            let sampai = document.getElementById("sampai").value;
+
+            // Cek apakah tanggal diisi
+            if (!dari || !sampai) {
+                alert("Silakan isi periode dan sampai terlebih dahulu.");
+                return;
+            }
+
+            // Ambil instrumen dari atribut data-instrumen
+            let instrumen = link.getAttribute("data-instrumen");
+            let id = link.getAttribute("data-idInstrumen");
+
+            // Buat URL dengan parameter yang sesuai
+            let url = `laporan?id=${id}&instrumen=${instrumen}&tgl_dari=${dari}&tgl_sampai=${sampai}`;
+
+            // Redirect ke URL baru
+            window.open(url, "_blank");
+        });
+    });
+</script>
 
 <script>
     var role_auth = "{{ Auth::user()->role }}"
