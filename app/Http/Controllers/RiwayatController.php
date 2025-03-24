@@ -16,6 +16,7 @@ use App\Models\Puskesmas;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class RiwayatController extends Controller
 {
@@ -256,7 +257,8 @@ class RiwayatController extends Controller
         
     }
 
-    public function data_simpus_ckg(Request $request)
+    // public function data_simpus_ckg(Request $request)
+    public function data_simpus_ckg()
     {
         try {
             $data_login = [
@@ -288,8 +290,8 @@ class RiwayatController extends Controller
             $data = [
                 // 'tgl_dari'   => $request->tgl_dari,
                 // 'tgl_sampai' => $request->tgl_sampai,
-                // 'tgl_dari'   => "2025-03-08",
-                // 'tgl_sampai' => "2025-03-08",
+                'tanggal_dari'   => "2025-03-21",
+                'tanggal_sampai' => "2025-03-21",
             ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,
@@ -827,6 +829,7 @@ class RiwayatController extends Controller
                         // dd($dt);
                     }
                 }
+                Log::info('Berhasil');
                 return response()->json([
                     'status' => 'success',
                     'message' => 'Berhasil',
@@ -835,6 +838,7 @@ class RiwayatController extends Controller
                 ], $response->status());
             }
             else {
+                Log::info('Gagal');
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Gagal mengambil data dari API',
