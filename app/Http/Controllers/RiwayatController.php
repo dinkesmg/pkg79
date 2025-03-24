@@ -287,12 +287,13 @@ class RiwayatController extends Controller
                 ], $response_login->status());
             }
 
+            // $data = [
+            //     'tanggal_dari'   => "2025-03-23",
+            //     'tanggal_sampai' => "2025-03-23",
+            // ];
             $data = [
-                // 'tgl_dari'   => $request->tgl_dari,
-                // 'tgl_sampai' => $request->tgl_sampai,
-                'tanggal_dari'   => "2025-03-22",
-                'tanggal_sampai' => "2025-03-22",
-
+                'tanggal_dari'   => Carbon::yesterday()->toDateString(), // kemarin
+                'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
             ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,
