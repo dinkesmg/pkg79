@@ -292,6 +292,7 @@ class RiwayatController extends Controller
                 // 'tgl_sampai' => $request->tgl_sampai,
                 'tanggal_dari'   => "2025-03-21",
                 'tanggal_sampai' => "2025-03-21",
+
             ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,

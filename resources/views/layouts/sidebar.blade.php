@@ -73,31 +73,36 @@
                         <p style="color:#fff; font-weight:bold">Riwayat</p>
                     </a>
                 </li>
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a href="{{ url('laporan') }}"
                         class="nav-link {{ request()->routeIs('laporan*') == 1 ? 'active' : '' }}">
                         <p style="color:#fff; font-weight:bold">Laporan</p>
                     </a>
-                </li>
-                <!-- <li class="nav-item">
+                </li> -->
+                <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->routeIs('laporan*') == 1 ? 'active' : '' }}">
-                        <img src="{{ asset('gambar/laporan.png') }}" style="width: 25.59px; height: auto;">
                         <p style="font-weight:bold; color:white">
                             Laporan
                             <i class="fas fa-angle-left right"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview" style="margin-left:5px">
                         <li class="nav-item">
-                            <a href="{{ url('laporan/skrining_dasar') }}"
-                                class="nav-link {{ request()->routeIs('laporan.skrining_dasar*') == 1 ? 'bg-blue' : '' }}">
-                                <img src="{{ asset('gambar/skrining_dasar.png') }}"
-                                    style="width: 25.59px; height: auto;">
-                                <p style="font-weight:bold; color:white">Skrining Dasar</p>
+                            <a href="{{ url('laporan') }}"
+                                class="nav-link {{ request()->routeIs('laporan.index') == 1 ? 'bg-blue' : '' }}">
+                                <p style="font-weight:bold; color:white">Semua</p>
                             </a>
                         </li>
                     </ul>
-                </li> -->
+                    <ul class="nav nav-treeview" style="margin-left:5px">
+                        <li class="nav-item">
+                            <a href="{{ url('laporan/fktp_lain') }}"
+                                class="nav-link {{ request()->routeIs('laporan.index_fktp_lain') == 1 ? 'bg-blue' : '' }}">
+                                <p style="font-weight:bold; color:white">FKTP Lain</p>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a href="{{ url('logout') }}" class="nav-link">
                         <p style="color:#fff; font-weight:bold">Logout</p>

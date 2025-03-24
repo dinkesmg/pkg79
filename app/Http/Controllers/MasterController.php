@@ -171,4 +171,30 @@ class MasterController extends Controller
         return response()->json([]);
     }
 
+    public function instrumen_detail(Request $request)
+    {
+        // dd()
+        $id = $request->get('id');
+        // $id = $request->get('id');
+
+        $data = MasterInstrumen::find($id);
+        // dd($data);
+     
+        // if ($data->isNotEmpty()) {
+        //     return response()->json(
+        //         $data->map(function ($item) {
+        //             return [
+        //                 'id' => $item->id,
+        //                 'val' => $item->val
+        //             ];
+        //         })
+        //     );
+        // }
+        // $data = $data->get();
+        
+        // dd($data);
+        return response()->json($data);
+        // return response()->json([]);
+    }
+
 }

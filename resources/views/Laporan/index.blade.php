@@ -36,11 +36,12 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-1 text-center">Periode dari</div>
-                                <div class="col-md-2"><input id="periode_dari" type="date"></input></div>
+                                <div class="col-md-2"><input id="periode_dari" type="date" value="{{ request('tgl_dari', '') }}"></input></div>
                                 <div class="col-md-1 text-center">sampai</div>
-                                <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
+                                <div class="col-md-2"><input id="periode_sampai" type="date" value="{{ request('tgl_sampai', '') }}"></input></div>
                                 <div class="col-md-1 text-center">Instrumen Pemeriksaan</div>
-                                <div class="col-md-4"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
+                                <div class="col-md-2"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
+                                <div class="col-md-2"><select class="form-control" id="sub_instrumen" style="width: 100%; display:none"></select></div>
                                 <div class="col-md-1"><button onclick="tabel()">Cari</button></div>
                             </div>
                             <div style="display:flex; justify-content:center; margin-top:30px">
@@ -54,11 +55,12 @@
                                         <th style="width:150px;">Aksi</th>
                                         <th>Tanggal Pemeriksaan</th>
                                         <th>Tempat Periksa</th>
-                                        <th>Nama FKTP PJ</th>
+                                        <th>Nama FKTP</th>
                                         <!-- <th>Pemeriksa</th> -->
                                         <!-- <th>NIK</th> -->
                                         <th>Nama</th>
                                         <th>Jenis Kelamin</th>
+                                        <th>Umur</th>
                                         <!-- <th>Tanggal Lahir</th> -->
                                         <!-- <th>Hasil Pemeriksaan Kesehatan</th> -->
                                         <th>Kesimpulan Hasil</th>
@@ -96,22 +98,38 @@
     </div>
 @include('layouts.footer')
 </body>
+
 <script>
     var Toast
     var role_auth = "{{Auth::user()->role}}";
 
     $(document).ready(function () {
-        let hari_ini = new Date().toISOString().split('T')[0];
+        const urlParams = new URLSearchParams(window.location.search);
+        const instrumenFromURL = urlParams.get('instrumen') || "";
+        const idInstrumenFromURL = urlParams.get('id') || "";
 
-        $('#periode_dari').val(hari_ini);
-        $('#periode_sampai').val(hari_ini);
-        
+        // Jangan timpa tanggal dari blade
+        let hari_ini = new Date().toISOString().split('T')[0];
+        if (!$('#periode_dari').val()) {
+            $('#periode_dari').val(hari_ini);
+        }
+        if (!$('#periode_sampai').val()) {
+            $('#periode_sampai').val(hari_ini);
+        }
+
+        // $('#instrumen')
+        // .empty()
+        // .append($("<option/>")
+        //     .val(idInstrumenFromURL)
+        //     .text(instrumenFromURL))
+        // .val(idInstrumenFromURL)
+        // .trigger("change");
+
         $('#instrumen').select2({
             placeholder: 'Cari...',
             allowClear: true,
             width: 'resolve',
             theme: 'bootstrap4',
-            // dropdownParent: $(".modal-body"),
             ajax: {
                 url: "{{ url('master_instrumen') }}",
                 dataType: 'json',
@@ -122,33 +140,88 @@
                     };
                 },
                 processResults: function(data) {
-                    let results = data.map(item => ({
-                        id: item.id,
-                        text: item.val
-                    }));
-                    
-
-                    console.log("Final Results for Select2:", results); // Debugging
-
-                    return { results };
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.val
+                        }))
+                    };
                 },
                 error: function(xhr, status, error) {
                     console.error("AJAX error:", status, error);
                 },
-                // cache: true
             },
-            // minimumInputLength: 2,
         });
 
-        tabel()
-        
+        $('#instrumen').on('change', function (e) {
+            const instrumenId = $(this).val(); // ambil id instrumen yg dipilih
+
+            $.ajax({
+                url: "{{ url('master_instrumen/detail') }}", // endpoint sesuai kebutuhanmu
+                type: 'GET',
+                data: { id: instrumenId },
+                success: function(data) {
+                    // Ubah isi select2 sub_instrumen
+                    let sub_ar = JSON.parse(data.sub)
+                    sub_ar.unshift('Pilih');
+                    // console.log(sub_ar)
+
+                    $('#sub_instrumen').select2({
+                        placeholder: 'Cari...',
+                        allowClear: true,
+                        width: 'resolve',
+                        theme: 'bootstrap4',
+                        data: sub_ar.map(function(item) {
+                            return {
+                                id: item,
+                                text: item
+                            };
+                        })
+                    });
+
+                    $('#sub_instrumen').css('display', 'block');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching sub_instrumen:', status, error);
+                }
+            });
+        });
+
+        // 🧩 Ini bagian penting: isi select2 dari parameter URL
+        if (instrumenFromURL) {
+            $.ajax({
+                url: "{{ url('master_instrumen/detail?id=') }}" + idInstrumenFromURL,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    let sub_ar = JSON.parse(data.sub)
+                    sub_ar.unshift('Pilih');
+                    $('#instrumen')
+                    .empty()
+                    .append($("<option/>")
+                        .val(idInstrumenFromURL)
+                        .text(instrumenFromURL))
+                    .val(idInstrumenFromURL)
+                    .trigger("change");
+
+
+                    $('#sub_instrumen').css('display', 'block');
+                },
+                error: function(xhr, status, error) {
+                    console.error("Gagal ambil detail instrumen:", error);
+                }
+            });
+        }
+
+        tabel();
+
         Toast = Swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
             timer: 3000
         });
-    })
+    });
 
     var semua_riwayat = []
 
@@ -338,6 +411,35 @@
             //     return "";
             //     }
             // },
+            {
+            'render': function (data, type, row, meta) {
+                let tglLahir = row.pasien?.tgl_lahir;
+                let tglPeriksa = row.tanggal_pemeriksaan;
+                if (!tglLahir || !tglPeriksa) return "";
+                // console.log(tglLahir)
+                // console.log(tglPeriksa)
+
+                const tanggalLahir = new Date(tglLahir);
+                const tanggalPeriksa = new Date(tglPeriksa);
+
+                let tahun = tanggalPeriksa.getFullYear() - tanggalLahir.getFullYear();
+                let bulan = tanggalPeriksa.getMonth() - tanggalLahir.getMonth();
+                let hari = tanggalPeriksa.getDate() - tanggalLahir.getDate();
+
+                if (hari < 0) {
+                bulan--;
+                const prevMonth = new Date(tanggalPeriksa.getFullYear(), tanggalPeriksa.getMonth(), 0);
+                hari += prevMonth.getDate();
+                }
+
+                if (bulan < 0) {
+                tahun--;
+                bulan += 12;
+                }
+
+                return `${tahun} tahun ${bulan} bulan ${hari} hari`;
+                }
+            },
             // { 'data': 'hasil_pemeriksaan' },
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
             // { 'data': 'program_tindak_lanjut' },
@@ -352,6 +454,7 @@
                     d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
                     d.periode_sampai = $('#periode_sampai').val();
                     d.instrumen = $('#instrumen option:selected').text();
+                    d.sub_instrumen = $('#sub_instrumen option:selected').text();
                 },
                 dataSrc: ''
             },
@@ -2832,11 +2935,15 @@
         let periodeDari = document.getElementById("periode_dari").value;
         let periodeSampai = document.getElementById("periode_sampai").value;
         let instrumen = $('#instrumen option:selected').text()
+        let sub_instrumen = $('#sub_instrumen option:selected').text()
+        let jenis = "semua";
 
         let url = "{{url('laporan/export')}}" + 
                 "?periode_dari=" + encodeURIComponent(periodeDari) + 
                 "&periode_sampai=" + encodeURIComponent(periodeSampai) + 
-                "&instrumen=" + encodeURIComponent(instrumen);
+                "&instrumen=" + encodeURIComponent(instrumen)+
+                "&sub_instrumen=" + encodeURIComponent(sub_instrumen)+
+                "&jenis=" + encodeURIComponent(jenis);
 
         window.location.href = url;
     }
