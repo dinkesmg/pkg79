@@ -153,6 +153,40 @@
             },
         });
 
+        $('#instrumen').on('change', function (e) {
+            const instrumenId = $(this).val(); // ambil id instrumen yg dipilih
+
+            $.ajax({
+                url: "{{ url('master_instrumen/detail') }}", // endpoint sesuai kebutuhanmu
+                type: 'GET',
+                data: { id: instrumenId },
+                success: function(data) {
+                    // Ubah isi select2 sub_instrumen
+                    let sub_ar = JSON.parse(data.sub)
+                    sub_ar.unshift('Pilih');
+                    // console.log(sub_ar)
+
+                    $('#sub_instrumen').select2({
+                        placeholder: 'Cari...',
+                        allowClear: true,
+                        width: 'resolve',
+                        theme: 'bootstrap4',
+                        data: sub_ar.map(function(item) {
+                            return {
+                                id: item,
+                                text: item
+                            };
+                        })
+                    });
+
+                    $('#sub_instrumen').css('display', 'block');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching sub_instrumen:', status, error);
+                }
+            });
+        });
+
         // 🧩 Ini bagian penting: isi select2 dari parameter URL
         if (instrumenFromURL) {
             $.ajax({
@@ -160,8 +194,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    console.log(typeof data.sub)
-
                     let sub_ar = JSON.parse(data.sub)
                     sub_ar.unshift('Pilih');
                     $('#instrumen')
@@ -172,24 +204,6 @@
                     .val(idInstrumenFromURL)
                     .trigger("change");
 
-                    $('#sub_instrumen').select2({
-                        placeholder: 'Cari...',
-                        allowClear: true,
-                        width: 'resolve',
-                        theme: 'bootstrap4',
-                        // data: [
-                        //     { id: 1, text: 'Instrumen A' },
-                        //     { id: 2, text: 'Instrumen B' },
-                        //     { id: 3, text: 'Instrumen C' },
-                        //     // Tambahkan data lain sesuai kebutuhan
-                        // ]
-                        data: sub_ar.map(function(item) {
-                            return {
-                                id: item,
-                                text: item
-                            };
-                        })
-                    });
 
                     $('#sub_instrumen').css('display', 'block');
                 },
@@ -208,25 +222,6 @@
             timer: 3000
         });
     });
-
-    // document.addEventListener("DOMContentLoaded", function () {
-    //     // Ambil parameter dari URL
-    //     const urlParams = new URLSearchParams(window.location.search);
-    //     const instrumen = urlParams.get('instrumen') || "";
-    //     const tglDari = urlParams.get('tgl_dari') || "";
-    //     const tglSampai = urlParams.get('tgl_sampai') || "";
-
-    //     console.log(instrumen, tglDari, tglSampai);
-        
-    //     document.getElementById('periode_dari').value = tglDari;
-    //     document.getElementById('periode_sampai').value = tglSampai;
-    //     document.getElementById('instrumen').value = instrumen;
-
-    //     // Jalankan fungsi tabel() jika parameter ada
-    //     if (instrumen && tglDari && tglSampai) {
-    //         tabel();
-    //     }
-    // });
 
     var semua_riwayat = []
 
