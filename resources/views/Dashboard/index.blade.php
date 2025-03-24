@@ -38,6 +38,14 @@
         background-color: #e5e7eb;
     }
 
+    .progress-container {
+        position: absolute;
+        bottom: 10px; /* Sesuaikan jika perlu */
+        left: 0;
+        width: 100%;
+        padding: 0 15px;
+    }
+
     @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
@@ -484,42 +492,43 @@
                             <div class="row">
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="tekanan_darah" data-idInstrumen="9">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
-                                            <div class="card-body card-hasil">
-                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
-                                                    Tekanan Darah
-                                                </div>
-                                                <div class="card-text">
-                                                    <p><span style="font-size: 28px" id="total-hasil-tekanan-darah">0</span> Orang</p>
-                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
-                                                </div>
-                                                <div>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Tidak Hipertensi atau Prehipertensi: <span id="td-tidak-hipertensi">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Hipertensi tanpa tanda bahaya: <span id="td-hipertensi-tanpa-bahaya">0</span>
-                                                    </p>
-                                                    <p>
-                                                        <span class="mr-2">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
-                                                                <circle cx="8" cy="8" r="8" />
-                                                            </svg>
-                                                        </span>
-                                                        Hipertensi dengan tanda bahaya: <span id="td-hipertensi-dengan-bahaya">0</span>
-                                                    </p>
-                                                </div>
-        
+                                    <div class="card card-shadow text-dark" style="height: 300px; min-height: 320px; position: relative;">
+                                        <div class="card-body card-hasil">
+                                            <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                Tekanan Darah
+                                            </div>
+                                            <div class="card-text">
+                                                <p><span style="font-size: 28px" id="total-hasil-tekanan-darah">0</span> Orang</p>
+                                            </div>
+                                            <div>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Tidak Hipertensi atau Prehipertensi: <span id="td-tidak-hipertensi">0</span>
+                                                </p>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Hipertensi tanpa tanda bahaya: <span id="td-hipertensi-tanpa-bahaya">0</span>
+                                                </p>
+                                                <p>
+                                                    <span class="mr-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                            <circle cx="8" cy="8" r="8" />
+                                                        </svg>
+                                                    </span>
+                                                    Hipertensi dengan tanda bahaya: <span id="td-hipertensi-dengan-bahaya">0</span>
+                                                </p>
+                                            </div>
+
+                                            <!-- Progress Bar di bawah -->
+                                            <div class="progress-container">
                                                 <div class="progress">
                                                     <div id="progress-td-tidak-hipertensi" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
                                                     <div id="progress-td-hipertensi-tanpa-bahaya" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -527,11 +536,12 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
                                     </a>
                                 </div>
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="gula_darah">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 300px; height: auto; min-height: 320px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gula Darah
@@ -553,10 +563,12 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Hiperglikemia (GDS < 200): <span id="gd-hiperglikemia">0</span>
                                                         </p>    
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-gd-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-gd-prediabetes" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-gd-hiperglikemia" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-gd-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-gd-prediabetes" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-gd-hiperglikemia" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -564,7 +576,7 @@
                                 </div>
                                 <div class="col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="status_gizi">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 300px; height: auto; min-height: 320px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Status Gizi
@@ -579,15 +591,17 @@
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="red" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Underrweight: <span id="sg-underweight">0</span></p>
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="green" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Obesitas: <span id="sg-obesitas">0</span></p>
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-sg-normal" class="progress-bar bg-warning" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-sg-overweight" class="progress-bar bg-primary" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-sg-underweight" class="progress-bar bg-danger" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                            <div id="progress-sg-obesitas" class="progress-bar bg-success" role="progressbar"
-                                                            style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-sg-normal" class="progress-bar bg-warning" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            <div id="progress-sg-overweight" class="progress-bar bg-primary" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            <div id="progress-sg-underweight" class="progress-bar bg-danger" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                                <div id="progress-sg-obesitas" class="progress-bar bg-success" role="progressbar"
+                                                                style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -626,10 +640,12 @@
                                                         Merokok: <span id="merokok">0</span>
                                                     </p>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-tidak-merokok" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-merokok" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-tidak-merokok" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-merokok" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -664,10 +680,11 @@
                                                         Kurang: <span id="af-kurang">0</span>
                                                     </p>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-af-cukup" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-af-kurang" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-af-cukup" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-af-kurang" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -705,10 +722,11 @@
                                                         Ada karies, gigi goyang: <span id="gg-karies">0</span>
                                                     </p>
                                                 </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-gg-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-gg-karies" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-gg-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gg-karies" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -734,9 +752,11 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>EKG Tidak normal: <span id="rj-tidak-normal">0</span>
                                                         </p>      
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-rj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-rj-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-rj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-rj-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -757,11 +777,13 @@
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Normal: <span id="fg-normal">0</span></p>
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak normal: <span id="fg-tidak-normal">0</span></p>
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-fg-normal" class="progress-bar bg-warning" role="progressbar"
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-fg-normal" class="progress-bar bg-warning" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-fg-tidak-normal" class="progress-bar bg-primary" role="progressbar"
+                                                            <div id="progress-fg-tidak-normal" class="progress-bar bg-primary" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -827,13 +849,14 @@
                                                         </p>
                                                     </div>
                                                 </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-rs-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-rs-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-rs-ptm-rendah" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-rs-ptm-sedang" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-rs-ptm-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-rs-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-rs-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-rs-ptm-rendah" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-rs-ptm-sedang" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-rs-ptm-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -848,7 +871,7 @@
                             <div class="">
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
-                                <div class="col-lg-12 col-lg-6 p-2">
+                                <div class="col-md-12 col-lg-6 p-2">
                                     <a class="linkRiwayat" data-instrumen="tes_penglihatan">
                                         <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
                                             <div class="card-body card-hasil">
@@ -897,12 +920,13 @@
                                                         </p>
                                                     </div>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-tm-visus-66-612" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tm-abnormal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tm-visus-membaik" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tm-visus-tidak-membaik" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-tm-visus-66-612" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tm-abnormal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tm-visus-membaik" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tm-visus-tidak-membaik" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -949,11 +973,12 @@
                                                         </p>
                                                     </div>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-tt-lulus" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tt-tidak-lulus-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tt-tidak-lulus-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-tt-lulus" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tt-tidak-lulus-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tt-tidak-lulus-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1016,12 +1041,13 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                
-                                                    <div class="progress">
-                                                        <div id="progress-kl-tidak-ada-faktor" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kl-ada-faktor-semua-negatif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kl-ada-faktor-salah-satu-negatif" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kl-curiga-kanker" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-kl-tidak-ada-faktor" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kl-ada-faktor-semua-negatif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kl-ada-faktor-salah-satu-negatif" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kl-curiga-kanker" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1084,13 +1110,14 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                
-                                                    <div class="progress">
-                                                        <div id="progress-kp-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kp-positif-usg-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kp-positif-usg-simple-cyst" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kp-positif-usg-non-symple-cyst" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kp-positif-resiko-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-kp-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kp-positif-usg-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kp-positif-usg-simple-cyst" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kp-positif-usg-non-symple-cyst" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kp-positif-resiko-tinggi" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1127,10 +1154,11 @@
                                                                 Risiko sedang atau tinggi: <span id="kp-risiko-sedang-tinggi">0</span>
                                                             </p>
                                                     </div>
-                
-                                                    <div class="progress">
-                                                        <div id="progress-kp-risiko-ringan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-kp-risiko-sedang-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-kp-risiko-ringan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-kp-risiko-sedang-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1185,12 +1213,13 @@
                                                         </p>
                                                     </div>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-ku-risiko-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-ku-risiko-sedang" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-ku-risiko-tinggi-negatif-semua" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-ku-risiko-rendah-salah-satu-positif" class="progress-bar bg-green" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-ku-risiko-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-ku-risiko-sedang" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-ku-risiko-tinggi-negatif-semua" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-ku-risiko-rendah-salah-satu-positif" class="progress-bar bg-green" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1206,7 +1235,7 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-8 p-2">
                                     <a class="linkRiwayat" data-instrumen="tuberkulosis">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 240px; height: auto; min-height: 240px;">
                                             <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Tuberkulosis
@@ -1245,12 +1274,12 @@
                                                         </p>
                                                     </div>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-tb-tidak-terdapat" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tb-terdapat-positif-tanpa-gejala" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-tb-terdapat-dengan-gejala" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-tb-tidak-terdapat" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tb-terdapat-positif-tanpa-gejala" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-tb-terdapat-dengan-gejala" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1265,9 +1294,9 @@
                             <div class="">
                                 <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
                                 <div class="row">
-                                    <div class="col-lg-12 col-lg-8 p-2">
+                                    <div class="col-md-12 col-lg-8 p-2">
                                     <a class="linkRiwayat" data-instrumen="kesehatan_jiwa">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 240px; height: auto; min-height: 240px;">
                                             <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kesehatan Jiwa
@@ -1314,12 +1343,13 @@
                                                         </p>
                                                     </div>
                                                 </div>
-            
-                                                <div class="progress">
-                                                    <div id="progress-kj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kj-tidak-ada-gangguan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kj-ada-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-kj-ada-gangguan-penyulit" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-kj-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kj-tidak-ada-gangguan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kj-ada-gangguan" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-kj-ada-gangguan-penyulit" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1337,7 +1367,7 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-6 p-2">
                                         <a class="linkRiwayat" data-instrumen="hepatitis_b">
-                                            <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                            <div class="card card-shadow text-dark" style="height: 240px; height: auto; min-height: 240px;">
                                                 <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Hepatitis B
@@ -1364,10 +1394,11 @@
                                                             HBsAg Reaktif: <span id="hb-reaktif">0</span>
                                                         </p>
                                                     </div>
-            
-                                                    <div class="progress">
-                                                        <div id="progress-hb-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-hb-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-hb-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-hb-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1375,7 +1406,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-6 p-2" >
                                         <a class="linkRiwayat" data-instrumen="hepatitis_c">
-                                            <div class="card card-shadow text-dark" style="height: 260px; height: auto; min-height: 260px;">
+                                            <div class="card card-shadow text-dark" style="height: 240px; height: auto; min-height: 240px;">
                                                 <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Hepatitis C
@@ -1393,11 +1424,13 @@
                                                             <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Anti HCV Reaktif: <span id="hc-reaktif">0</span>
                                                             </p>     
                                                         </div>
-                                                        <div class="progress">
-                                                            <div id="progress-hc-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                            <div id="progress-hc-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div class="progress-container">
+                                                            <div class="progress">
+                                                                <div id="progress-hc-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                <div id="progress-hc-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            </div>
                                                         </div>
-                                                </div>
+                                                    </div>
                                             </div>
                                         </a>
                                     </div>
@@ -1415,12 +1448,14 @@
                                                     <div> 
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>APRI Score ≤ 0.5: <span id="fs-kurang">0</span></p>
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>APRI Score >0.5: <span id="fs-lebih">0</span></p>
-                                                    </div>
-                                                    <div class="progress">
-                                                        <div id="progress-fs-kurang" class="progress-bar bg-warning" role="progressbar"
+                                                    </div class="progress-container">
+                                                    <div>
+                                                        <div class="progress">
+                                                            <div id="progress-fs-kurang" class="progress-bar bg-warning" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-fs-lebih" class="progress-bar bg-primary" role="progressbar"
+                                                            <div id="progress-fs-lebih" class="progress-bar bg-primary" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -1479,12 +1514,13 @@
                                                         BBLR < 2000 gr: <span id="pb-kurang-2000">0</span>
                                                     </p>
                                                 </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-pb-lebih-2500" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-pb-200-2500-sehat" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-pb-200-2500-sakit" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-pb-kurang-2000" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-pb-lebih-2500" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-pb-200-2500-sehat" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-pb-200-2500-sakit" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-pb-kurang-2000" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1514,10 +1550,12 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span> < 90%: <span id="pj-kurang-90">0</span>
                                                         </p>    
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-pj-lebih-90" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-pj-lebih-90-95" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-pj-kurang-90" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-pj-lebih-90" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-pj-lebih-90-95" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-pj-kurang-90" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -1525,7 +1563,7 @@
                                     </div>
                                     <div class="col p-2" >
                                         <a class="linkRiwayat" data-instrumen="kekurangan_hormon_tiroid">
-                                            <div class="card card-shadow text-dark" style="height: 320px;">
+                                            <div class="card card-shadow text-dark" style="height: 240px;">
                                                 <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Kekurangan Hormon Tiroid Sejak Lahir (TSHS)
@@ -1538,11 +1576,14 @@
                                                             <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Normal: <span id="ht-normal">0</span></p>
                                                             <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>TSH Tinggi: <span id="ht-tinggi">0</span></p>
                                                         </div>
-                                                        <div class="progress">
-                                                            <div id="progress-ht-normal" class="progress-bar bg-warning" role="progressbar"
+                                                        <div ></div>
+                                                        <div class="progress-container">
+                                                            <div class="progress">
+                                                                <div id="progress-ht-normal" class="progress-bar bg-warning" role="progressbar"
                                                                 style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                            <div id="progress-ht-tinggi" class="progress-bar bg-primary" role="progressbar"
+                                                                <div id="progress-ht-tinggi" class="progress-bar bg-primary" role="progressbar"
                                                                 style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            </div>
                                                         </div>
                                                 </div>
                                             </div>
@@ -1552,7 +1593,7 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
                                     <a class="linkRiwayat" data-instrumen="kekurangan_enzim_d6pd">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
                                             <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kekurangan Enzim Pelindung Sel Darah Merah (D6PD)
@@ -1579,10 +1620,11 @@
                                                         Positif: <span id="ed-positif">0</span>
                                                     </p>
                                                 </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-ed-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-ed-positif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-ed-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-ed-positif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1590,7 +1632,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="kekurangan_hormon_adrenal">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kekurangan Hormon Adrenal Sejak Lahir
@@ -1608,9 +1650,11 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Positif: <span id="ha-positif">0</span>
                                                         </p>   
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-ha-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-ha-positif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-ha-negatif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-ha-positif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -1618,7 +1662,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="kelainan_saluran_empedu">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Kelainan Saluran Empedu
@@ -1631,15 +1675,64 @@
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Warna tinja Normal: <span id="se-normal">0</span></p>
                                                         <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Warna tinja Pucat: <span id="se-pucat">0</span></p>
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-se-normal" class="progress-bar bg-warning" role="progressbar"
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-se-normal" class="progress-bar bg-warning" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                        <div id="progress-se-pucat" class="progress-bar bg-primary" role="progressbar"
+                                                            <div id="progress-se-pucat" class="progress-bar bg-primary" role="progressbar"
                                                             style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
                                     </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-success py-1">Balita dan Pra Sekolah</h5>
+                            <div class="">
+                                <!-- <h4 class="font-weight-normal">Hasil Cek Kesehatan Gratis</h4> -->
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-4 p-2">
+                                        <a class="linkRiwayat" data-instrumen="ppok">
+                                            <div class="card card-shadow text-dark" style="height: 250px; height: auto; min-height: 250px;">
+                                                <div class="card-body card-hasil">
+                                                    <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                        Lingkar Kepala
+                                                    </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-lingkar-kepala">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Resiko rendah (PUMA < 6): <span id="lp-normal">0</span>
+                                                        </p>
+                                                        <p>
+                                                            <span class="mr-2">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                    <circle cx="8" cy="8" r="8" />
+                                                                </svg>
+                                                            </span>
+                                                            Resiko tinggi (PUMA >= 6): <span id="lp-mikrosefali-makrosefali">0</span>
+                                                        </p>
+                                                    </div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-lp-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-lp-mikrosefali-makrosefali" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -1651,7 +1744,7 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
                                         <a class="linkRiwayat" data-instrumen="ppok">
-                                            <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                            <div class="card card-shadow text-dark" style="height: 250px; height: auto; min-height: 250px;">
                                                 <div class="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         PPOK
@@ -1678,10 +1771,11 @@
                                                             Resiko tinggi (PUMA >= 6): <span id="po-tinggi">0</span>
                                                         </p>
                                                     </div>
-            
-                                                    <div class="progress">
-                                                        <div id="progress-po-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-po-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-po-rendah" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-po-tinggi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1689,7 +1783,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 250px; height: auto; min-height: 250px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gangguan Penglihatan
@@ -1707,9 +1801,11 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Ditemukan >= 1 gangguan: <span id="gl-ditemukan-gangguan">0</span>
                                                         </p>    
                                                     </div>
-                                                    <div class="progress">
-                                                        <div id="progress-gl-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-gl-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-gl-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-gl-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -1717,7 +1813,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
                                         <a class="linkRiwayat" data-instrumen="gangguan_penglihatan">
-                                            <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                            <div class="card card-shadow text-dark" style="height: 250px; height: auto; min-height: 250px;">
                                                 <div class ="card-body card-hasil">
                                                     <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                         Gangguan Pendengaran
@@ -1730,11 +1826,13 @@
                                                             <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak ada gangguan: <span id="gd-tidak-ada-gangguan">0</span></p>
                                                             <p><span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Ditemukan >= 1 gangguan: <span id="gd-ditemukan-gangguan">0</span></p>
                                                         </div>
-                                                        <div class="progress">
-                                                            <div id="progress-gd-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar"
+                                                        <div class="progress-container">
+                                                            <div class="progress">
+                                                                <div id="progress-gd-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar"
                                                                 style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
-                                                            <div id="progress-gd-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar"
+                                                                <div id="progress-gd-ditemukan-gangguan" class="progress-bar bg-primary" role="progressbar"
                                                                 style="width: 0%" aria-valuemin="0" aria-valuemax="100" data-bs-toggle="tooltip"></div>
+                                                            </div>
                                                         </div>
                                                 </div>
                                             </div>
@@ -1744,7 +1842,7 @@
                                 <div class="row">
                                     <div class="col-md-12 col-lg-4 p-2">
                                     <a class="linkRiwayat" data-instrumen="gejala_depresi">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
                                             <div class="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Gejala Depresi
@@ -1787,12 +1885,13 @@
                                                         Depresi: <span id="gr-depresi">0</span>
                                                     </p>
                                                 </div>
-        
-                                                <div class="progress">
-                                                    <div id="progress-gr-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-gr-tidak-depresi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-gr-kemungkinan-depresi" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                    <div id="progress-gr-gr-depresi" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-gr-tidak-ada-gangguan" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gr-tidak-depresi" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gr-kemungkinan-depresi" class="progress-bar bg-danger" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-gr-gr-depresi" class="progress-bar bg-success" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1800,7 +1899,7 @@
                                     </div>
                                     <div class="col-md-12 col-lg-4 p-2" >
                                     <a class="linkRiwayat" data-instrumen="activity_daily_living">
-                                        <div class="card card-shadow text-dark" style="height: 320px; height: auto; min-height: 320px;">
+                                        <div class="card card-shadow text-dark" style="height: 340px; height: auto; min-height: 340px;">
                                             <div class ="card-body card-hasil">
                                                 <div style="font-size: 24px" class="card-title text font-weight-bold">
                                                     Activity Daily Living
@@ -1830,12 +1929,166 @@
                                                         <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Ketergantungan total: <span id="ad-ketergantungan-total">0</span>
                                                         </p>
                                                     </div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-ad-mandiri" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-ad-ketergantungan-ringan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-ad-ketergantungan-sedang" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-ad-ketergantungan-berat" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-ad-ketergantungan-total" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h5 class="text-center bg-primary py-3"></h5>
+                            <div class="">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-6 p-2">
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_enzim_d6pd">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
+                                            <div class="card-body card-hasil">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Anemia
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-anemia">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Normal: <span id="am-normal">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Tidak Normal (Hb < 12 gr / dL): <span id="am-tidak-normal">0</span>
+                                                    </p>
+                                                </div>
+                                                <div class="progress-container">
                                                     <div class="progress">
-                                                        <div id="progress-ad-mandiri" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-ad-ketergantungan-ringan" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-ad-ketergantungan-sedang" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-ad-ketergantungan-berat" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
-                                                        <div id="progress-ad-ketergantungan-total" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-am-normal" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-am-tidak-normal" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    </div>
+                                    <div class="col-md-12 col-lg-6 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_hormon_adrenal">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
+                                            <div class ="card-body card-hasil">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    Sifilis
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-sifilis">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>RDT HIV R1 Non Reaktif: <span id="sf-rdt-non-reaktif">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>R2 dan R3 Reaktif: <span id="sf-r2-r3-reaktif">0</span>
+                                                        </p>  
+                                                        
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>R2 dan R3 Non Reaktif: <span id="sf-r2-r3-non-reaktif">0</span>
+                                                        </p>  
+                                                    </div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-sf-rdt-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-sf-r2-r3-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-sf-r2-r3-non-reaktif" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-6 p-2">
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_enzim_d6pd">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
+                                            <div class="card-body card-hasil">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    HIV
+                                                </div>
+                                                <div class="card-text">
+                                                    <p><span style="font-size: 28px" id="total-hasil-hiv">0</span> Orang</p>
+                                                    <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                </div>
+                                                <div>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Non Reaktif: <span id="hv-non-reaktif">0</span>
+                                                    </p>
+                                                    <p>
+                                                        <span class="mr-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">
+                                                                <circle cx="8" cy="8" r="8" />
+                                                            </svg>
+                                                        </span>
+                                                        Reaktif: <span id="hv-reaktif">0</span>
+                                                    </p>
+                                                </div>
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div id="progress-hv-non-reaktif" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        <div id="progress-hv-reaktifl" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    </div>
+                                    <div class="col-md-12 col-lg-6 p-2" >
+                                    <a class="linkRiwayat" data-instrumen="kekurangan_hormon_adrenal">
+                                        <div class="card card-shadow text-dark" style="height: 280px; height: auto; min-height: 280px;">
+                                            <div class ="card-body card-hasil">
+                                                <div style="font-size: 24px" class="card-title text font-weight-bold">
+                                                    NAPZA
+                                                </div>
+                                                    <div class="card-text">
+                                                        <p><span style="font-size: 28px" id="total-hasil-napza">0</span> Orang</p>
+                                                        <!-- <p>Lorem ipsum dolor sit amet consectetur.</p> -->
+                                                    </div>
+                                                    <div>
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="yellow" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Menggunakan salah satu zat atau minum alkohol: <span id="nz-zat-alkohol">0</span>
+                                                        </p>    
+                                                    
+                                                        <p>
+                                                        <span class="mr-2"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="blue" class="bi bi-circle-fill" viewBox="0 0 16 16">  <circle cx="8" cy="8" r="8"/></svg></span>Tidak pernah: <span id="nz-tidak-pernah">0</span>
+                                                        </p>   
+                                                    </div>
+                                                    <div class="progress-container">
+                                                        <div class="progress">
+                                                            <div id="progress-nz-zat-alkohol" class="progress-bar bg-warning" role="progressbar" style="width: 0%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
+                                                            <div id="progress-nz-tidak-pernah" class="progress-bar bg-primary" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
                                                     </div>
                                             </div>
                                         </div>
@@ -2421,6 +2674,33 @@
         }
     }
 
+    const idMappingBalita= {
+        "lingkar_kepala": {
+            'Normal': 'lp-normal',
+            'Mikrosefali atau Makrosefali': 'lp-mikrosefali-makrosefali'
+        }
+    }
+
+    const idMappingLainnya = {
+        "anemia": {
+            "Normal": "am-normal",
+            "Tidak Normal (Hb <12 gr\/dL)": "am-tidak-normal"
+        },
+        "sifilis": {
+            "RDT HIV R1 Non Reaktif": "sf-rdt-non-reaktif",
+            "R2 dan R3 Reaktif": "sf-r2-r3-reaktif",
+            "R2 dan R3 Non Reaktif": "sf-r2-r3-non-reaktif"
+        },
+        "hiv": {
+            "Non Reaktif": "hv-non-reaktif",
+            "Reaktif": "hv-reaktif"
+        },
+        "napza": {
+            "Menggunakan salah satu zat atau minum alkohol": "nz-zat-alkohol",
+            "Tidak pernah": "nz-tidak-pernah"
+        }
+    }
+
 
     function hasil_pemeriksaan() {
         let tgl_dari = $('#dari').val();
@@ -2712,6 +2992,41 @@
 
                     Object.keys(idMappingLanjutUsia[category]).forEach(key => {
                         let elementId = idMappingLanjutUsia[category][key];
+                        let value = data[key] || 0;
+                        let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+
+                        if ($(`#${elementId}`).length > 0) {
+                            $(`#${elementId}`).text(`${value.toLocaleString('id-ID')} (${percentage}%)`);
+                        } else {
+                            console.warn(`⚠ Elemen tidak ditemukan: ${elementId}`);
+                        }
+
+                        let progressBarId = `#progress-${elementId}`;
+                        if ($(progressBarId).length > 0) {
+                            $(progressBarId)
+                                .css('width', percentage + '%')
+                                .attr('aria-valuenow', percentage)
+                                .attr('data-toggle', 'tooltip')
+                                .attr('title', `${percentage}%`);
+                        } else {
+                            console.warn(`⚠ Progress bar tidak ditemukan: ${progressBarId}`);
+                        }
+                    });
+                });
+
+                Object.keys(idMappingLainnya).forEach(category => {
+                    let data = response.lainnya[category] || {};
+                    let total = Object.values(data).reduce((a, b) => a + b, 0);
+                    let totalId = `#total-hasil-${category.replace('_', '-')}`;
+
+                    if ($(totalId).length > 0) {
+                        $(totalId).text(total.toLocaleString('id-ID'));
+                    } else {
+                        console.warn(`⚠ ID total tidak ditemukan: ${totalId}`);
+                    }
+
+                    Object.keys(idMappingLainnya[category]).forEach(key => {
+                        let elementId = idMappingLainnya[category][key];
                         let value = data[key] || 0;
                         let percentage = total > 0 ? ((value / total) * 100).toFixed(2) : 0;
 

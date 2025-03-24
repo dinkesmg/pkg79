@@ -229,6 +229,31 @@ class DashboardController extends Controller
                     'Ketergantungan Berat' => 0,
                     'Ketergantungan total' => 0
                 ]
+            ],
+            'balita_pra_sekolah' => [
+                'lingkar_kepala' => [
+                    'Normal' => 0,
+                    'Mikrosefali atau Makrosefali' => 0
+                ]
+            ],
+            'lainnya' => [
+                'anemia' => [
+                    'Normal' => 0,
+                    'Tidak Normal (Hb <12 gr/dL)' => 0
+                ], 
+                'sifilis' => [
+                    'RDT HIV R1 Non Reaktif' => 0,
+                    'R2 dan R3 Reaktif' => 0,
+                    'R2 dan R3 Non Reaktif' => 0
+                ],
+                'hiv' => [
+                    'Non Reaktif' => 0,
+                    'Reaktif' => 0
+                ],
+                'napza' => [
+                    'Menggunakan salah satu zat atau minum alkohol' => 0,
+                    'Tidak pernah' => 0
+                ]
             ]
         ];
 
@@ -244,7 +269,9 @@ class DashboardController extends Controller
                     $jiwa_keys = ['kesehatan_jiwa'];
                     $hati_keys = ['hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis'];
                     $bbl_keys = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu'];
+                    $balita_keys = ['lingkar_kepala'];
                     $lanjut_usia_keys = ['ppok', 'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living'];
+                    $lainnya_keys = ['anemia', 'sifilis', 'hiv', 'napza'];
     
                     foreach ($keys as $key) {
                         if (isset($pemeriksaan[$key])) {
@@ -315,6 +342,24 @@ class DashboardController extends Controller
                         $value = $pemeriksaan[$key];
                         if (isset($result['lanjut_usia'][$key][$value])) {
                             $result['lanjut_usia'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($lainnya_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['lainnya'][$key][$value])) {
+                            $result['lainnya'][$key][$value]++;
+                        }
+                    }
+                }
+
+                foreach ($balita_keys as $key) {
+                    if (isset($pemeriksaan[$key])) {
+                        $value = $pemeriksaan[$key];
+                        if (isset($result['balita_pra_sekolah'][$key][$value])) {
+                            $result['balita_pra_sekolah'][$key][$value]++;
                         }
                     }
                 }
