@@ -256,7 +256,8 @@ class RiwayatController extends Controller
         
     }
 
-    public function data_simpus_ckg(Request $request)
+    // public function data_simpus_ckg(Request $request)
+    public function data_simpus_ckg()
     {
         try {
             $data_login = [
@@ -286,10 +287,10 @@ class RiwayatController extends Controller
             }
 
             $data = [
-                'tanggal_dari'   => $request->tanggal_dari,
-                'tanggal_sampai' => $request->tanggal_sampai,
-                // 'tgl_dari'   => "2025-03-08",
-                // 'tgl_sampai' => "2025-03-08",
+                // 'tanggal_dari'   => $request->tanggal_dari,
+                // 'tanggal_sampai' => $request->tanggal_sampai,
+                'tgl_dari'   => "2025-03-22",
+                'tgl_sampai' => "2025-03-22",
             ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,
