@@ -11,15 +11,16 @@ use Carbon\Carbon;
 class LaporanExport implements FromCollection, WithHeadings, WithMapping
 {
     private $counter = 0;
-    protected $role, $id_user, $periodeDari, $periodeSampai, $instrumen, $jenis;
+    protected $role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis;
 
-    public function __construct($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $jenis)
+    public function __construct($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis)
     {
         $this->role = $role;
         $this->id_user = $id_user;
         $this->periodeDari = $periodeDari;
         $this->periodeSampai = $periodeSampai;
         $this->instrumen = $instrumen;
+        $this->sub_instrumen = $sub_instrumen;
         $this->jenis = $jenis;
     }
 
@@ -41,6 +42,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
           ->orderBy('tanggal_pemeriksaan', 'desc');
 
         $instrumen = $this->instrumen;
+        $sub_instrumen = $this->sub_instrumen;
         $jenis = $this->jenis;
     
         if($jenis == "fktp_lain"){
@@ -53,7 +55,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         }
 
         if (!empty($instrumen)) {
-            $data = $query->get()->filter(function ($item) use ($instrumen) {
+            $data = $query->get()->filter(function ($item) use ($instrumen, $sub_instrumen) {
                 // Pastikan JSON tidak null atau kosong sebelum di-decode
                 if (empty($item->hasil_pemeriksaan)) {
                     return false;
@@ -69,8 +71,17 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             
                 // Gunakan foreach untuk mencari instrumen dalam JSON array
                 foreach ($hasil_pemeriksaan as $pemeriksaan) {
+                    // if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
+                    //     return true;
+                    // }
                     if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
-                        return true;
+                        if (empty($sub_instrumen) && $pemeriksaan[$instrumen]) {
+                            return true;
+                        }
+                        // Jika sub_instrumen tidak kosong dan nilainya cocok
+                        if (!empty($sub_instrumen) && $pemeriksaan[$instrumen] == $sub_instrumen) {
+                            return true;
+                        }
                     }
                 }
             

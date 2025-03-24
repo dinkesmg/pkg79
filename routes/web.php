@@ -61,3 +61,4 @@ Route::get('master_kota_kab', [MasterController::class, 'kota_kab'])->name('mast
 Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('master_kecamatan.data');
 Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('master_kelurahan.data');
 Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('master_instrumen.data');
+Route::get('master_instrumen/detail', [MasterController::class, 'instrumen_detail'])->name('master_instrumen.detail');

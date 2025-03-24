@@ -30,12 +30,6 @@
             </div>
             <div class="content">
                 <div class="container-fluid">
-                <!-- @php
-                    $instrumen = request('instrumen', ''); // Default ke string kosong jika tidak ada
-                    $tgl_dari = request('tgl_dari', ''); 
-                    $tgl_sampai = request('tgl_sampai', ''); 
-                @endphp -->
-
                     <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
@@ -46,7 +40,8 @@
                                 <div class="col-md-1 text-center">sampai</div>
                                 <div class="col-md-2"><input id="periode_sampai" type="date" value="{{ request('tgl_sampai', '') }}"></input></div>
                                 <div class="col-md-1 text-center">Instrumen Pemeriksaan</div>
-                                <div class="col-md-4"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
+                                <div class="col-md-2"><select class="form-control" id="instrumen" style="width: 100%;"></select></div>
+                                <div class="col-md-2"><select class="form-control" id="sub_instrumen" style="width: 100%; display:none"></select></div>
                                 <div class="col-md-1"><button onclick="tabel()">Cari</button></div>
                             </div>
                             <div style="display:flex; justify-content:center; margin-top:30px">
@@ -122,13 +117,13 @@
             $('#periode_sampai').val(hari_ini);
         }
 
-        $('#instrumen')
-        .empty()
-        .append($("<option/>")
-            .val(idInstrumenFromURL)
-            .text(instrumenFromURL))
-        .val(idInstrumenFromURL)
-        .trigger("change");
+        // $('#instrumen')
+        // .empty()
+        // .append($("<option/>")
+        //     .val(idInstrumenFromURL)
+        //     .text(instrumenFromURL))
+        // .val(idInstrumenFromURL)
+        // .trigger("change");
 
         $('#instrumen').select2({
             placeholder: 'Cari...',
@@ -161,18 +156,42 @@
         // 🧩 Ini bagian penting: isi select2 dari parameter URL
         if (instrumenFromURL) {
             $.ajax({
-                url: "{{ url('master_instrumen_detail') }}/" + instrumenFromURL,
+                url: "{{ url('master_instrumen/detail?id=') }}" + idInstrumenFromURL,
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    // Tambahkan sebagai opsi dan trigger change
-                    let option = new Option(data.val, data.id, true, true);
-                    $('#instrumen').append(option).trigger('change');
+                    console.log(typeof data.sub)
 
-                    // Setelah select terisi, cek tanggal — lalu jalankan tabel()
-                    if ($('#periode_dari').val() && $('#periode_sampai').val()) {
-                        tabel();
-                    }
+                    let sub_ar = JSON.parse(data.sub)
+                    sub_ar.unshift('Pilih');
+                    $('#instrumen')
+                    .empty()
+                    .append($("<option/>")
+                        .val(idInstrumenFromURL)
+                        .text(instrumenFromURL))
+                    .val(idInstrumenFromURL)
+                    .trigger("change");
+
+                    $('#sub_instrumen').select2({
+                        placeholder: 'Cari...',
+                        allowClear: true,
+                        width: 'resolve',
+                        theme: 'bootstrap4',
+                        // data: [
+                        //     { id: 1, text: 'Instrumen A' },
+                        //     { id: 2, text: 'Instrumen B' },
+                        //     { id: 3, text: 'Instrumen C' },
+                        //     // Tambahkan data lain sesuai kebutuhan
+                        // ]
+                        data: sub_ar.map(function(item) {
+                            return {
+                                id: item,
+                                text: item
+                            };
+                        })
+                    });
+
+                    $('#sub_instrumen').css('display', 'block');
                 },
                 error: function(xhr, status, error) {
                     console.error("Gagal ambil detail instrumen:", error);
@@ -440,6 +459,7 @@
                     d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
                     d.periode_sampai = $('#periode_sampai').val();
                     d.instrumen = $('#instrumen option:selected').text();
+                    d.sub_instrumen = $('#sub_instrumen option:selected').text();
                 },
                 dataSrc: ''
             },
@@ -2920,12 +2940,14 @@
         let periodeDari = document.getElementById("periode_dari").value;
         let periodeSampai = document.getElementById("periode_sampai").value;
         let instrumen = $('#instrumen option:selected').text()
+        let sub_instrumen = $('#sub_instrumen option:selected').text()
         let jenis = "semua";
 
         let url = "{{url('laporan/export')}}" + 
                 "?periode_dari=" + encodeURIComponent(periodeDari) + 
                 "&periode_sampai=" + encodeURIComponent(periodeSampai) + 
                 "&instrumen=" + encodeURIComponent(instrumen)+
+                "&sub_instrumen=" + encodeURIComponent(sub_instrumen)+
                 "&jenis=" + encodeURIComponent(jenis);
 
         window.location.href = url;
