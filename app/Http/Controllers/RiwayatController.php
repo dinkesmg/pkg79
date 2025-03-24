@@ -290,8 +290,8 @@ class RiwayatController extends Controller
             $data = [
                 // 'tgl_dari'   => $request->tgl_dari,
                 // 'tgl_sampai' => $request->tgl_sampai,
-                'tanggal_dari'   => "2025-03-21",
-                'tanggal_sampai' => "2025-03-21",
+                'tanggal_dari'   => "2025-03-22",
+                'tanggal_sampai' => "2025-03-22",
 
             ];
             $response = Http::asForm()->withHeaders([

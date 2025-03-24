@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\Log;
 
 class Kernel extends ConsoleKernel
 {
@@ -16,6 +17,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('riwayat:simpus')->everyMinute();
+        $schedule->call(function () {
+            Log::info('call');
+            app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
+        })->dailyAt('13:36');
     }
 
     /**
