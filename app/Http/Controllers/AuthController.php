@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Puskesmas;
+use App\Models\MasterProvider;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -45,16 +46,19 @@ class AuthController extends Controller
         return redirect()->route('/');
     }
 
-    public function daftar_puskesmas(){
-        $puskesmas = Puskesmas::get();
+    public function daftar_provider(){
+        $data = MasterProvider::get();
 
         // dd($puskesmas);
-        foreach ($puskesmas as $p) {
-            $user = new User();
-            $user->nama = $p->nama;
-            $user->password = bcrypt("PKG79" . $p->kode_p);
-            $user->role = "Puskesmas";
-            $user->save();
+        foreach ($data as $p) {
+            $cek = User::where('nama', $p->nmprovider)->first();
+            if(!$cek){
+                $user = new User();
+                $user->nama = $p->nmprovider;
+                $user->password = bcrypt($p->kdprovider);
+                $user->role = "FaskesLain";
+                $user->save();
+            }
         }
     }
 }

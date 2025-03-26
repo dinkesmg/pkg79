@@ -6,6 +6,7 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PasienBPJSController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +31,7 @@ Route::prefix('riwayat')->group(function () {
         Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
         Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
         Route::get('/cari_nik_pasien', [RiwayatController::class, 'cari_nik_pasien'])->name('cari_nik_pasien');
+        Route::post('/tindak_lanjut_faskes_lain', [RiwayatController::class, 'tindak_lanjut_faskes_lain'])->name('riwayat.tindak_lanjut_faskes_lain');
         
         // });
 });
@@ -55,7 +57,11 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/data_pasien_hasil_pemeriksaan', [DashboardController::class, 'data_pasien_hasil_pemeriksaan'])->name('dashboard.data_pasien_hasil_pemeriksaan');
 });
 
-Route::get('/daftar_puskesmas', [AuthController::class, 'daftar_puskesmas'])->name('daftar_puskesmas');
+Route::prefix('pasien_bpjs')->group(function () {
+    Route::get('/data', [PasienBPJSController::class, 'data'])->name('pasien.data');
+});
+
+Route::get('/daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
 Route::get('master_provinsi', [MasterController::class, 'provinsi'])->name('master_provinsi.data');
 Route::get('master_kota_kab', [MasterController::class, 'kota_kab'])->name('master_kota_kab.data');
 Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('master_kecamatan.data');

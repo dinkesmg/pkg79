@@ -162,16 +162,18 @@
                 data: { id: instrumenId },
                 success: function(data) {
                     // Ubah isi select2 sub_instrumen
-                    let sub_ar = JSON.parse(data.sub)
+                    const sub_ar = JSON.parse(data.sub)
                     sub_ar.unshift('Pilih');
-                    // console.log(sub_ar)
+                    console.log(sub_ar)
+                    console.log(data)
 
-                    $('#sub_instrumen').select2({
+                    $('#sub_instrumen').empty().select2({
                         placeholder: 'Cari...',
                         allowClear: true,
                         width: 'resolve',
                         theme: 'bootstrap4',
                         data: sub_ar.map(function(item) {
+                            console.log(item)
                             return {
                                 id: item,
                                 text: item
@@ -194,8 +196,6 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function(data) {
-                    let sub_ar = JSON.parse(data.sub)
-                    sub_ar.unshift('Pilih');
                     $('#instrumen')
                     .empty()
                     .append($("<option/>")

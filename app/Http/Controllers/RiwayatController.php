@@ -12,6 +12,8 @@ use App\Models\Pemeriksa;
 use App\Models\Pasien;
 use App\Models\Riwayat;
 use App\Models\Mapping_simpus;
+use App\Models\Mapping_kelurahan;
+use App\Models\MasterProvider;
 use App\Models\Puskesmas;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
@@ -34,29 +36,43 @@ class RiwayatController extends Controller
         $periodeSampai = $request->periode_sampai;
         // dd($role);
         set_time_limit(300);
-        // $data = Riwayat::with(['pasien', 'pemeriksa'])->get();
-        // if($role=="Puskesmas"){
-        //     $data = Riwayat::with([
-        //         'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-        //         'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-        //         'pemeriksa'])->where('id_user', $id_user)->orderBy('tanggal_pemeriksaan', 'desc')->get();
-        // }
-        // else if($role=="Admin"){
-        //     $data = Riwayat::with([
-        //         'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp' , 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-        //         'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom' , 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-        //         'pemeriksa'])->orderBy('tanggal_pemeriksaan', 'desc')->get();
-        // }
-        $query = Riwayat::with([
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-            'pemeriksa'
-        ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
-          ->orderBy('tanggal_pemeriksaan', 'desc');
+        
+        // $query = Riwayat::with([
+        //     'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+        //     'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+        //     'pemeriksa'
+        // ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+        //   ->orderBy('tanggal_pemeriksaan', 'desc');
     
-        // Filter berdasarkan role
+        // // Filter berdasarkan role
+        // if ($role == "Puskesmas") {
+        //     $query->where('id_user', $id_user);
+        // }
+        // else if($role == "FaskesLain"){
+        //     $query->with('pasien.bpjs');
+        // }
+
+        $query = Riwayat::with([
+            'pasien.bpjs' => function ($q) {
+                $q->select('id', 'nik', 'nama', 'kdProviderPst');
+            },
+            'pemeriksa',
+            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom'
+        ])
+        ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+        ->orderBy('tanggal_pemeriksaan', 'desc');
+        
         if ($role == "Puskesmas") {
             $query->where('id_user', $id_user);
+        }
+        else if($role == "FaskesLain") {
+            $provider = MasterProvider::where('nmProvider', Auth::user()->nama)->first();
+            // $query->where('kdProviderPst', )
+            $query->whereHas('pasien.bpjs', function ($q) use ($provider) {
+                // dd($provider->nmprovider);
+                $q->where('kdProviderPst->nmProvider', $provider->nmprovider);
+            });
         }
     
         // Eksekusi query
@@ -253,8 +269,7 @@ class RiwayatController extends Controller
         $data = Riwayat::find($request->id);
         $data->delete();
 
-        return response()->json(['status' => "Berhasil", 'data' => $data]);
-        
+        return response()->json(['status' => "Berhasil", 'data' => $data]);    
     }
 
     // public function data_simpus_ckg(Request $request)
@@ -269,7 +284,6 @@ class RiwayatController extends Controller
             $response_login = Http::asForm()->withHeaders([
                 'Accept' => 'application/json'
             ])->post('http://119.2.50.170/db_lb1/api/login', $data_login);
-       
             $token_login = '';
 
             if ($response_login->successful()) {
@@ -287,12 +301,14 @@ class RiwayatController extends Controller
                 ], $response_login->status());
             }
 
+            // dd($token_login);
+
             // $data = [
-            //     'tanggal_dari'   => "2025-03-23",
-            //     'tanggal_sampai' => "2025-03-23",
+            //     'tanggal_dari'   => "2025-03-19",
+            //     'tanggal_sampai' => "2025-03-20",
             // ];
             $data = [
-                'tanggal_dari'   => Carbon::yesterday()->toDateString(), // kemarin
+                'tanggal_dari'   => Carbon::now()->subDays(2)->toDateString(), // kemarin
                 'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
             ];
             $response = Http::asForm()->withHeaders([
@@ -343,7 +359,18 @@ class RiwayatController extends Controller
                             $pasien->provinsi_ktp = $prov;
                             $pasien->kota_kab_ktp = $kota_kab;
                             $pasien->kecamatan_ktp = $kec;
-                            $pasien->kelurahan_ktp = "";
+                            if(!empty($dt['kdesa']) && $dt['kdesa']!=''){
+                                $cari_kelurahan = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                if($cari_kelurahan!=""){
+                                    $pasien->kelurahan_ktp = $cari_kelurahan->kode_kelurahan_nasional;
+                                }
+                            }
+                            else{
+                                $pasien->kelurahan_ktp = "";
+                            }
+                            // dd($pasien->kelurahan_ktp, $dt['kdesa']);
+                            
+                            // $pasien->kelurahan_ktp = "";
                             $pasien->alamat_ktp = $dt['jalan'];
                             $pasien->no_hp = $dt['telp'];
                             $pasien->save();
@@ -361,7 +388,18 @@ class RiwayatController extends Controller
                             $cari_pasien->provinsi_ktp = $prov;
                             $cari_pasien->kota_kab_ktp = $kota_kab;
                             $cari_pasien->kecamatan_ktp = $kec;
-                            $cari_pasien->kelurahan_ktp = "";
+                            if(!empty($dt['kdesa']) && $dt['kdesa']!=''){
+                                $cari_kelurahan = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                if($cari_kelurahan!=""){
+                                    $cari_pasien->kelurahan_ktp = $cari_kelurahan->kode_kelurahan_nasional;
+                                }
+                            }
+                            else{
+                                $cari_pasien->kelurahan_ktp = "";
+                            }
+                            // dd($cari_pasien->kelurahan_ktp, $dt['kdesa']);
+                            
+                            // $cari_pasien->kelurahan_ktp = "";
                             $cari_pasien->alamat_ktp = $dt['jalan'];
                             $cari_pasien->no_hp = $dt['telp'];
                             $cari_pasien->save();
@@ -573,7 +611,16 @@ class RiwayatController extends Controller
                                     $pasien->provinsi_ktp = $prov;
                                     $pasien->kota_kab_ktp = $kota_kab;
                                     $pasien->kecamatan_ktp = $kec;
-                                    $pasien->kelurahan_ktp = "";
+                                    if(!empty($dt['kdesa']) && $dt['kdesa']!=''){
+                                        $cari_kelurahan = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                        if($cari_kelurahan!=""){
+                                            $pasien->kelurahan_ktp = $cari_kelurahan->kode_kelurahan_nasional;
+                                        }
+                                    }
+                                    else{
+                                        $pasien->kelurahan_ktp = "";
+                                    }
+                                    // dd($pasien->kelurahan_ktp, $dt['kdesa']);
                                     $pasien->alamat_ktp = $dt['jalan'];
                                     $pasien->no_hp = $dt['telp'];
                                     $pasien->save();
@@ -591,7 +638,16 @@ class RiwayatController extends Controller
                                     $cari_pasien->provinsi_ktp = $prov;
                                     $cari_pasien->kota_kab_ktp = $kota_kab;
                                     $cari_pasien->kecamatan_ktp = $kec;
-                                    $cari_pasien->kelurahan_ktp = "";
+                                    if(!empty($dt['kdesa']) && $dt['kdesa']!=''){
+                                        $cari_kelurahan = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                        if($cari_kelurahan!=""){
+                                            $cari_pasien->kelurahan_ktp = $cari_kelurahan->kode_kelurahan_nasional;
+                                        }
+                                    }
+                                    else{
+                                        $cari_pasien->kelurahan_ktp = "";
+                                    }
+                                    // $cari_pasien->kelurahan_ktp = "";
                                     $cari_pasien->alamat_ktp = $dt['jalan'];
                                     $cari_pasien->no_hp = $dt['telp'];
                                     $cari_pasien->save();
@@ -866,6 +922,15 @@ class RiwayatController extends Controller
             'ref_kelurahan_dom')->where('nik', $request->nik)->first();
         
         return response()->json($data);
+    }
+
+    public function tindak_lanjut_faskes_lain(Request $request)
+    {
+        $data = Riwayat::find($request->id);
+        $data->tindak_lanjut_faskes_lain = $request->tindak_lanjut_faskes_lain;
+        $data->save();
+
+        return response()->json(['status' => "Berhasil", 'data' => $data]);    
     }
 
 }

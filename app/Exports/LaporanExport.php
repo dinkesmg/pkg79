@@ -43,6 +43,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
 
         $instrumen = $this->instrumen;
         $sub_instrumen = $this->sub_instrumen;
+        if($sub_instrumen == "Pilih"){
+            $sub_instrumen = null;
+        }
         $jenis = $this->jenis;
     
         if($jenis == "fktp_lain"){

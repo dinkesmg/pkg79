@@ -41,7 +41,9 @@
                                 <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
                                 <div class="col-md-4"><button onclick="tabel()">Cari</button></div>
                             </div>
+                            @if(Auth::user()->role!="FaskesLain")
                             <div style="display:flex; justify-content:center; margin-bottom:10px; margin-top:10px"><button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i class="fa fa-plus"></i> Tambah Pasien</button></a></div>
+                            @endif
                             <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
                             <thead>
                                 <tr>
@@ -125,31 +127,6 @@
             { 'render': function (data, type, row, meta) {
                 let hasil_pemeriksaan = JSON.parse(row.hasil_pemeriksaan)
                 let program_tindak_lanjut = JSON.parse(row.program_tindak_lanjut)                
-                
-                // var cek = semua_riwayat.some(function(entry) {
-                //     return entry.id == row.id;
-                // });
-
-                // if (!cek) {
-                //     semua_riwayat.push({
-                //         id: row.id,
-                //         tanggal_pemeriksaan: row.tanggal_pemeriksaan,
-                //         tempat_periksa: row.tempat_periksa ? row.tempat_periksa : "",
-                //         nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
-                //         pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
-                //         pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",                        
-                //         pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
-                //         pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
-                //         pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
-                //         pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
-                //         pasien_alamat: row.pasien && row.pasien.alamat ? row.pasien.alamat : "",
-                //         pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
-                //         hasil_pemeriksaan: hasil_pemeriksaan,
-                //         kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
-                //         program_tindak_lanjut: program_tindak_lanjut,
-                //     });
-                // }
-
                 var index = semua_riwayat.findIndex(entry => entry.id == row.id);
 
                 if (index !== -1) {
@@ -247,11 +224,21 @@
                 var actionsHtml = ''
                 
                 // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
-                    
+                if(role_auth=="FaskesLain"){
+                    if(row.tindak_lanjut_faskes_lain!="1"){
+                        actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Sudah Tindak Lanjut\', \''+row.id+'\')" style="width:100%">Belum Tindak Lanjut</button>'
+                    }
+                    else{
+                        actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Belum Tindak Lanjut\', \''+row.id+'\')" style="width:100%">Sudah Tindak Lanjut</button>'
+                    }
+                }
+                actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
+                if(role_auth!="FaskesLain"){
                     actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Edit\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Edit</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \''+row.id+'\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
                     actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \''+row.id+'\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
-                    actionsHtml += '<button class="btn btn-sm btn-secondary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"> PDF</button>'
+                    // actionsHtml += '<button class="btn btn-sm btn-secondary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"> PDF</button>'
+                }
+                    
                     
                     // }
                 
@@ -333,6 +320,15 @@
             { 'data': 'kesimpulan_hasil_pemeriksaan' },
             // { 'data': 'program_tindak_lanjut' },
         ]
+
+        // if (role_auth == "FaskesLain") {
+        //     col.push({
+        //         render: function (data, type, row, meta) {
+        //             let tindak_lanjut_faskes_lain = (row.tindak_lanjut_faskes_lain ? row.tindak_lanjut_faskes_lain : ""); 
+        //             return tindak_lanjut_faskes_lain;
+        //         }
+        //     });
+        // }
 
         $('#idtabel').dataTable( {
             destroy : true,
@@ -510,6 +506,166 @@
                 <div class="col-12">Rujuk FKTRL (disertai dengan keterangan):'+rujuk_fktrl+'</div>\
             </div>'
         }
+        else if(fitur == "Sudah Tindak Lanjut" || fitur == "Belum Tindak Lanjut"){
+            $('#exampleModal .modal-title').text('Tindak Lanjut');
+        
+            let tgl_lahir = dt.pasien_tgl_lahir;
+            let parts = tgl_lahir.split("-");
+            let format_tgl_lahir = parts[2] + "-" + parts[1] + "-" + parts[0];
+
+            var html='\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Identitas Pasien</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">NIK</div>\
+                    <div class="col-6"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" style="width:100%"></input></div>\
+                    <div class="col-2"><button onclick="oc_cari_nik()">Cari</button></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Nama</div>\
+                    <div class="col-8"><input id="nama_pasien" type="text" value="'+((dt.pasien_nama != "")?dt.pasien_nama:"")+'" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Jenis Kelamin</div>\
+                    <div class="col-8"><select id="jenis_kelamin" style="width:100%">\
+                        <option value="Laki-laki" '+(((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Laki-laki") ? "selected" : ""))+'>Laki-laki</option>\
+                        <option value="Perempuan" '+(((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Perempuan") ? "selected" : ""))+'>Perempuan</option></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tanggal Lahir</div>\
+                    <div class="col-8"><input id="tgl_lahir" type="date" value="'+((dt.pasien_tgl_lahir != "")?dt.pasien_tgl_lahir:"")+'" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
+                </div>\
+                <div class="row mb-3">\
+                    <div class="col-12"><b>KTP</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Provinsi</div>\
+                    <div class="col-8"><select class="form-control" id="provinsi_ktp" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kota/Kab</div>\
+                    <div class="col-8"><select class="form-control" id="kota_kab_ktp" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kecamatan</div>\
+                    <div class="col-8"><select class="form-control" id="kecamatan_ktp" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kelurahan</div>\
+                    <div class="col-8"><select class="form-control" id="kelurahan_ktp" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Alamat</div>\
+                    <div class="col-8"><input id="alamat_ktp" type="text" value="'+((dt.pasien_alamat_ktp != "")?dt.pasien_alamat_ktp:"")+'" style="width: 100%;"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><input type="checkbox" id="alamat_sama" name="alamat_sama" value="alamat_sama" onchange="oc_alamat_ktp_sama_domisili()"><label for="l_alamat_sama" style="margin-left:5px"> Alamat domisili sama dengan alamat ktp</label></div>\
+                </div>\
+                <div class="row mb-3">\
+                    <div class="col-12"><b>Domisili</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Provinsi</div>\
+                    <div class="col-8"><select class="form-control" id="provinsi_dom" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kota/Kab</div>\
+                    <div class="col-8"><select class="form-control" id="kota_kab_dom" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kecamatan</div>\
+                    <div class="col-8"><select class="form-control" id="kecamatan_dom" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kelurahan</div>\
+                    <div class="col-8"><select class="form-control" id="kelurahan_dom" style="width: 100%;"></select></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Alamat</div>\
+                    <div class="col-8"><input id="alamat_dom" type="text" value="'+((dt.pasien_alamat_dom != "")?dt.pasien_alamat_dom:"")+'" style="width: 100%;"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Usia</div>\
+                    <div class="col-8"><input id="usia" type="text" style="width: 100%;" readonly></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">No HP</div>\
+                    <div class="col-8"><input id="no_hp" type="text" value="'+((dt.pasien_no_hp != "")?dt.pasien_no_hp:"")+'" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tanggal Pemeriksaan</div>\
+                    <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="'+((dt.tanggal_pemeriksaan != "") != ""?dt.tanggal_pemeriksaan:"")+'" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tempat Periksa</div>\
+                    <div class="col-8">\
+                        <select id="tempat_periksa" style="width:100%">\
+                            <option value="Puskesmas" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Puskesmas") ? "selected" : ""))+'>Puskesmas</option>\
+                            <option value="Klinik" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Klinik") ? "selected" : ""))+'>Klinik</option>\
+                            <option value="Praktek Dokter Mandiri" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Praktek Dokter Mandiri") ? "selected" : ""))+'>Praktek Dokter Mandiri</option>\
+                            <option value="Pustu" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Pustu") ? "selected" : ""))+'>Pustu</option>\
+                            <option value="Lainnya" '+(((dt.tempat_periksa != "" && dt.tempat_periksa === "Lainnya") ? "selected" : ""))+'>Lainnya</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Nama FKTP PJ</div>\
+                    <div class="col-8"><input id="nama_fktp_pj" type="text" value="'+((dt.nama_fktp_pj != "") != ""?dt.nama_fktp_pj:"")+'" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Identitas Pemeriksa</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">NIK</div>\
+                    <div class="col-8"><input id="nik_pemeriksa" type="text" value="'+((dt.pemeriksa_nik != "")?dt.pemeriksa_nik:"")+'" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Nama</div>\
+                    <div class="col-8"><input id="nama_pemeriksa" type="text" value="'+((dt.pemeriksa_nama != "")?dt.pemeriksa_nama:"")+'" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12" id="id_hasil_pemeriksaan" style="width:100%"></div>\
+                </div>'
+                if(fitur=="Edit"){
+                    html+=
+                    '<div class="row mb-3" style="display:flex">\
+                        <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
+                    </div>\
+                    <div class="row mb-3" style="display:flex">\
+                        <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>'+dt.hasil_pemeriksaan_lainnya+'</textarea></div>\
+                    </div>'
+                }
+            html+='<div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Kesimpulan Hasil</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Hasil Pemeriksaan</div>\
+                    <div class="col-8">\
+                        <select id="kesimpulan_hasil_pemeriksaan" style="width:100%">\
+                            <option value="">Pilih</option>\
+                            <option value="Normal dan faktor resiko tidak terdeteksi" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dan faktor resiko tidak terdeteksi") ? "selected" : ""))+'>Normal dan faktor resiko tidak terdeteksi</option>\
+                            <option value="Normal dengan faktor resiko" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dengan faktor resiko") ? "selected" : ""))+'>Normal dengan faktor resiko</option>\
+                            <option value="Menunjukkan kondisi pra penyakit" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi pra penyakit") ? "selected" : ""))+'>Menunjukkan kondisi pra penyakit</option>\
+                            <option value="Menunjukkan kondisi penyakit" '+(((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi penyakit") ? "selected" : ""))+'>Menunjukkan kondisi penyakit</option>\
+                        </select>\
+                    </div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Program Tindak Lanjut</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Edukasi yang diberikan</div>\
+                    <div class="col-8"><input id="edukasi" type="text" value="" oninput="oc_program_tindak_lanjut(\'edukasi\')" style="width:100%"></input></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Rujuk FKTRL (disertai dengan keterangan)</div>\
+                    <div class="col-8"><input id="rujuk_fktrl" type="text" value="" oninput="oc_program_tindak_lanjut(\'rujuk_fktrl\')" style="width:100%"></input></div>\
+                </div>'
+        }
         else{
             // let hasil_pemeriksaan_lainnya = JSON.parse(JSON.stringify(dt.hasil_pemeriksaan_lainnya));
             console.log(dt.hasil_pemeriksaan_lainnya)
@@ -520,7 +676,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-6"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" oninput="oi_nik()" style="width:100%"></input></div>\
+                <div class="col-6"><input id="nik_pasien" type="text" value="'+((dt.pasien_nik != "")?dt.pasien_nik:"")+'" style="width:100%"></input></div>\
                 <div class="col-2"><button onclick="oc_cari_nik()">Cari</button></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
@@ -683,20 +839,8 @@
         get_kecamatan_dom(dt.pasien_kecamatan_dom, dt.pasien_kecamatan_dom_nama)
         get_kelurahan_dom(dt.pasien_kelurahan_dom, dt.pasien_kelurahan_dom_nama)
         
-        if(dt.nik!=""){
-            oi_nik()
-        }
 
         $('#exampleModal').modal('show');
-    }
-
-    function oi_nik(){
-        //     let nik = $('#nik_pasien').val()
-            
-        //     get_provinsi(nik)
-        //     get_kota_kab(nik)
-        //     get_kecamatan(nik)
-        //     // get_kelurahan(nik, kode_kelurahan)
     }
 
     function get_provinsi_ktp(kode, nama) {
@@ -1297,6 +1441,39 @@
                 }
             })
         }
+        else if(vurl=="sudah tindak lanjut" || vurl=="belum tindak lanjut"){
+            let tindak_lanjut_faskes_lain
+
+            if(vurl=="sudah tindak lanjut"){
+                tindak_lanjut_faskes_lain = "1"
+            }
+            else if(vurl=="belum tindak lanjut"){
+                tindak_lanjut_faskes_lain = "0"
+            }
+
+            $.ajax({
+                url: `{{url('riwayat/tindak_lanjut_faskes_lain')}}`,
+                type: "POST",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    id: id_riwayat,
+                    tindak_lanjut_faskes_lain: tindak_lanjut_faskes_lain
+                },
+                success: function(response) {
+                    console.log(response)
+                    $('#exampleModal').modal('hide');
+                    tabel()
+                    if(response.status=="Berhasil"){
+                        Toast.fire({
+                            icon: 'success',
+                            title: 'Berhasil '+fitur+' Pasien'
+                        })
+                    }
+                }
+            })
+        }
 
     }
 
@@ -1307,58 +1484,58 @@
 
         console.log(tgl_lahir)
         console.log(tanggal_pemeriksaan)
-        if (tgl_lahir !== "") {
-            const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
+        // if (tgl_lahir !== "") {
+        //     const tglPemeriksaanInput = document.getElementById('tanggal_pemeriksaan');
 
-            const hari_ini = new Date();
-            const tahun_ini = hari_ini.getFullYear();
+        //     const hari_ini = new Date();
+        //     const tahun_ini = hari_ini.getFullYear();
 
-            var lahir = new Date(tgl_lahir);
+        //     var lahir = new Date(tgl_lahir);
 
-            // Ambil hari dan bulan dari tanggal lahir dalam format dua digit
-            const tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
-            const tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
+        //     // Ambil hari dan bulan dari tanggal lahir dalam format dua digit
+        //     const tgl_lahir_hari = lahir.getDate().toString().padStart(2, '0');
+        //     const tgl_lahir_bulan = (lahir.getMonth() + 1).toString().padStart(2, '0');
 
-            console.log("Tanggal Lahir:", tgl_lahir_hari + "/" + tgl_lahir_bulan);
+        //     // console.log("Tanggal Lahir:", tgl_lahir_hari + "/" + tgl_lahir_bulan);
 
-            // Konversi bulan lahir ke angka untuk pengecekan
-            const bulan_lahir_num = parseInt(tgl_lahir_bulan, 10);
+        //     // Konversi bulan lahir ke angka untuk pengecekan
+        //     const bulan_lahir_num = parseInt(tgl_lahir_bulan, 10);
 
-            let tgl_pemeriksaan_min_format;
-            let tgl_pemeriksaan_max_format;
+        //     let tgl_pemeriksaan_min_format;
+        //     let tgl_pemeriksaan_max_format;
 
-            if (bulan_lahir_num >= 1 && bulan_lahir_num <= 2) {
-                // Jika lahir antara Januari - Februari
-                const tgl_ulang_tahun_2025 = new Date(`2025-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
-                const tgl_max_pemeriksaan = new Date(`2025-04-30`);  // 30 April 2025
+        //     if (bulan_lahir_num >= 1 && bulan_lahir_num <= 2) {
+        //         // Jika lahir antara Januari - Februari
+        //         const tgl_ulang_tahun_2025 = new Date(`2025-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
+        //         const tgl_max_pemeriksaan = new Date(`2025-04-30`);  // 30 April 2025
 
-                tgl_pemeriksaan_min_format = tgl_ulang_tahun_2025.toISOString().split('T')[0];
-                tgl_pemeriksaan_max_format = tgl_max_pemeriksaan.toISOString().split('T')[0];
+        //         tgl_pemeriksaan_min_format = tgl_ulang_tahun_2025.toISOString().split('T')[0];
+        //         tgl_pemeriksaan_max_format = tgl_max_pemeriksaan.toISOString().split('T')[0];
 
-                console.log("Lahir Jan-Feb: Pemeriksaan dari", tgl_pemeriksaan_min_format, "hingga", tgl_pemeriksaan_max_format);
-            } else {
-                // Jika lahir antara Maret - Desember
-                const tgl_ulang_tahun_ini = new Date(`${tahun_ini}-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
+        //         console.log("Lahir Jan-Feb: Pemeriksaan dari", tgl_pemeriksaan_min_format, "hingga", tgl_pemeriksaan_max_format);
+        //     } else {
+        //         // Jika lahir antara Maret - Desember
+        //         const tgl_ulang_tahun_ini = new Date(`${tahun_ini}-${tgl_lahir_bulan}-${tgl_lahir_hari}`);
 
-                // Tanggal pemeriksaan minimum = tanggal ulang tahun tahun ini
-                tgl_pemeriksaan_min_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
+        //         // Tanggal pemeriksaan minimum = tanggal ulang tahun tahun ini
+        //         tgl_pemeriksaan_min_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
 
-                // Tanggal pemeriksaan maksimum = 30 hari setelah ulang tahun
-                tgl_ulang_tahun_ini.setDate(tgl_ulang_tahun_ini.getDate() + 30);
-                tgl_pemeriksaan_max_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
+        //         // Tanggal pemeriksaan maksimum = 30 hari setelah ulang tahun
+        //         tgl_ulang_tahun_ini.setDate(tgl_ulang_tahun_ini.getDate() + 30);
+        //         tgl_pemeriksaan_max_format = tgl_ulang_tahun_ini.toISOString().split('T')[0];
 
-                console.log("Lahir Mar-Des: Pemeriksaan dari ulang tahun hingga +30 hari");
-            }
+        //         console.log("Lahir Mar-Des: Pemeriksaan dari ulang tahun hingga +30 hari");
+        //     }
 
-            // Set atribut min dan max pada input tanggal pemeriksaan
-            console.log("Tanggal Pemeriksaan Min:", tgl_pemeriksaan_min_format);
-            console.log("Tanggal Pemeriksaan Max:", tgl_pemeriksaan_max_format);
-            tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
-            tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
-        }
+        //     // Set atribut min dan max pada input tanggal pemeriksaan
+        //     console.log("Tanggal Pemeriksaan Min:", tgl_pemeriksaan_min_format);
+        //     console.log("Tanggal Pemeriksaan Max:", tgl_pemeriksaan_max_format);
+        //     tglPemeriksaanInput.min = tgl_pemeriksaan_min_format;
+        //     tglPemeriksaanInput.max = tgl_pemeriksaan_max_format;
+        // }
 
         if(tgl_lahir!="" && tanggal_pemeriksaan!=""){
-            // var lahir = new Date(tgl_lahir);
+            var lahir = new Date(tgl_lahir);
             var periksa = new Date(tanggal_pemeriksaan);
 
             var tahun = periksa.getFullYear() - lahir.getFullYear();

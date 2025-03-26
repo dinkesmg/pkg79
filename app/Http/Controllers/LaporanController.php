@@ -47,6 +47,9 @@ class LaporanController extends Controller
 
         $instrumen = $request->instrumen;
         $sub_instrumen = $request->sub_instrumen;
+        if($request->sub_instrumen == "Pilih"){
+            $sub_instrumen = null;
+        }
     
         // Filter berdasarkan role
         if ($role == "Puskesmas") {

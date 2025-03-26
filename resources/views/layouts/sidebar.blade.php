@@ -79,6 +79,7 @@
                         <p style="color:#fff; font-weight:bold">Laporan</p>
                     </a>
                 </li> -->
+                @if(Auth::user()->role!="FaskesLain")
                 <li class="nav-item">
                     <a href="#" class="nav-link {{ request()->routeIs('laporan*') == 1 ? 'active' : '' }}">
                         <p style="font-weight:bold; color:white">
@@ -103,6 +104,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
                 <li class="nav-item">
                     <a href="{{ url('logout') }}" class="nav-link">
                         <p style="color:#fff; font-weight:bold">Logout</p>

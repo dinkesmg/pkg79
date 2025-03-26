@@ -51,6 +51,11 @@ class Pasien extends Model
         return $this->belongsTo(MasterKelurahan::class, 'kelurahan_dom', 'kode_kelurahan');
     }
 
+    public function bpjs()
+    {
+        return $this->belongsTo(PasienBPJS::class, 'nik', 'nik');
+    }
+
     // public function kecamatan()
     // {
     //     return $this->belongsTo(Ref_Kecamatan::class, 'id_kecamatan', 'id');
