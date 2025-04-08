@@ -303,14 +303,14 @@ class RiwayatController extends Controller
 
             // dd($token_login);
 
-            // $data = [
-            //     'tanggal_dari'   => "2025-03-19",
-            //     'tanggal_sampai' => "2025-03-20",
-            // ];
             $data = [
-                'tanggal_dari'   => Carbon::now()->subDays(2)->toDateString(), // kemarin
-                'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
+                'tanggal_dari'   => "2025-04-05",
+                'tanggal_sampai' => "2025-04-05",
             ];
+            // $data = [
+            //     'tanggal_dari'   => Carbon::now()->subDays(2)->toDateString(), // kemarin
+            //     'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
+            // ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,
                 'Accept' => 'application/json'
@@ -414,6 +414,8 @@ class RiwayatController extends Controller
                             $kesimpulan_hasil_pemeriksaan = null;
                             $program_tindak_lanjut = null;
 
+                            // dd($cek->hasil_pemeriksaan, $hasil_pemeriksaan);
+
                             foreach ($hasil_pemeriksaan as $hp) {
                                 foreach ($hp as $hp_obj => $hp_val) {
                                     // dd($hasil_pemeriksaan, $hp, $hp_obj, $hp_val);
@@ -446,11 +448,15 @@ class RiwayatController extends Controller
                                                 // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
                                                 // dd($hp_obj);
                                                 if($hp_obj == "gigi_karies"){
-                                                    // dd($hp_obj);
+                                                    // dd($hp_obj, $ms, $ms['val'], $hp_val, $usia, $dt, $hp_baru);
+                                                    
                                                     if($usia<=6 && $ms['kondisi']=="<=6 tahun"){
                                                         if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $cari_gigi_karies_status = Mapping_simpus::where('val', 'gigi')->where('status_simpus', $hp_val)->where('kondisi', '<=6 tahun')->first();
+
                                                             $hp_baru[] = [
-                                                                $ms['val'] => $ms['status']
+                                                                // $ms['val'] => $ms['status']
+                                                                $ms['val'] => $cari_gigi_karies_status['status']
                                                             ];
                                                         }
                                                         $sudah_cek = true; // Tandai bahwa data sudah dicek
@@ -458,13 +464,19 @@ class RiwayatController extends Controller
                                                     }
                                                     else if($usia>0 && $ms['kondisi']=="dewasa"){
                                                         if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $cari_gigi_karies_status = Mapping_simpus::where('val', 'gigi')->where('status_simpus', $hp_val)->where('kondisi', 'dewasa')->first();
+
                                                             $hp_baru[] = [
-                                                                $ms['val'] => $ms['status']
+                                                                // $ms['val'] => $ms['status']
+                                                                $ms['val'] => $cari_gigi_karies_status['status']
                                                             ];
                                                         }
+                                                        // dd($hp_obj, $ms, $usia, $dt, $hp_baru); 
                                                         $sudah_cek = true; // Tandai bahwa data sudah dicek
                                                         break;
                                                     }
+                                                    // dd($hp_obj, $ms, $usia, $dt, $hp_baru);
+                                                    
                                                 }
                                                 else{
                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
@@ -578,8 +590,10 @@ class RiwayatController extends Controller
                                 }
                             }
 
+
                             $hasil_pemeriksaan = json_encode($hp_baru);
-                                    
+                            
+                            // dd($hasil_pemeriksaan, $dt, $dt['hasil_pemeriksaan']);
 
                             $cek->hasil_pemeriksaan = $hasil_pemeriksaan;
                             $cek->hasil_pemeriksaan_lainnya = $hp_lainnya?json_encode($hp_lainnya):null;
