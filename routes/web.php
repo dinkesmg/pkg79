@@ -61,7 +61,7 @@ Route::prefix('pasien_bpjs')->group(function () {
     Route::get('/data', [PasienBPJSController::class, 'data'])->name('pasien.data');
 });
 
-Route::get('/daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
+Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
 Route::get('master_provinsi', [MasterController::class, 'provinsi'])->name('master_provinsi.data');
 Route::get('master_kota_kab', [MasterController::class, 'kota_kab'])->name('master_kota_kab.data');
 Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('master_kecamatan.data');

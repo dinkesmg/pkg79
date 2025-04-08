@@ -337,15 +337,24 @@
             //     url: "{{url('riwayat/data')}}",
             //     dataSrc: ''
             // },
+            processing: true,  // Optional: Shows a loading indicator while data is being fetched.
+            serverSide: true,
             ajax: {
                 url: "{{url('riwayat/data')}}",
                 data: function(d) {
                     d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
                     d.periode_sampai = $('#periode_sampai').val();
                 },
-                dataSrc: ''
+                // dataSrc: ''
+                dataSrc: function(json) {
+                    // Return the data format expected by DataTables.
+                    return json.data;
+                }
             },
-            columns: col
+            columns: col,
+            pageLength: 10,  // Optional: Set the default page length.
+            lengthChange: true,  // Optional: Allow users to change the page length.
+            order: [[0, 'desc']]
         });
     }
 

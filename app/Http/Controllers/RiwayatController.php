@@ -37,21 +37,6 @@ class RiwayatController extends Controller
         // dd($role);
         set_time_limit(300);
         
-        // $query = Riwayat::with([
-        //     'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-        //     'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
-        //     'pemeriksa'
-        // ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
-        //   ->orderBy('tanggal_pemeriksaan', 'desc');
-    
-        // // Filter berdasarkan role
-        // if ($role == "Puskesmas") {
-        //     $query->where('id_user', $id_user);
-        // }
-        // else if($role == "FaskesLain"){
-        //     $query->with('pasien.bpjs');
-        // }
-
         $query = Riwayat::with([
             'pasien.bpjs' => function ($q) {
                 $q->select('id', 'nik', 'nama', 'kdProviderPst');
@@ -76,11 +61,22 @@ class RiwayatController extends Controller
         }
     
         // Eksekusi query
-        $data = $query->get();
+        // $data = $query->get();
 
-        
         // dd($data);
-        return response()->json($data);
+        // return response()->json($data);
+
+        $perPage = $request->input('length', 10);  // jumlah per halaman
+        $page = floor($request->input('start', 0) / $perPage) + 1;  // hi
+
+        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        // Return the paginated results in the DataTable format
+        return response()->json([
+            'draw' => $request->input('draw'),
+            'recordsTotal' => $data->total(),
+            'recordsFiltered' => $data->total(),  // You can adjust this if you apply additional filters
+            'data' => $data->items(),
+        ]);
     }
 
     public function tambah(Request $request)
