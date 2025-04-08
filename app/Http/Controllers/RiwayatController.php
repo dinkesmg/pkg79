@@ -303,14 +303,14 @@ class RiwayatController extends Controller
 
             // dd($token_login);
 
-            $data = [
-                'tanggal_dari'   => "2025-04-05",
-                'tanggal_sampai' => "2025-04-05",
-            ];
             // $data = [
-            //     'tanggal_dari'   => Carbon::now()->subDays(2)->toDateString(), // kemarin
-            //     'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
+            //     'tanggal_dari'   => "2025-04-05",
+            //     'tanggal_sampai' => "2025-04-05",
             // ];
+            $data = [
+                'tanggal_dari'   => Carbon::now()->subDays(2)->toDateString(), // kemarin
+                'tanggal_sampai' => Carbon::today()->toDateString(),     // hari ini
+            ];
             $response = Http::asForm()->withHeaders([
                 'Authorization' => 'Bearer '.$token_login,
                 'Accept' => 'application/json'
