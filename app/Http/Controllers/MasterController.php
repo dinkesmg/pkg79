@@ -13,7 +13,11 @@ use App\Models\MasterKotaKab;
 use App\Models\MasterKelurahan;
 use App\Models\MasterKecamatan;
 use App\Models\MasterInstrumen;
+use App\Models\MasterProvider;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MasterController extends Controller
 {
@@ -173,7 +177,6 @@ class MasterController extends Controller
 
     public function instrumen_detail(Request $request)
     {
-        // dd()
         $id = $request->get('id');
         // $id = $request->get('id');
 
@@ -195,6 +198,88 @@ class MasterController extends Controller
         // dd($data);
         return response()->json($data);
         // return response()->json([]);
+    }
+
+    public function data_simpus_master_provider1(Request $request){
+        try {
+            $data_login = [
+                'email'   => "teknis.dkksemarang@gmail.com",
+                'name'   => "simpus",
+                'password' => "Pandanaran79!",
+            ];
+            $response_login = Http::asForm()->withHeaders([
+                'Accept' => 'application/json'
+            ])->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+            $token_login = '';
+
+            if ($response_login->successful()) {
+                // dd($response_login);
+                $res_login = $response_login->json();
+                $token_login = $res_login['access_token'];
+                // dd($auth_login['access_token']);
+            }
+            else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal mengambil data dari API',
+                    'http_status' => $response_login->status(),
+                    'error_body' => $response_login->body() // Menampilkan detail error dari API
+                ], $response_login->status());
+            }
+            
+            $page = 1;
+            $lastPage = 1;
+
+            do {
+                $requestData = [
+                    'page' => $page
+                ];
+
+                $response = Http::asForm()->withHeaders([
+                    'Authorization' => 'Bearer ' . $token_login,
+                    'Accept' => 'application/json'
+                ])->timeout(180)->post('http://119.2.50.170/db_lb1/api/data_master_provider1', $requestData);
+
+                if (!$response->successful()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengambil data dari API halaman ' . $page,
+                        'http_status' => $response->status(),
+                        'error_body' => $response->body()
+                    ], $response->status());
+                }
+
+                $json = $response->json();
+                $data = $json['data'] ?? [];
+
+                foreach ($data as $dt) {
+                    // dd($dt);
+                    $cek = MasterProvider::where('kdprovider', $dt['kdprovider'])->first();
+
+                    if (!$cek) {
+                        $cek = new MasterProvider();
+                        $cek->kdprovider = $dt['kdprovider'];
+                        $cek->nmprovider = $dt['nmprovider'];
+                        $cek->save();
+                    }
+                }
+
+                // $currentPage = $json['current_page'] ?? $page;
+                $lastPage = $json['last_page'] ?? $page;
+                $page++;
+
+                sleep(2);
+            } while ($page <= $lastPage);
+
+            Log::info('Master Provider Berhasil');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ]);
+         // Langsung dump response JSON
+        } catch (\Exception $e) {
+            dd('API Request Error:', $e->getMessage());
+        }
     }
 
 }

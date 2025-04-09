@@ -21,6 +21,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Log::info('call');
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
+            app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
+            app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
         })->dailyAt('23:30');
     }
 

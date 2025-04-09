@@ -35,15 +35,38 @@ class RiwayatController extends Controller
         $periodeDari = $request->periode_dari;
         $periodeSampai = $request->periode_sampai;
         // dd($role);
-        set_time_limit(300);
+        set_time_limit(360);
         
         $query = Riwayat::with([
             'pasien.bpjs' => function ($q) {
-                $q->select('id', 'nik', 'nama', 'kdProviderPst');
+                $q->select('id', 'nik', 'nama', 'kdprovider1', 'nmprovider1');
             },
             'pemeriksa',
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom'
+            'pasien.ref_provinsi_ktp' => function ($q) {
+                $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+            },
+            'pasien.ref_kota_kab_ktp' => function ($q) {
+                $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+            }, 
+            'pasien.ref_kecamatan_ktp' => function ($q) {
+                $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+            },
+            'pasien.ref_kelurahan_ktp' => function ($q) {
+                $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+            },
+            'pasien.ref_provinsi_dom' => function ($q) {
+                $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+            },
+            'pasien.ref_kota_kab_dom' => function ($q) {
+                $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+            }, 
+            'pasien.ref_kecamatan_dom' => function ($q) {
+                $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+            },
+            'pasien.ref_kelurahan_dom' => function ($q) {
+                $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+            },
+            // 'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom'
         ])
         ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
         ->orderBy('tanggal_pemeriksaan', 'desc');
@@ -52,11 +75,11 @@ class RiwayatController extends Controller
             $query->where('id_user', $id_user);
         }
         else if($role == "FaskesLain") {
-            $provider = MasterProvider::where('nmProvider', Auth::user()->nama)->first();
+            $provider = MasterProvider::where('nmprovider', Auth::user()->nama)->first();
             // $query->where('kdProviderPst', )
             $query->whereHas('pasien.bpjs', function ($q) use ($provider) {
                 // dd($provider->nmprovider);
-                $q->where('kdProviderPst->nmProvider', $provider->nmprovider);
+                $q->where('nmprovider1', $provider->nmprovider);
             });
         }
     

@@ -59,6 +59,11 @@ Route::prefix('dashboard')->group(function () {
 
 Route::prefix('pasien_bpjs')->group(function () {
     Route::get('/data', [PasienBPJSController::class, 'data'])->name('pasien.data');
+    Route::get('/data_simpus', [PasienBPJSController::class, 'data_simpus'])->name('pasien.data_simpus');
+});
+
+Route::prefix('data_simpus')->group(function () {
+    Route::get('/master_provider1', [MasterController::class, 'data_simpus_master_provider1'])->name('data_simpus.provider1');
 });
 
 Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
