@@ -57,7 +57,7 @@ class PasienBPJSController extends Controller
 
             do {
                 $requestData = [
-                    'tanggal_dari' => Carbon::now()->subDays(2)->toDateString(),
+                    'tanggal_dari' => Carbon::now()->subDays(30)->toDateString(),
                     'tanggal_sampai' => Carbon::today()->toDateString(),
                     'page' => $page
                 ];
