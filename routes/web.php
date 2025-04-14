@@ -18,22 +18,23 @@ use App\Http\Controllers\PasienBPJSController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/', [AuthController::class, 'index'])->name('/');
 Route::post('auth_cek', [AuthController::class, 'cek'])->name('auth.cek');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::prefix('riwayat')->group(function () {
     // Route::middleware(['auth', 'cekrole:Admin|Puskesmas'])->group(function () {
-        Route::get('/', [RiwayatController::class, 'index'])->name('riwayat.index');
-        Route::post('/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
-        Route::post('/edit', [RiwayatController::class, 'edit'])->name('riwayat.edit');
-        Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
-        Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
-        Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
-        Route::get('/cari_nik_pasien', [RiwayatController::class, 'cari_nik_pasien'])->name('cari_nik_pasien');
-        Route::post('/tindak_lanjut_faskes_lain', [RiwayatController::class, 'tindak_lanjut_faskes_lain'])->name('riwayat.tindak_lanjut_faskes_lain');
-        
-        // });
+    Route::get('/', [RiwayatController::class, 'index'])->name('riwayat.index');
+    Route::post('/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
+    Route::post('/edit', [RiwayatController::class, 'edit'])->name('riwayat.edit');
+    Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
+    Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
+    Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
+    Route::get('/cari_nik_pasien', [RiwayatController::class, 'cari_nik_pasien'])->name('cari_nik_pasien');
+    Route::post('/tindak_lanjut_faskes_lain', [RiwayatController::class, 'tindak_lanjut_faskes_lain'])->name('riwayat.tindak_lanjut_faskes_lain');
+
+    // });
 });
 
 Route::prefix('laporan')->group(function () {
@@ -42,6 +43,8 @@ Route::prefix('laporan')->group(function () {
     Route::get('/data', [LaporanController::class, 'data'])->name('laporan.data');
     Route::get('/data_fktp_lain', [LaporanController::class, 'data_fktp_lain'])->name('laporan.data_fktp_lain');
     Route::get('/export', [LaporanController::class, 'export'])->name('laporan.export');
+    Route::get('/wilayah', [LaporanController::class, 'index_wilayah'])->name('laporan.index_wilayah');
+    Route::get('/data_wilayah', [LaporanController::class, 'data_wilayah'])->name('laporan.data_wilayah');
 });
 
 Route::prefix('dashboard')->group(function () {

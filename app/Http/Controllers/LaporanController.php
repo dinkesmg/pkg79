@@ -43,14 +43,14 @@ class LaporanController extends Controller
             'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
             'pemeriksa'
         ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
-          ->orderBy('tanggal_pemeriksaan', 'desc');
+            ->orderBy('tanggal_pemeriksaan', 'desc');
 
         $instrumen = $request->instrumen;
         $sub_instrumen = $request->sub_instrumen;
-        if($request->sub_instrumen == "Pilih"){
+        if ($request->sub_instrumen == "Pilih") {
             $sub_instrumen = null;
         }
-    
+
         // Filter berdasarkan role
         if ($role == "Puskesmas") {
             $query->where('id_user', $id_user);
@@ -61,7 +61,7 @@ class LaporanController extends Controller
         //     // $query->whereJsonContains('hasil_pemeriksaan', [$instrumen]);
         //     $query->whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$.\"$instrumen\"') IS NOT NULL");
         // }
-    
+
         // Eksekusi query
         // $data = $query->get();
         if (!empty($instrumen)) {
@@ -70,20 +70,20 @@ class LaporanController extends Controller
                 if (empty($item->hasil_pemeriksaan)) {
                     return false;
                 }
-            
+
                 // Decode JSON dengan error handling
                 $hasil_pemeriksaan = json_decode($item->hasil_pemeriksaan, true);
-            
+
                 // Jika JSON tidak valid, return false
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     return false;
                 }
-            
+
                 // Gunakan foreach untuk mencari instrumen dalam JSON array
                 foreach ($hasil_pemeriksaan as $pemeriksaan) {
                     if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
-                        
-                    // dd($pemeriksaan, $instrumen, $sub_instrumen);
+
+                        // dd($pemeriksaan, $instrumen, $sub_instrumen);
                         // if(empty($sub_instrumen) && $pemeriksaan[$instrumen]==$sub_instrumen){
                         //     return true;
                         // }
@@ -100,17 +100,15 @@ class LaporanController extends Controller
                         }
                     }
                 }
-            
+
                 return false;
             })->values()->toArray();
-            
-        }
-        else{
+        } else {
             $data = $query->get();
         }
 
 
-        
+
         // dd($data);
         return response()->json($data);
     }
@@ -129,10 +127,10 @@ class LaporanController extends Controller
             'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
             'pemeriksa'
         ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
-          ->orderBy('tanggal_pemeriksaan', 'desc');
+            ->orderBy('tanggal_pemeriksaan', 'desc');
 
         $instrumen = $request->instrumen;
-    
+
         // $query->where('tempat_periksa', "Puskesmas");
         $query->where('tempat_periksa', '!=', 'Puskesmas');
 
@@ -146,7 +144,7 @@ class LaporanController extends Controller
         //     // $query->whereJsonContains('hasil_pemeriksaan', [$instrumen]);
         //     $query->whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$.\"$instrumen\"') IS NOT NULL");
         // }
-    
+
         // Eksekusi query
         // $data = $query->get();
         if (!empty($instrumen)) {
@@ -155,32 +153,30 @@ class LaporanController extends Controller
                 if (empty($item->hasil_pemeriksaan)) {
                     return false;
                 }
-            
+
                 // Decode JSON dengan error handling
                 $hasil_pemeriksaan = json_decode($item->hasil_pemeriksaan, true);
-            
+
                 // Jika JSON tidak valid, return false
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     return false;
                 }
-            
+
                 // Gunakan foreach untuk mencari instrumen dalam JSON array
                 foreach ($hasil_pemeriksaan as $pemeriksaan) {
                     if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
                         return true;
                     }
                 }
-            
+
                 return false;
             })->values()->toArray();
-            
-        }
-        else{
+        } else {
             $data = $query->get();
         }
 
 
-        
+
         // dd($data);
         return response()->json($data);
     }
@@ -198,5 +194,46 @@ class LaporanController extends Controller
 
         // return Excel::download(new LaporanExport, 'riwayat.xlsx');
         return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis), 'riwayat.xlsx');
+    }
+
+    public function index_wilayah()
+    {
+        return view('Laporan.index_wilayah');
+    }
+
+    public function data_wilayah(Request $request)
+    {
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+        $periodeDari = $request->periode_dari;
+        $periodeSampai = $request->periode_sampai;
+
+        $kecamatan_ktp = $request->kecamatan_ktp;
+        $kelurahan_ktp = $request->kelurahan_ktp;
+        // dd($role);
+        set_time_limit(300);
+        $query = Riwayat::with([
+            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+            'pemeriksa'
+        ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+            ->whereHas('pasien', function ($q) use ($kecamatan_ktp, $kelurahan_ktp) {
+                $q->where('kecamatan_ktp', $kecamatan_ktp);
+                if ($kelurahan_ktp != "") {
+                    $q->where('kelurahan_ktp', $kelurahan_ktp);
+                }
+            })->orderBy('tanggal_pemeriksaan', 'desc');
+
+        // Filter berdasarkan role
+        if ($role == "Puskesmas") {
+            $query->where('id_user', $id_user);
+        }
+
+        $data = $query->get();
+
+
+
+        // dd($data);
+        return response()->json($data);
     }
 }

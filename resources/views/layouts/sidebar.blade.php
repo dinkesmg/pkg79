@@ -31,16 +31,14 @@
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                data-accordion="false">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ url('dashboard') }}"
-                        class="nav-link {{ request()->routeIs('dashboard*') == 1 ? 'active' : '' }}">
+                    <a href="{{ url('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard*') == 1 ? 'active' : '' }}">
                         <p style="color:#fff; font-weight:bold">Dashboard</p>
                     </a>
                 </li>
                 @if (Auth::user()->role == 'Admin')
-                    <!-- <li class="nav-item">
+                <!-- <li class="nav-item">
                         <a href="{{ url('user') }}"
                             class="nav-link {{ request()->routeIs('user*') == 1 ? 'active' : '' }}">
                             <i class="nav-icon fas fa-users" style="color: yellow;"></i>
@@ -49,8 +47,8 @@
                     </li> -->
                 @endif
                 @if (Auth::user()->role == 'Admin' ||
-                        Auth::user()->role == 'Puskesmas')
-                    <!-- <li class="nav-item">
+                Auth::user()->role == 'Puskesmas')
+                <!-- <li class="nav-item">
                         <a href="{{ url('pemeriksa') }}"
                             class="nav-link {{ request()->routeIs('pemeriksa*') == 1 ? 'active' : '' }}">
                             <img src="{{ asset('gambar/pemeriksa.png') }}"
@@ -68,8 +66,7 @@
                     </a>
                 </li> -->
                 <li class="nav-item">
-                    <a href="{{ url('riwayat') }}"
-                        class="nav-link {{ request()->routeIs('riwayat*') == 1 ? 'active' : '' }}">
+                    <a href="{{ url('riwayat') }}" class="nav-link {{ request()->routeIs('riwayat*') == 1 ? 'active' : '' }}">
                         <p style="color:#fff; font-weight:bold">Riwayat</p>
                     </a>
                 </li>
@@ -89,17 +86,22 @@
                     </a>
                     <ul class="nav nav-treeview" style="margin-left:5px">
                         <li class="nav-item">
-                            <a href="{{ url('laporan') }}"
-                                class="nav-link {{ request()->routeIs('laporan.index') == 1 ? 'bg-blue' : '' }}">
+                            <a href="{{ url('laporan') }}" class="nav-link {{ request()->routeIs('laporan.index') == 1 ? 'bg-blue' : '' }}">
                                 <p style="font-weight:bold; color:white">Semua</p>
                             </a>
                         </li>
                     </ul>
                     <ul class="nav nav-treeview" style="margin-left:5px">
                         <li class="nav-item">
-                            <a href="{{ url('laporan/fktp_lain') }}"
-                                class="nav-link {{ request()->routeIs('laporan.index_fktp_lain') == 1 ? 'bg-blue' : '' }}">
+                            <a href="{{ url('laporan/fktp_lain') }}" class="nav-link {{ request()->routeIs('laporan.index_fktp_lain') == 1 ? 'bg-blue' : '' }}">
                                 <p style="font-weight:bold; color:white">FKTP Lain</p>
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav nav-treeview" style="margin-left:5px">
+                        <li class="nav-item">
+                            <a href="{{ url('laporan/wilayah') }}" class="nav-link {{ request()->routeIs('laporan.index_wilayah') == 1 ? 'bg-blue' : '' }}">
+                                <p style="font-weight:bold; color:white">Wilayah</p>
                             </a>
                         </li>
                     </ul>
