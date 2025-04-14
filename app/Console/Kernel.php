@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
-        $schedule->command('riwayat:simpus')->everyMinute();
+        // $schedule->command('riwayat:simpus')->everyMinute();
         $schedule->call(function () {
             Log::info('call');
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();

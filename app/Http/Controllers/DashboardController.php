@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Puskesmas;
 use App\Models\Riwayat;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -31,7 +32,7 @@ class DashboardController extends Controller
     // {
     //     $role = Auth::user()->role;
     //     $id_user = Auth::user()->id;
-        
+
     //     if($role=="Puskesmas"){
     //         $data = Riwayat::where('id_user', $id_user)->get();
     //     }
@@ -45,11 +46,11 @@ class DashboardController extends Controller
         $id_user = Auth::user()->id;
 
         // dd($id_user);
-        
+
         $query = Riwayat::select('hasil_pemeriksaan')
             ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai]);
-        
-        if($role == 'Puskesmas') {
+
+        if ($role == 'Puskesmas') {
             $query = $query->where('id_user', $id_user);
         }
 
@@ -235,7 +236,7 @@ class DashboardController extends Controller
         foreach ($data as $item) {
             if ($item->hasil_pemeriksaan) {
                 $hasil = json_decode($item->hasil_pemeriksaan, true);
-    
+
                 foreach ($hasil as $pemeriksaan) {
                     $keys = ['status_gizi', 'gula_darah', 'tekanan_darah', 'merokok', 'aktivitas_fisik', 'gigi', 'risiko_stroke', 'risiko_jantung', 'fungsi_ginjal'];
                     $indera_keys = ['tes_penglihatan', 'tes_pendengaran'];
@@ -245,7 +246,7 @@ class DashboardController extends Controller
                     $hati_keys = ['hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis'];
                     $bbl_keys = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu'];
                     $lanjut_usia_keys = ['ppok', 'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living'];
-    
+
                     foreach ($keys as $key) {
                         if (isset($pemeriksaan[$key])) {
                             $value = $pemeriksaan[$key];
@@ -320,29 +321,29 @@ class DashboardController extends Controller
                 }
             }
         }
-    
+
         return response()->json($result);
     }
 
     public function data_pasien_hasil_pemeriksaan(Request $request)
     {
         $props = $request->query('props'); // Ambil parameter dari request
-    
+
         if (!$props) {
             return response()->json(['error' => 'Parameter props diperlukan'], 400);
         }
-    
+
         // \Log::info("Props yang diterima: " . $props);
-    
+
         // Menggunakan JSON_EXTRACT() karena MariaDB tidak mendukung JSON_CONTAINS()
         $data = Riwayat::whereRaw("JSON_EXTRACT(hasil_pemeriksaan, '$[*].$props') IS NOT NULL")
             ->get();
-    
+
         if ($data->isEmpty()) {
             // \Log::warning("Data tidak ditemukan untuk props: " . $props);
             return response()->json(['message' => 'Data tidak ditemukan'], 404);
         }
-    
+
         return response()->json($data);
     }
 
@@ -352,7 +353,7 @@ class DashboardController extends Controller
         // dd($request->all());
         $role = Auth::user()->role;
         $id_user = Auth::user()->id;
-        
+
         $ar_x = $request->x_grafik;
         $data = [];
         foreach ($ar_x as $ind => $tgl) {
@@ -364,8 +365,7 @@ class DashboardController extends Controller
             } else if ($role == "Puskesmas") {
                 // $data[$ind] = $q_riwayat->where('id_user', $id_user+1)->get();
                 $data[$ind] = $q_riwayat->where('id_user', $id_user)->count();
-            } 
-            
+            }
         }
         // dd($data);
 
@@ -377,20 +377,41 @@ class DashboardController extends Controller
         // dd($request->all());
         $role = Auth::user()->role;
         // $id_user = Auth::user()->id;
-        
-        if($role=="Admin"){
+
+        if ($role == "Admin") {
             $data = Riwayat::get();
         }
+
+        $tgl_dari = Carbon::parse($request->tgl_dari);
+        $tgl_sampai = Carbon::parse($request->tgl_sampai);
+
+        // $tgl_dari = $request->tgl_dari;
+        // $tgl_sampai = $request->tgl_sampai;
+
+        $tgl_ar  = [];
+
+        for ($tgl = $tgl_dari->copy(); $tgl->lte($tgl_sampai); $tgl->addDay()) {
+            $tgl_ar[] = $tgl->format('Y-m-d');
+        }
+
+        // dd($tgl_ar, $tgl_dari);
 
         $puskesmas = Puskesmas::get();
 
         $data = [];
-        foreach($puskesmas as $ind => $pusk){
+        foreach ($puskesmas as $ind => $pusk) {
             $data[$ind]['nama'] = $pusk->nama;
-            $data[$ind]['total'] = Riwayat::where('id_user', $pusk->id+1)
+            $data[$ind]['total'] = Riwayat::where('id_user', $pusk->id + 1)
                 ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
                 ->get()
                 ->count();
+            foreach ($tgl_ar as $v_ta) {
+                $data[$ind]['per_tgl'][$v_ta] = Riwayat::where('id_user', $pusk->id + 1)
+                    ->where('tanggal_pemeriksaan', $v_ta)
+                    ->get()
+                    ->count();
+            }
+            // $data[$ind]['per_tgl']
         }
         // dd($data);
 
@@ -466,49 +487,46 @@ class DashboardController extends Controller
         $data = [];
 
 
-        foreach($v_kesimpulan_hasil_pemeriksaan as $ind => $v){
-            if($ind==0){
+        foreach ($v_kesimpulan_hasil_pemeriksaan as $ind => $v) {
+            if ($ind == 0) {
                 $data[$ind]['status'] = "Proses";
-                if($role=="Puskesmas"){
+                if ($role == "Puskesmas") {
                     $data[$ind]['total'] = Riwayat::where('id_user', $id_user)
-                    ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
-                    ->where(function ($query) {
-                        $query->where('kesimpulan_hasil_pemeriksaan', "")
-                              ->orWhereNull('kesimpulan_hasil_pemeriksaan');
-                    })
-                    ->get()
-                    ->count();
-                }
-                else if($role=="Admin"){
+                        ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+                        ->where(function ($query) {
+                            $query->where('kesimpulan_hasil_pemeriksaan', "")
+                                ->orWhereNull('kesimpulan_hasil_pemeriksaan');
+                        })
+                        ->get()
+                        ->count();
+                } else if ($role == "Admin") {
                     $data[$ind]['total'] = Riwayat::whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
-                    ->where(function ($query) {
-                        $query->where('kesimpulan_hasil_pemeriksaan', "")
-                              ->orWhereNull('kesimpulan_hasil_pemeriksaan');
-                    })
-                    ->get()
-                    ->count();
+                        ->where(function ($query) {
+                            $query->where('kesimpulan_hasil_pemeriksaan', "")
+                                ->orWhereNull('kesimpulan_hasil_pemeriksaan');
+                        })
+                        ->get()
+                        ->count();
                 }
             }
-            $data[$ind+1]['status'] = $v;
-            if($role=="Puskesmas"){
-                $data[$ind+1]['total'] = Riwayat::where('id_user', $id_user)
+            $data[$ind + 1]['status'] = $v;
+            if ($role == "Puskesmas") {
+                $data[$ind + 1]['total'] = Riwayat::where('id_user', $id_user)
                     ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
                     ->where('kesimpulan_hasil_pemeriksaan', $v)
                     ->get()
                     ->count();
+            } else if ($role == "Admin") {
+                $data[$ind + 1]['total'] = Riwayat::whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
+                    ->where('kesimpulan_hasil_pemeriksaan', $v)
+                    ->get()
+                    ->count();
             }
-            else if($role=="Admin"){
-                $data[$ind+1]['total'] = Riwayat::whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
-                ->where('kesimpulan_hasil_pemeriksaan', $v)
-                ->get()
-                ->count();
-            }
-            
         }
 
         return response()->json($data);
     }
-    
+
     public function data_per_jenis_pemeriksaan(Request $request)
     {
         $role = Auth::user()->role;
@@ -519,7 +537,7 @@ class DashboardController extends Controller
         $tgl_sampai = $request->tgl_sampai;
 
         $dt_per_jenis_pemeriksaan_bbl = $this->dt_per_jenis_pemeriksaan_bbl($role, $id_user, $ar_tgl, $tgl_dari, $tgl_sampai);
-        
+
         $dt_per_usia = [];
 
         $ageGroups = [
@@ -550,37 +568,42 @@ class DashboardController extends Controller
         $dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah = $this->dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah($ar_tgl, $tgl_dari, $tgl_sampai, $dt_per_usia['balita_dan_pra_sekolah']);
         $dt_per_jenis_pemeriksaan_dewasa = $this->dt_per_jenis_pemeriksaan_dewasa($ar_tgl, $tgl_dari, $tgl_sampai, $dt_per_usia['dewasa']);
         $dt_per_jenis_pemeriksaan_lansia = $this->dt_per_jenis_pemeriksaan_lansia($ar_tgl, $tgl_dari, $tgl_sampai, $dt_per_usia['lansia']);
-        
-        $data = array_merge($dt_per_jenis_pemeriksaan_bbl,
+
+        $data = array_merge(
+            $dt_per_jenis_pemeriksaan_bbl,
             $dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah,
             $dt_per_jenis_pemeriksaan_dewasa,
-            $dt_per_jenis_pemeriksaan_lansia);
+            $dt_per_jenis_pemeriksaan_lansia
+        );
 
-        
+
 
         return response()->json($data);
     }
 
-    private function dt_per_jenis_pemeriksaan_bbl($role, $id_user, $ar_tgl, $tgl_dari, $tgl_sampai){
+    private function dt_per_jenis_pemeriksaan_bbl($role, $id_user, $ar_tgl, $tgl_dari, $tgl_sampai)
+    {
         $queryBbl = Riwayat::with('pasien')->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
-        ->whereHas('pasien', function ($query) {
-            $query->whereRaw("DATEDIFF(tanggal_pemeriksaan, tgl_lahir) BETWEEN 0 AND 28");
-        });
+            ->whereHas('pasien', function ($query) {
+                $query->whereRaw("DATEDIFF(tanggal_pemeriksaan, tgl_lahir) BETWEEN 0 AND 28");
+            });
 
         if ($role == "Puskesmas") {
             $queryBbl->where('id_user', $id_user);
         }
 
         $data_bbl = $queryBbl->get();
-        
-        $jp_bbl = ['kekurangan_hormon_tiroid','kekurangan_enzim_d6pd','kekurangan_hormon_adrenal',
-                        'penyakit_jantung_bawaan','kelainan_saluran_empedu','pertumbuhan_bb'];
-        
+
+        $jp_bbl = [
+            'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal',
+            'penyakit_jantung_bawaan', 'kelainan_saluran_empedu', 'pertumbuhan_bb'
+        ];
+
         $dt_bbl = [];
         foreach ($data_bbl as $ind => $v_bbl) {
             $dt_bbl[$ind]['sasaran'] = "bbl";
             $dt_bbl[$ind]['hasil_pemeriksaan'] = json_decode($v_bbl->hasil_pemeriksaan, true);
-        
+
             foreach ($jp_bbl as $v_jp_bbl) {
                 $dt_bbl[$ind][$v_jp_bbl] = 0;
             }
@@ -590,19 +613,18 @@ class DashboardController extends Controller
                         // if (!isset($dt_bbl[$ind][$v_jp_bbl])) {
                         //     $dt_bbl[$ind][$v_jp_bbl] = 0;
                         // }
-        
+
                         if (isset($item[$v_jp_bbl]) && $item[$v_jp_bbl] !== null) {
                             $dt_bbl[$ind][$v_jp_bbl] = 1;
                         }
                     }
                 }
-            }
-            else{
-                foreach($jp_bbl as $v_jp_bbl){
+            } else {
+                foreach ($jp_bbl as $v_jp_bbl) {
                     $dt_bbl[$ind][$v_jp_bbl] = 0;
                 }
             }
-            
+
             $dt_bbl[$ind]['tgl'] = $v_bbl->tanggal_pemeriksaan;
         }
 
@@ -619,67 +641,66 @@ class DashboardController extends Controller
             $total_jenis_pemeriksaan_bbl[] = [
                 'sasaran' => 'bbl',
                 'jenis_pemeriksaan' => $v_jp_bbl,
-                'no' => $ind+1,
+                'no' => $ind + 1,
                 'total' => 0,
                 'per_tgl' => $total_per_tanggal_bbl
             ];
         }
 
         foreach ($dt_bbl as $item) {
-            foreach($total_jenis_pemeriksaan_bbl as $ind => $t_bbl){
-                if($item[$t_bbl['jenis_pemeriksaan']]==1){
+            foreach ($total_jenis_pemeriksaan_bbl as $ind => $t_bbl) {
+                if ($item[$t_bbl['jenis_pemeriksaan']] == 1) {
                     $total_jenis_pemeriksaan_bbl[$ind]['total']++;
-                    $total_jenis_pemeriksaan_bbl[$ind]['per_tgl'][$item['tgl']]++;        
+                    $total_jenis_pemeriksaan_bbl[$ind]['per_tgl'][$item['tgl']]++;
                 }
             }
-
         }
 
         return $total_jenis_pemeriksaan_bbl;
     }
 
-    private function dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah($ar_tgl, $tgl_dari, $tgl_sampai, $data){
+    private function dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah($ar_tgl, $tgl_dari, $tgl_sampai, $data)
+    {
         $jp = [
             // 'indeks_pbu_tbu',
             'indeks_bbpb_bbtb',
             // 'indeks_bbu',
             'perkembangan',
-                'tuberkulosis','telinga','pupil_putih','gigi','talasemia','gula_darah'];
-        
+            'tuberkulosis', 'telinga', 'pupil_putih', 'gigi', 'talasemia', 'gula_darah'
+        ];
+
         $dt = [];
         foreach ($data as $ind => $v) {
             $dt[$ind]['sasaran'] = "balita_dan_pra_sekolah";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
-        
+
             foreach ($jp as $v_jp) {
                 $dt[$ind][$v_jp] = 0;
             }
-            if (is_array($dt[$ind]['hasil_pemeriksaan'])) {   
+            if (is_array($dt[$ind]['hasil_pemeriksaan'])) {
                 foreach ($dt[$ind]['hasil_pemeriksaan'] as $item) {
                     foreach ($jp as $v_jp) {
                         // if (!isset($dt[$ind][$v_jp])) {
                         //     $dt[$ind][$v_jp] = 0;
                         //     // $dt[$ind][$v_jp] = [];
                         // }
-        
+
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;
                             // dd($v);
                             // $dt[$ind][$v_jp][] = $v;
                             // dd($dt);
-                        }
-                        else{
+                        } else {
                             $dt[$ind][$v_jp] = 0;
                         }
                     }
                 }
-            }
-            else{
-                foreach($jp as $v_jp){
+            } else {
+                foreach ($jp as $v_jp) {
                     $dt[$ind][$v_jp] = 0;
                 }
             }
-            
+
             $dt[$ind]['tgl'] = $v->tanggal_pemeriksaan;
         }
 
@@ -698,15 +719,15 @@ class DashboardController extends Controller
             $total_jenis_pemeriksaan[] = [
                 'sasaran' => 'balita_dan_pra_sekolah',
                 'jenis_pemeriksaan' => $v_jp,
-                'no' => $ind+1,
+                'no' => $ind + 1,
                 'total' => 0,
                 'per_tgl' => $total_per_tanggal
             ];
         }
 
         foreach ($dt as $item) {
-            foreach($total_jenis_pemeriksaan as $ind => $t){
-                if($item[$t['jenis_pemeriksaan']]==1){
+            foreach ($total_jenis_pemeriksaan as $ind => $t) {
+                if ($item[$t['jenis_pemeriksaan']] == 1) {
                     $total_jenis_pemeriksaan[$ind]['total']++;
                     $total_jenis_pemeriksaan[$ind]['per_tgl'][$item['tgl']]++;
                 }
@@ -716,21 +737,22 @@ class DashboardController extends Controller
         return $total_jenis_pemeriksaan;
     }
 
-    private function dt_per_jenis_pemeriksaan_dewasa($ar_tgl, $tgl_dari, $tgl_sampai, $data){
+    private function dt_per_jenis_pemeriksaan_dewasa($ar_tgl, $tgl_dari, $tgl_sampai, $data)
+    {
         $jp = [
-            'merokok','aktivitas_fisik','status_gizi','gigi','tekanan_darah',
-            'gula_darah','risiko_stroke','risiko_jantung','fungsi_ginjal',
-            'tuberkulosis','ppok','kanker_payudara','kanker_leher_rahim',
-            'kanker_paru','kanker_usus','tes_penglihatan','tes_pendengaran',
-            'edps','phq','hepatits_b','hepatitis_c','fibrosis_sirosis',
-            'anemia','sifilis','hiv'
+            'merokok', 'aktivitas_fisik', 'status_gizi', 'gigi', 'tekanan_darah',
+            'gula_darah', 'risiko_stroke', 'risiko_jantung', 'fungsi_ginjal',
+            'tuberkulosis', 'ppok', 'kanker_payudara', 'kanker_leher_rahim',
+            'kanker_paru', 'kanker_usus', 'tes_penglihatan', 'tes_pendengaran',
+            'edps', 'phq', 'hepatits_b', 'hepatitis_c', 'fibrosis_sirosis',
+            'anemia', 'sifilis', 'hiv'
         ];
-        
+
         $dt = [];
         foreach ($data as $ind => $v) {
             $dt[$ind]['sasaran'] = "dewasa";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
-        
+
             foreach ($jp as $v_jp) {
                 $dt[$ind][$v_jp] = 0;
             }
@@ -741,7 +763,7 @@ class DashboardController extends Controller
                         //     $dt[$ind][$v_jp] = 0;
                         //     // $dt[$ind][$v_jp] = [];
                         // }
-        
+
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;
                             // dd($v);
@@ -750,13 +772,12 @@ class DashboardController extends Controller
                         }
                     }
                 }
-            }
-            else{
-                foreach($jp as $v_jp){
+            } else {
+                foreach ($jp as $v_jp) {
                     $dt[$ind][$v_jp] = 0;
                 }
             }
-            
+
             $dt[$ind]['tgl'] = $v->tanggal_pemeriksaan;
         }
 
@@ -775,15 +796,15 @@ class DashboardController extends Controller
             $total_jenis_pemeriksaan[] = [
                 'sasaran' => 'dewasa',
                 'jenis_pemeriksaan' => $v_jp,
-                'no' => $ind+1,
+                'no' => $ind + 1,
                 'total' => 0,
                 'per_tgl' => $total_per_tanggal
             ];
         }
 
         foreach ($dt as $item) {
-            foreach($total_jenis_pemeriksaan as $ind => $t){
-                if($item[$t['jenis_pemeriksaan']]==1){
+            foreach ($total_jenis_pemeriksaan as $ind => $t) {
+                if ($item[$t['jenis_pemeriksaan']] == 1) {
                     $total_jenis_pemeriksaan[$ind]['total']++;
                     $total_jenis_pemeriksaan[$ind]['per_tgl'][$item['tgl']]++;
                 }
@@ -793,21 +814,22 @@ class DashboardController extends Controller
         return $total_jenis_pemeriksaan;
     }
 
-    private function dt_per_jenis_pemeriksaan_lansia($ar_tgl, $tgl_dari, $tgl_sampai, $data){
+    private function dt_per_jenis_pemeriksaan_lansia($ar_tgl, $tgl_dari, $tgl_sampai, $data)
+    {
         $jp = [
-            'gejala_depresi','merokok','aktivitas_fisik','status_gizi',
-            'gigi','tekanan_darah','gula_darah','risiko_stroke','risiko_jantung',
-            'fungsi_ginjal','tuberkulosis','ppok','kanker_payudara','kanker_leher_rahim',
-            'kanker_paru','kanker_usus','tes_penglihatan','tes_pendengaran',
-            'gejala_depresi','hepatits_b','hepatitis_c','fibrosis_sirosis',
-            
+            'gejala_depresi', 'merokok', 'aktivitas_fisik', 'status_gizi',
+            'gigi', 'tekanan_darah', 'gula_darah', 'risiko_stroke', 'risiko_jantung',
+            'fungsi_ginjal', 'tuberkulosis', 'ppok', 'kanker_payudara', 'kanker_leher_rahim',
+            'kanker_paru', 'kanker_usus', 'tes_penglihatan', 'tes_pendengaran',
+            'gejala_depresi', 'hepatits_b', 'hepatitis_c', 'fibrosis_sirosis',
+
         ];
-        
+
         $dt = [];
         foreach ($data as $ind => $v) {
             $dt[$ind]['sasaran'] = "lansia";
             $dt[$ind]['hasil_pemeriksaan'] = json_decode($v->hasil_pemeriksaan, true);
-        
+
             foreach ($jp as $v_jp) {
                 $dt[$ind][$v_jp] = 0;
             }
@@ -818,7 +840,7 @@ class DashboardController extends Controller
                         //     $dt[$ind][$v_jp] = 0;
                         //     // $dt[$ind][$v_jp] = [];
                         // }
-        
+
                         if (isset($item[$v_jp]) && $item[$v_jp] !== null) {
                             $dt[$ind][$v_jp] = 1;
                             // dd($v);
@@ -827,13 +849,12 @@ class DashboardController extends Controller
                         }
                     }
                 }
-            }
-            else{
-                foreach($jp as $v_jp){
+            } else {
+                foreach ($jp as $v_jp) {
                     $dt[$ind][$v_jp] = 0;
                 }
             }
-            
+
             $dt[$ind]['tgl'] = $v->tanggal_pemeriksaan;
         }
 
@@ -852,15 +873,15 @@ class DashboardController extends Controller
             $total_jenis_pemeriksaan[] = [
                 'sasaran' => 'lansia',
                 'jenis_pemeriksaan' => $v_jp,
-                'no' => $ind+1,
+                'no' => $ind + 1,
                 'total' => 0,
                 'per_tgl' => $total_per_tanggal
             ];
         }
 
         foreach ($dt as $item) {
-            foreach($total_jenis_pemeriksaan as $ind => $t){
-                if($item[$t['jenis_pemeriksaan']]==1){
+            foreach ($total_jenis_pemeriksaan as $ind => $t) {
+                if ($item[$t['jenis_pemeriksaan']] == 1) {
                     $total_jenis_pemeriksaan[$ind]['total']++;
                     $total_jenis_pemeriksaan[$ind]['per_tgl'][$item['tgl']]++;
                 }
@@ -869,5 +890,4 @@ class DashboardController extends Controller
 
         return $total_jenis_pemeriksaan;
     }
-
 }
