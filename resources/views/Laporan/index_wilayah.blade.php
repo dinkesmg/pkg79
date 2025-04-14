@@ -2927,12 +2927,16 @@
         let instrumen = $('#instrumen option:selected').text()
         let sub_instrumen = $('#sub_instrumen option:selected').text()
         let jenis = "semua";
+        let kecamatan_ktp = document.getElementById("kecamatan_ktp_pilih").value;
+        let kelurahan_ktp = document.getElementById("kelurahan_ktp_pilih").value;
 
         let url = "{{url('laporan/export')}}" +
             "?periode_dari=" + encodeURIComponent(periodeDari) +
             "&periode_sampai=" + encodeURIComponent(periodeSampai) +
             "&instrumen=" + encodeURIComponent(instrumen) +
             "&sub_instrumen=" + encodeURIComponent(sub_instrumen) +
+            "&kecamatan_ktp=" + encodeURIComponent(kecamatan_ktp) +
+            "&kelurahan_ktp=" + encodeURIComponent(kelurahan_ktp) +
             "&jenis=" + encodeURIComponent(jenis);
 
         window.location.href = url;

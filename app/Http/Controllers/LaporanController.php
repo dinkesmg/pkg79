@@ -190,10 +190,12 @@ class LaporanController extends Controller
         $instrumen = $request->instrumen;
         $sub_instrumen = $request->sub_instrumen;
         $jenis = $request->jenis;
+        $kecamatan_ktp = $request->kecamatan_ktp;
+        $kelurahan_ktp = $request->kelurahan_ktp;
         // dd($request->all());
 
         // return Excel::download(new LaporanExport, 'riwayat.xlsx');
-        return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis), 'riwayat.xlsx');
+        return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis, $kecamatan_ktp, $kelurahan_ktp), 'riwayat.xlsx');
     }
 
     public function index_wilayah()
