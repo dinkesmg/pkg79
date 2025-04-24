@@ -23,15 +23,13 @@ class Kernel extends ConsoleKernel
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
             app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
             app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
-        })->dailyAt('04:00')->timezone('Asia/Jakarta');
+        })->dailyAt('23:00')->timezone('Asia/Jakarta');
         $schedule->call(function () {
             Log::info('call');
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
             app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
             app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
-            // })->everyThreeHours();
-        })->everyEightHours();
-        // })->dailyAt('04:00')->timezone('Asia/Jakarta');
+        })->dailyAt('03:00')->timezone('Asia/Jakarta');
     }
 
     /**
