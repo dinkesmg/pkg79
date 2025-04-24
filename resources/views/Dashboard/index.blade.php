@@ -110,371 +110,10 @@
                                         </div>
                                         <button id="btnCari" class="btn btn-sm btn-info" onclick="oc_cari()">Cari</button>
                                     </div>
-                                    <!-- <div id="peta" style="min-width: 310px; height: 400px; margin: 0 auto"></div> -->
-                                    <!-- <div id="div_loading" style="display: none; justify-content: center;">
-                                        <img src="{{ asset('gambar/loading.gif') }}" alt="Loading..." />
-                                    </div> -->
-                                    <!-- <div id="konten" style="display: none;">
-                                        <div id="grafik"></div>
-                                        <div style="display:flex; justify-content:center">
-                                            <div class="small-box bg-info" style="width:100%">
-                                                <div class="inner text-center">
-                                                    <h3 id="total_pasien"></h3>
-                                                    <p>Total Pasien</p>
-                                                </div>
-                                                <a href="{{url('laporan/skrining_dasar')}}" class="small-box-footer" target="_blank">Laporan <i class="fas fa-arrow-circle-right"></i></a>
-                                            </div>
-                                            <div class="small-box bg-yellow" style="width:100%">
-                                                <div class="inner text-center">
-                                                    <h3 id="total_pasien_msn"></h3>
-                                                    <p>Total Pasien MSN</p>
-                                                </div>
-                                                <a href="{{url('laporan/skrining_msn')}}" class="small-box-footer" target="_blank">Laporan <i class="fas fa-arrow-circle-right"></i></a>
-                                            </div>
-                                        </div>
-                                        <div class="c_jenis_kelamin mb-3">
-                                            <div class="small-box bg-blue col-sm-6 col-md-2" style="margin-top:20px">
-                                                <div class="inner text-center">
-                                                    <i class="ion ion-male"></i>
-                                                    <p>Laki-laki</p>
-                                                    <div id="persen_laki_laki"></div>
-                                                    <h3 id="total_laki_laki"></h3>
-                                                </div>
-                                            </div>
-                                            <div class="c_diagram_pie_jenis_kelamin" id="id_diagram_pie_total_pasien_dan_pasien_msn"></div>
-                                            <div class="small-box bg-pink col-sm-6 col-md-2" style="margin-top:20px">
-                                                <div class="inner text-center">
-                                                    <i class="ion ion-female"></i>
-                                                    <p>Perempuan</p>
-                                                    <div id="persen_perempuan"></div>
-                                                    <h3 id="total_perempuan"></h3>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3" style="display:flex; justify-content:center; font-weight:bold; font-size:17px; background-color:#17A2B8; color:white">
-                                            Kelompok Umur
-                                        </div>
-                                        <div style="text-align:center">
-                                            <div class="row mb-3">
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <div>0 - 1 Tahun</div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_0_1_tahun"></h5>
-                                                            <span id="persentase_umur_0_1_tahun" class="text-success"><i class="fas fa-caret-up"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <div>2 - 5 Tahun</div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_2_5_tahun"></h5>
-                                                            <span id="persentase_umur_2_5_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <div>6 - 10 Tahun</div>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_6_10_tahun"></h5>
-                                                            <span id="persentase_umur_6_10_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <span class="description-text">11 - 19 Tahun</span>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_11_19_tahun"></h5>
-                                                            <span id="persentase_umur_11_19_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-3">
-                                                <div class="col-sm-4 col-6" >
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <span class="description-text">20 - 44 Tahun</span>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_20_44_tahun"></h5>
-                                                            <span id="persentase_umur_20_44_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                            <span class="description-text">45 - 59 Tahun</span>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_45_59_tahun"></h5>
-                                                            <span id="persentase_umur_45_59_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4 col-6">
-                                                    <div class="card">
-                                                        <div class="card-header">
-                                                        <span class="description-text">> 60 Tahun</span>
-                                                        </div>
-                                                        <div class="card-body">
-                                                            <h5 id="total_umur_60_150_tahun"></h5>
-                                                            <span id="persentase_umur_60_150_tahun" class="text-success"><i class="fas fa-caret-left"></i></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3" style="display:flex; justify-content:center; font-weight:bold; font-size:17px; background-color:#17A2B8; color:white">
-                                            Deteksi Dini
-                                        </div>
-                                        <div id="id_imt" class="row" style="text-align:center; flex-wrap:wrap">
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="card" style="height:100%">
-                                                    <div class="card-header">
-                                                        <div>Indeks Massa Tubuh (IMT)</div>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <h5 id="id_total_imt"></h5>
-                                                        <span id="id_total_persentase_imt" class="text-success"></span>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_imt_sangat_kurus" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Sangat Kurus</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_imt_sangat_kurus"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_imt_sangat_kurus" style="margin-right:3px; font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_imt_kurus" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Kurus</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_imt_kurus"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_imt_kurus" style="margin-right:3px; font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_imt_normal" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Normal</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_imt_normal"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_imt_normal" style="margin-right:3px; font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_imt_gemuk" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Gemuk</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_imt_gemuk"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_imt_gemuk" style="font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_imt_obesitas" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px;">Obesitas</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_imt_obesitas"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center">
-                                                                <div id="id_persentase_imt_obesitas" style="font-size:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-footer" style="background-color:white">
-                                                        <div id="id_progress_bar_imt" style="display:flex;  height:15px; padding:0; margin-top:auto"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="card" style="height:100%">
-                                                    <div class="card-header">
-                                                        <div>Tekanan Darah</div>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <h5 id="id_total_tekanan_darah"></h5>
-                                                        <span id="id_total_persentase_tekanan_darah" class="text-success"></span>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_tekanan_darah_normal" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Normal</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_tekanan_darah_normal"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_tekanan_darah_normal" style="margin-right:3px; font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_tekanan_darah_pra_hipertensi" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Pra Hipertensi</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_tekanan_darah_pra_hipertensi"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_tekanan_darah_pra_hipertensi" style="font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_tekanan_darah_hipertensi_tingkat_1" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px;">Hipertensi Tingkat 1</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_tekanan_darah_hipertensi_tingkat_1"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center">
-                                                                <div id="id_persentase_tekanan_darah_hipertensi_tingkat_1" style="font-size:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_tekanan_darah_hipertensi_tingkat_2" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px;">Hipertensi Tingkat 2</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_tekanan_darah_hipertensi_tingkat_2"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center">
-                                                                <div id="id_persentase_tekanan_darah_hipertensi_tingkat_2" style="font-size:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_tekanan_darah_hipertensi_sistolik_terisolasi" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px;">Hipertensi Sistolik Terisolasi</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_tekanan_darah_hipertensi_sistolik_terisolasi"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center">
-                                                                <div id="id_persentase_tekanan_darah_hipertensi_sistolik_terisolasi" style="font-size:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-footer" style="background-color:white">
-                                                        <div id="id_progress_bar_tekanan_darah" style="display:flex; align-items:center; height:15px; padding:0; margin:0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-6 col-md-4">
-                                                <div class="card" style="height:100%">
-                                                    <div class="card-header">
-                                                        <div>Gula Darah</div>
-                                                    </div>
-                                                    <div class="card-body" style="height:100%">
-                                                        <h5 id="id_total_gula_darah"></h5>
-                                                        <span id="id_total_persentase_gula_darah" class="text-success"></span>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_gula_darah_normal" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Normal</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_gula_darah_normal"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_gula_darah_normal" style="margin-right:3px; font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_gula_darah_pre_diabetes" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px">Pre Diabetes</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_gula_darah_pre_diabetes"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center;">
-                                                                <div id="id_persentase_gula_darah_pre_diabetes" style="font-size:15px;"></div>
-                                                            </div>
-                                                        </div>
-                                                        <div style="display:flex; align-items:center">
-                                                            <i id="id_circle_gula_darah_diabetes" class="fa-solid fa-circle" style="margin-right:3px"></i>
-                                                            <div style="display:flex; align-items:center;">
-                                                                <div style="margin-right:3px;">Diabetes</div>
-                                                                <div style="margin-right:3px">:</div>
-                                                                <div id="id_total_gula_darah_diabetes"></div>
-                                                            </div>
-                                                            <div style="display:flex; margin-left: auto; align-items:center">
-                                                                <div id="id_persentase_gula_darah_diabetes" style="font-size:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="card-footer" style="background-color:white">
-                                                        <div id="id_progress_bar_gula_darah" style="display:flex; align-items:center; height:15px; padding:0; margin:0"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="mt-3" style="display:flex; justify-content:center; font-weight:bold; font-size:17px; background-color:#17A2B8; color:white">
-                                            Tempat Pemeriksaan
-                                        </div>
-                                        <div class="row" id="id_tempat_pemeriksaan"></div>
-                                        @if(Auth::user()->role=="Admin" || Auth::user()->role=="Bidang")
-                                        <div class="mt-3" style="display:flex; justify-content:center; font-weight:bold; font-size:17px; background-color:#17A2B8; color:white">
-                                            Puskesmas
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <table id="tabel_puskesmas" class="table table-bordered table-striped example" style="width:100%">
-                                                    <thead>
-                                                        <tr id="id_header_tabel_puskesmas"></tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        @endif
-                                        <div class="mt-3" style="display:flex; justify-content:center; font-weight:bold; font-size:17px; background-color:#17A2B8; color:white">
-                                            Kelurahan Lokasi Kegiatan
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <table id="tabel_kelurahan" class="table table-bordered table-striped example" style="width:100%">
-                                                    <thead>
-                                                        <tr id="id_header_tabel_kelurahan"></tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div> -->
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- <div class="row">
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    9
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
@@ -1913,27 +1552,27 @@
                     @if (Auth::user()->role == 'Admin')
                     <div class="row">
                         <div class="col-12">
-                            <div>
-                                <h4>Total Per Puskesmas</h4>
+                            <div class="card">
+                                <div class="card-header">
+                                    <div>
+                                        <h4>Total Per Puskesmas</h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
+                                        <thead id="id_thead_total_per_puskesmas">
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
-                                <thead id="id_thead_total_per_puskesmas">
-                                    <!-- <tr> -->
-                                    <!-- <th>No</th>
-                                        <th>Nama</th>
-                                        <th>Total</th> -->
-                                    <!-- </tr> -->
-                                </thead>
-                                <tbody>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
+                    @endif
                 </div>
             </div>
-            @endif
+            <!-- @//endif -->
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -2282,8 +1921,6 @@
     }
 
     function tabel_per_puskesmas() {
-        // semua_riwayat = []
-        //    console.log("tabel")
         if ($.fn.DataTable.isDataTable("#idtabel")) {
             $("#idtabel").DataTable().destroy();
             // $("#idtabel").empty(); // ✅ Remove old table content
@@ -2312,14 +1949,20 @@
                 },
             },
             {
-                'data': 'nama'
+                // 'data': 'nama',
+                // 'width': "150px"
+                data: "nama",
+                title: "Nama",
+                // width: "150px"
+
             },
             {
-                'data': 'total'
+                // 'data': 'total',
+                // 'width': '150px'
+                data: "total",
+                title: "Total",
+                // width: "150px"
             },
-            // {
-            //     'data': 'total'
-            // },
         ]
 
         x_grafik.forEach(tgl => {
@@ -2329,7 +1972,7 @@
                 data: `per_tgl.${tgl}`, // ✅ Matches JSON structure
                 // title: format_tgl,
                 // width: "100px", // ✅ Ensures proper width assignment
-                // defaultContent: "-",
+                defaultContent: "-",
                 render: function(data, type, row) {
                     console.log(row.per_tgl[tgl])
                     return row.per_tgl && row.per_tgl[tgl] != undefined ? row.per_tgl[tgl] : "-";
@@ -2352,7 +1995,16 @@
                 },
                 dataSrc: '',
             },
-            columns: col
+            columns: col,
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'excelHtml5',
+                title: 'Data Per Puskesmas',
+                className: 'btn btn-success',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            }]
         });
     }
 
@@ -2532,7 +2184,6 @@
             "Ketergantungan total": 'ad-ketergantungan-total'
         }
     }
-
 
     function hasil_pemeriksaan() {
         let tgl_dari = $('#dari').val();
@@ -2997,9 +2648,7 @@
 
         $("#idtabel_per_jenis_pemeriksaan").DataTable({
             destroy: true,
-            scrollX: true, // ✅ Fixes horizontal scrolling issues
-            // autoWidth: false, // ✅ Prevents sWidth undefined error
-            // columnDefs: [{ width: "120px", targets: "_all" }],
+            scrollX: true,
             ajax: {
                 url: "{{url('dashboard/data_per_jenis_pemeriksaan')}}",
                 type: "GET",
@@ -3013,7 +2662,16 @@
                     return json;
                 },
             },
-            columns: col
+            columns: col,
+            dom: 'Bfrtip',
+            buttons: [{
+                extend: 'excelHtml5',
+                title: 'Data Per Puskesmas',
+                className: 'btn btn-success',
+                exportOptions: {
+                    columns: ':visible'
+                }
+            }]
         });
         // }, 1000);
     }

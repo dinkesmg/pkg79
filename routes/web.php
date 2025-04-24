@@ -45,6 +45,7 @@ Route::prefix('laporan')->group(function () {
     Route::get('/export', [LaporanController::class, 'export'])->name('laporan.export');
     Route::get('/wilayah', [LaporanController::class, 'index_wilayah'])->name('laporan.index_wilayah');
     Route::get('/data_wilayah', [LaporanController::class, 'data_wilayah'])->name('laporan.data_wilayah');
+    Route::get('/data_total_per_wilayah', [LaporanController::class, 'data_total_per_wilayah'])->name('laporan.data_total_per_wilayah');
 });
 
 Route::prefix('dashboard')->group(function () {

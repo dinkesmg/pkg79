@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PuskesmasController;
+use App\Http\Controllers\Api\RiwayatController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,4 @@ use App\Http\Controllers\Api\PuskesmasController;
 */
 
 Route::get('/puskesmas_ckg', [PuskesmasController::class, 'data'])->name('puskesmas_ckg');
+Route::post('/riwayat/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');

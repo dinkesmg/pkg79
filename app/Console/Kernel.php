@@ -23,7 +23,15 @@ class Kernel extends ConsoleKernel
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
             app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
             app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
-        })->dailyAt('23:30');
+        })->dailyAt('04:00')->timezone('Asia/Jakarta');
+        $schedule->call(function () {
+            Log::info('call');
+            app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
+            app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
+            app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
+            // })->everyThreeHours();
+        })->everyEightHours();
+        // })->dailyAt('04:00')->timezone('Asia/Jakarta');
     }
 
     /**
@@ -33,7 +41,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

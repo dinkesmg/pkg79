@@ -11,7 +11,8 @@ use App\Models\User;
 use App\Models\Pemeriksa;
 use App\Models\Pasien;
 use App\Models\Riwayat;
-use App\Models\Mapping_simpus;
+use App\Models\MasterKecamatan;
+use App\Models\MasterKelurahan;
 use App\Models\Puskesmas;
 use Carbon\Carbon;
 use App\Exports\LaporanExport;
@@ -39,8 +40,14 @@ class LaporanController extends Controller
         // dd($role);
         set_time_limit(300);
         $query = Riwayat::with([
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+            'pasien.ref_provinsi_ktp',
+            'pasien.ref_kota_kab_ktp',
+            'pasien.ref_kecamatan_ktp',
+            'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom',
+            'pasien.ref_kota_kab_dom',
+            'pasien.ref_kecamatan_dom',
+            'pasien.ref_kelurahan_dom',
             'pemeriksa'
         ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
             ->orderBy('tanggal_pemeriksaan', 'desc');
@@ -123,8 +130,14 @@ class LaporanController extends Controller
         // dd($role);
         set_time_limit(300);
         $query = Riwayat::with([
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+            'pasien.ref_provinsi_ktp',
+            'pasien.ref_kota_kab_ktp',
+            'pasien.ref_kecamatan_ktp',
+            'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom',
+            'pasien.ref_kota_kab_dom',
+            'pasien.ref_kecamatan_dom',
+            'pasien.ref_kelurahan_dom',
             'pemeriksa'
         ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
             ->orderBy('tanggal_pemeriksaan', 'desc');
@@ -181,6 +194,64 @@ class LaporanController extends Controller
         return response()->json($data);
     }
 
+    // public function export(Request $request)
+    // {
+    //     $role = Auth::user()->role;
+    //     $id_user = Auth::user()->id;
+    //     $periodeDari = $request->periode_dari;
+    //     $periodeSampai = $request->periode_sampai;
+    //     $instrumen = $request->instrumen;
+    //     $sub_instrumen = $request->sub_instrumen;
+    //     $jenis = $request->jenis;
+    //     $kecamatan_ktp = $request->kecamatan_ktp;
+    //     $kelurahan_ktp = $request->kelurahan_ktp;
+    //     // dd($request->all());
+
+    //     // return Excel::download(new LaporanExport, 'riwayat.xlsx');
+    //     return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis, $kecamatan_ktp, $kelurahan_ktp), 'riwayat.xlsx');
+    // }
+
+    // public function index_wilayah()
+    // {
+    //     return view('Laporan.index_wilayah');
+    // }
+
+    // public function data_wilayah(Request $request)
+    // {
+    //     $role = Auth::user()->role;
+    //     $id_user = Auth::user()->id;
+    //     $periodeDari = $request->periode_dari;
+    //     $periodeSampai = $request->periode_sampai;
+
+    //     $kecamatan_ktp = $request->kecamatan_ktp;
+    //     $kelurahan_ktp = $request->kelurahan_ktp;
+    //     // dd($role);
+    //     set_time_limit(300);
+    //     $query = Riwayat::with([
+    //         'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
+    //         'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+    //         'pemeriksa'
+    //     ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+    //         ->whereHas('pasien', function ($q) use ($kecamatan_ktp, $kelurahan_ktp) {
+    //             $q->where('kecamatan_ktp', $kecamatan_ktp);
+    //             if ($kelurahan_ktp != "") {
+    //                 $q->where('kelurahan_ktp', $kelurahan_ktp);
+    //             }
+    //         })->orderBy('tanggal_pemeriksaan', 'desc');
+
+    //     // Filter berdasarkan role
+    //     if ($role == "Puskesmas") {
+    //         $query->where('id_user', $id_user);
+    //     }
+
+    //     $data = $query->get();
+
+
+
+    //     // dd($data);
+    //     return response()->json($data);
+    // }
+
     public function export(Request $request)
     {
         $role = Auth::user()->role;
@@ -203,6 +274,87 @@ class LaporanController extends Controller
         return view('Laporan.index_wilayah');
     }
 
+    public function data_total_per_wilayah(Request $request)
+    {
+        $role = Auth::user()->role;
+        $id_user = Auth::user()->id;
+        $periodeDari = $request->periode_dari;
+        $periodeSampai = $request->periode_sampai;
+
+        $kecamatan_ktp = $request->kecamatan_ktp;
+        $kelurahan_ktp = $request->kelurahan_ktp;
+        // dd($role);
+        set_time_limit(300);
+
+        $query = Riwayat::select('tanggal_pemeriksaan', 'id_pasien')
+            ->with([
+                'pasien' => function ($q) {
+                    $q->select('id', 'nama', 'kecamatan_ktp', 'kelurahan_ktp');
+                },
+                'pasien.ref_kecamatan_ktp' => function ($q) {
+                    $q->select('kode_kecamatan', 'nama'); // ambil hanya nama
+                },
+                'pasien.ref_kelurahan_ktp' => function ($q) {
+                    $q->select('kode_kelurahan', 'nama'); // ambil hanya nama
+                }
+            ])
+            ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+            ->whereHas('pasien', function ($q) use ($kecamatan_ktp, $kelurahan_ktp) {
+                if ($kecamatan_ktp != "" && $kecamatan_ktp != "0") {
+                    $q->where('kecamatan_ktp', $kecamatan_ktp);
+                }
+
+                if ($kelurahan_ktp != "" && $kelurahan_ktp != "0") {
+                    $q->where('kelurahan_ktp', $kelurahan_ktp);
+                }
+            })
+            ->when($role == "Puskesmas", function ($q) use ($id_user) {
+                $q->where('id_user', $id_user);
+            })
+            ->get();
+
+        $query_kecamatan_list = MasterKecamatan::where('kode_parent', '3374');
+        if ($kecamatan_ktp != "" && $kecamatan_ktp != "0") {
+            // dd($kecamatan_ktp);
+            $query_kecamatan_list = $query_kecamatan_list->where('kode_kecamatan', $kecamatan_ktp);
+        }
+        $kecamatan_list = $query_kecamatan_list->pluck('nama', 'kode_kecamatan');
+
+        $grouped = $query->groupBy(function ($item) {
+            return optional($item->pasien->ref_kelurahan_ktp)->kode_kelurahan;
+        });
+
+        // dd($grouped);
+
+        // Susun hasil akhir
+        $dt = [];
+
+        foreach ($kecamatan_list as $kode => $nama) {
+            // $kelurahanList = MasterKelurahan::where('kode_parent', $kode)->pluck('nama', 'kode_kelurahan');
+            $query_kelurahan_list = MasterKelurahan::where('kode_parent', $kode);
+            if ($kelurahan_ktp != "" && $kelurahan_ktp != "0") {
+                $query_kelurahan_list = $query_kelurahan_list->where('kode_kelurahan', $kelurahan_ktp);
+            }
+            $kelurahan_list = $query_kelurahan_list->pluck('nama', 'kode_kelurahan');
+
+            foreach ($kelurahan_list as $kode_kel => $nama_kel) {
+                $dataKel = $grouped[$kode_kel] ?? collect([]);
+
+                $dt[] = [
+                    'kecamatan' => $nama,
+                    'kode_kecamatan' => $kode,
+                    'kode_kelurahan' => $kode_kel,
+                    'kelurahan' => $nama_kel,
+                    'data' => $dataKel,
+                    'total' =>  $dataKel->count()
+                ];
+            }
+        }
+
+        // dd($dt);
+        return response()->json($dt);
+    }
+
     public function data_wilayah(Request $request)
     {
         $role = Auth::user()->role;
@@ -214,24 +366,32 @@ class LaporanController extends Controller
         $kelurahan_ktp = $request->kelurahan_ktp;
         // dd($role);
         set_time_limit(300);
-        $query = Riwayat::with([
-            'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
-            'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+
+        $data = Riwayat::with([
+            'pasien.ref_provinsi_ktp',
+            'pasien.ref_kota_kab_ktp',
+            'pasien.ref_kecamatan_ktp',
+            'pasien.ref_kelurahan_ktp',
+            'pasien.ref_provinsi_dom',
+            'pasien.ref_kota_kab_dom',
+            'pasien.ref_kecamatan_dom',
+            'pasien.ref_kelurahan_dom',
             'pemeriksa'
-        ])->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+        ])
+            ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
             ->whereHas('pasien', function ($q) use ($kecamatan_ktp, $kelurahan_ktp) {
-                $q->where('kecamatan_ktp', $kecamatan_ktp);
-                if ($kelurahan_ktp != "") {
+                if ($kecamatan_ktp != "" && $kecamatan_ktp != "0") {
+                    $q->where('kecamatan_ktp', $kecamatan_ktp);
+                }
+
+                if ($kelurahan_ktp != "" && $kelurahan_ktp != "0") {
                     $q->where('kelurahan_ktp', $kelurahan_ktp);
                 }
-            })->orderBy('tanggal_pemeriksaan', 'desc');
-
-        // Filter berdasarkan role
-        if ($role == "Puskesmas") {
-            $query->where('id_user', $id_user);
-        }
-
-        $data = $query->get();
+            })
+            ->when($role == "Puskesmas", function ($q) use ($id_user) {
+                $q->where('id_user', $id_user);
+            })
+            ->get();
 
 
 

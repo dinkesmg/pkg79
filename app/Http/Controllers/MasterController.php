@@ -25,7 +25,7 @@ class MasterController extends Controller
     {
         $search = $request->get('search');
         $data = MasterProvinsi::where('nama', 'like', '%' . $search . '%')->get();
-     
+
         // dd($data);
         // return response()->json($data);
         // if ($data) {
@@ -44,7 +44,7 @@ class MasterController extends Controller
                 })
             );
         }
-    
+
         return response()->json([]);
     }
 
@@ -57,7 +57,7 @@ class MasterController extends Controller
         $data = MasterKotaKab::where('kode_parent', $kode_parent)
             ->where('nama', 'like', '%' . $search . '%')
             ->get();
-     
+
         // dd($data);
         // return response()->json($data);
         // if ($data) {
@@ -76,7 +76,7 @@ class MasterController extends Controller
                 })
             );
         }
-    
+
         return response()->json([]);
     }
 
@@ -88,7 +88,7 @@ class MasterController extends Controller
         $data = MasterKecamatan::where('kode_parent', $kode_parent)
             ->where('nama', 'like', '%' . $search . '%')
             ->get();
-     
+
         // dd($data);
         // return response()->json($data);
         // if ($data) {
@@ -106,7 +106,7 @@ class MasterController extends Controller
                 })
             );
         }
-    
+
         return response()->json([]);
     }
 
@@ -115,16 +115,16 @@ class MasterController extends Controller
         // $search = $request->get('search');
         // $kode_kecamatan = $request->get('kode_kecamatan');
         // $kode_kelurahan = $request->get('kode_kelurahan');
-        
+
         // $data = MasterKelurahan::where('kode_parent', $kode_kecamatan);
-     
+
         $search = $request->get('search');
         $kode_parent = $request->get('kode_parent');
 
         $data = MasterKelurahan::where('kode_parent', $kode_parent)
             ->where('nama', 'like', '%' . $search . '%')
             ->get();
-     
+
         // if($search!=""){
         //     $data = $data->where('nama', 'like', '%' . $search . '%');
         // }
@@ -142,7 +142,7 @@ class MasterController extends Controller
             );
         }
         // $data = $data->get();
-        
+
         // dd($data);
         // return response()->json($data);
         return response()->json([]);
@@ -157,7 +157,7 @@ class MasterController extends Controller
         $data = MasterInstrumen::where('val', 'like', '%' . $search . '%')
             ->get();
         // dd($data);
-     
+
         if ($data->isNotEmpty()) {
             return response()->json(
                 $data->map(function ($item) {
@@ -169,7 +169,7 @@ class MasterController extends Controller
             );
         }
         // $data = $data->get();
-        
+
         // dd($data);
         // return response()->json($data);
         return response()->json([]);
@@ -182,7 +182,7 @@ class MasterController extends Controller
 
         $data = MasterInstrumen::find($id);
         // dd($data);
-     
+
         // if ($data->isNotEmpty()) {
         //     return response()->json(
         //         $data->map(function ($item) {
@@ -194,13 +194,14 @@ class MasterController extends Controller
         //     );
         // }
         // $data = $data->get();
-        
+
         // dd($data);
         return response()->json($data);
         // return response()->json([]);
     }
 
-    public function data_simpus_master_provider1(Request $request){
+    public function data_simpus_master_provider1()
+    {
         try {
             $data_login = [
                 'email'   => "teknis.dkksemarang@gmail.com",
@@ -217,8 +218,7 @@ class MasterController extends Controller
                 $res_login = $response_login->json();
                 $token_login = $res_login['access_token'];
                 // dd($auth_login['access_token']);
-            }
-            else {
+            } else {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Gagal mengambil data dari API',
@@ -226,7 +226,7 @@ class MasterController extends Controller
                     'error_body' => $response_login->body() // Menampilkan detail error dari API
                 ], $response_login->status());
             }
-            
+
             $page = 1;
             $lastPage = 1;
 
@@ -276,10 +276,10 @@ class MasterController extends Controller
                 'status' => 'success',
                 'message' => 'Data berhasil disimpan',
             ]);
-         // Langsung dump response JSON
+            // Langsung dump response JSON
         } catch (\Exception $e) {
+            Log::info('Master Provider Gagal');
             dd('API Request Error:', $e->getMessage());
         }
     }
-
 }
