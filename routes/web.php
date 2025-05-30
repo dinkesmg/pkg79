@@ -31,6 +31,8 @@ Route::prefix('riwayat')->group(function () {
     Route::get('/data', [RiwayatController::class, 'data'])->name('riwayat.data');
     Route::post('/hapus', [RiwayatController::class, 'hapus'])->name('riwayat.hapus');
     Route::get('/data_simpus_ckg', [RiwayatController::class, 'data_simpus_ckg'])->name('data_simpus_ckg');
+    Route::get('/data_simpus_ckg_h3', [RiwayatController::class, 'data_simpus_ckg_h3'])->name('data_simpus_ckg_h3');
+
     Route::get('/cari_nik_pasien', [RiwayatController::class, 'cari_nik_pasien'])->name('cari_nik_pasien');
     Route::post('/tindak_lanjut_faskes_lain', [RiwayatController::class, 'tindak_lanjut_faskes_lain'])->name('riwayat.tindak_lanjut_faskes_lain');
 

@@ -11,6 +11,8 @@ class Pasien extends Model
 
     protected $table = "pasien";
 
+    protected $guarded = [];
+
     public function ref_provinsi_ktp()
     {
         return $this->belongsTo(MasterProvinsi::class, 'provinsi_ktp', 'kode_provinsi');

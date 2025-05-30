@@ -1788,6 +1788,40 @@
         }, 100); // Beri jeda agar spinner bisa muncul sebelum tugas berjalan
     }
 
+    // function oc_cari() {
+    //     const btn = document.getElementById("btnCari");
+
+    //     // Tambahkan efek loading dengan SVG spinner
+    //     btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Gray_circles_rotate.gif" class="spinner-svg"> Loading...`;
+    //     btn.disabled = true;
+
+    //     // Gunakan setTimeout agar perubahan tombol dirender lebih dulu
+    //     setTimeout(async () => {
+    //         try {
+    //             let tasks = [];
+
+    //             if (role_auth === "Admin") {
+    //                 tasks.push(tabel_per_puskesmas());
+    //             }
+
+    //             tasks.push(hasil_pemeriksaan());
+    //             tasks.push(grafik_per_periode());
+    //             tasks.push(per_kelompok_usia());
+    //             tasks.push(tabel_kesimpulan_hasil());
+    //             tasks.push(tabel_per_jenis_pemeriksaan());
+
+    //             // Tunggu semua fungsi selesai sebelum menghilangkan efek loading
+    //             await Promise.all(tasks);
+    //         } catch (error) {
+    //             console.error("Terjadi kesalahan:", error);
+    //         } finally {
+    //             // Kembalikan tombol ke kondisi semula
+    //             btn.innerHTML = "Cari";
+    //             btn.disabled = false;
+    //         }
+    //     }, 100); // Beri jeda agar spinner bisa muncul sebelum tugas berjalan
+    // }
+
 
     function ar_x_grafik(dari, sampai) {
         var startDate = new Date(dari);
@@ -1847,7 +1881,7 @@
             async: true,
             success: function(data) {
                 // console.log(data.grafik)
-                // console.log(data)
+                console.log(data)
                 // console.log(jenis)
                 // $('#div_loading').hide();
                 // $('#konten').show()
@@ -1856,14 +1890,22 @@
                 // var periode_format = ar_x_grafik_ubah_format(dari, sampai);
                 // var ar_periode = ar_x_grafik(dari, sampai);
 
-                var col_tanggal = []
-                for (var i = 0; i < x_grafik.length; i++) {
-                    (function(i) {
-                        col_tanggal.push({
-                            data: i
-                        });
-                    })(i);
+                // var col_tanggal = []
+                // for (var i = 0; i < x_grafik.length; i++) {
+                //     (function(i) {
+                //         col_tanggal.push({
+                //             data: i
+                //         });
+                //         console.log(i)
+                //     })(i);
+                // }
+
+                let total_kunjungan_pasien = 0
+                for (let i = 0; i < data.length; i++) {
+                    total_kunjungan_pasien += data[i]
                 }
+                $('#total_kunjungan_pasien').text(total_kunjungan_pasien);
+                // console.log(col_tanggal)
 
                 // var semua_data = data
 
@@ -1974,7 +2016,7 @@
                 // width: "100px", // ✅ Ensures proper width assignment
                 defaultContent: "-",
                 render: function(data, type, row) {
-                    console.log(row.per_tgl[tgl])
+                    // console.log(row.per_tgl[tgl])
                     return row.per_tgl && row.per_tgl[tgl] != undefined ? row.per_tgl[tgl] : "-";
                 }
             });
@@ -1997,10 +2039,31 @@
             },
             columns: col,
             dom: 'Bfrtip',
+            // buttons: [{
+            //     extend: 'excelHtml5',
+            //     title: 'Data Per Puskesmas',
+            //     className: 'btn btn-success',
+            //     exportOptions: {
+            //         columns: ':visible'
+            //     }
+            // }]
             buttons: [{
                 extend: 'excelHtml5',
-                title: 'Data Per Puskesmas',
                 className: 'btn btn-success',
+                text: 'Export Excel',
+                title: null, // Kosongkan agar tidak pakai <title> tag dari dokumen
+                filename: function() {
+                    const tglDari = $('#dari').val().split('-').reverse().join('-');     // dd-mm-yyyy
+                    const tglSampai = $('#sampai').val().split('-').reverse().join('-'); // dd-mm-yyyy
+
+                    const now = new Date();
+                    const pad = n => n.toString().padStart(2, '0');
+
+                    const cutOffDate = `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()}`;
+                    const jam = `${pad(now.getHours())}.${pad(now.getMinutes())}`;
+
+                    return `Data_Per_Puskesmas_${tglDari}_${tglSampai}_CutOff_${cutOffDate}_${jam}`;
+                },
                 exportOptions: {
                     columns: ':visible'
                 }
@@ -2566,7 +2629,7 @@
                 dataSrc: function(json) {
                     let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
 
-                    $('#total_kunjungan_pasien').text(totalSum);
+                    // $('#total_kunjungan_pasien').text(totalSum);
 
                     return json; // Return data for DataTable
                 },

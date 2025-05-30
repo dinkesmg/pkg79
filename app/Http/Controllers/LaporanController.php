@@ -265,8 +265,19 @@ class LaporanController extends Controller
         $kelurahan_ktp = $request->kelurahan_ktp;
         // dd($request->all());
 
-        // return Excel::download(new LaporanExport, 'riwayat.xlsx');
-        return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis, $kecamatan_ktp, $kelurahan_ktp), 'riwayat.xlsx');
+        // return Excel::download(new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis, $kecamatan_ktp, $kelurahan_ktp), 'riwayat.xlsx');
+        // $today = Carbon::now()->format('d-m-Y');
+        $today = Carbon::now()->format('d-m-Y_H-i');
+        $startDate = Carbon::parse($periodeDari)->format('d-m-Y');
+        $endDate = Carbon::parse($periodeSampai)->format('d-m-Y');
+
+        // Nama file
+        $filename = "riwayat_{$startDate}_sampai_{$endDate}_exported_{$today}.xlsx";
+
+        return Excel::download(
+            new LaporanExport($role, $id_user, $periodeDari, $periodeSampai, $instrumen, $sub_instrumen, $jenis, $kecamatan_ktp, $kelurahan_ktp),
+            $filename
+        );
     }
 
     public function index_wilayah()

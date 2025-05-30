@@ -11,6 +11,8 @@ class Pemeriksa extends Model
 
     protected $table = "pemeriksa";
 
+    protected $guarded = [];
+
     // public function kecamatan()
     // {
     //     return $this->belongsTo(Ref_Kecamatan::class, 'id_kecamatan', 'id');

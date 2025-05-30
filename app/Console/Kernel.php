@@ -16,20 +16,31 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        // $schedule->command('riwayat:simpus')->everyMinute();
+        $schedule->call(function () { //h - 3
+            Log::info('call jam 02:00');
+            app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg_h3();
+            // app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
+            // app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
+        })->dailyAt('02:00')->timezone('Asia/Jakarta');
+
         $schedule->call(function () {
-            Log::info('call');
-            app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
-            app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
-            app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
-        })->dailyAt('23:00')->timezone('Asia/Jakarta');
+            Log::info('call jam 18:00');
+            // app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
+            app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg_h3();
+        })->dailyAt('18:00')->timezone('Asia/Jakarta');
+
         $schedule->call(function () {
-            Log::info('call');
+            Log::info('call semua minggu');
             app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg();
-            app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
-            app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
-        })->dailyAt('03:00')->timezone('Asia/Jakarta');
+        })->weeklyOn(1, '01:00')->timezone('Asia/Jakarta');
+
+
+        // $schedule->call(function () {
+        //     Log::info('call');
+        //     app()->make(\App\Http\Controllers\RiwayatController::class)->data_simpus_ckg_h3();
+        //     app()->make(\App\Http\Controllers\MasterController::class)->data_simpus_master_provider1();
+        //     app()->make(\App\Http\Controllers\PasienBPJSController::class)->data_simpus();
+        // })->dailyAt('20:00')->timezone('Asia/Jakarta');
     }
 
     /**

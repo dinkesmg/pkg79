@@ -27,11 +27,86 @@ class RiwayatController extends Controller
         return view('Riwayat.index');
     }
 
+    // public function data(Request $request)
+    // {
+    //     // dd("tes");
+    //     $role = Auth::user()->role;
+    //     $id_user = Auth::user()->id;
+    //     $periodeDari = $request->periode_dari;
+    //     $periodeSampai = $request->periode_sampai;
+    //     // dd($role);
+    //     set_time_limit(360);
+
+    //     $query = Riwayat::with([
+    //         'pasien.bpjs' => function ($q) {
+    //             $q->select('id', 'nik', 'nama', 'kdprovider1', 'nmprovider1');
+    //         },
+    //         'pemeriksa',
+    //         'pasien.ref_provinsi_ktp' => function ($q) {
+    //             $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kota_kab_ktp' => function ($q) {
+    //             $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kecamatan_ktp' => function ($q) {
+    //             $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kelurahan_ktp' => function ($q) {
+    //             $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_provinsi_dom' => function ($q) {
+    //             $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kota_kab_dom' => function ($q) {
+    //             $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kecamatan_dom' => function ($q) {
+    //             $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+    //         },
+    //         'pasien.ref_kelurahan_dom' => function ($q) {
+    //             $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+    //         },
+    //         // 'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom'
+    //     ])
+    //         ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+    //         ->orderBy('tanggal_pemeriksaan', 'desc');
+
+    //     if ($role == "Puskesmas") {
+    //         $query->where('id_user', $id_user);
+    //     } else if ($role == "FaskesLain") {
+    //         $provider = MasterProvider::where('nmprovider', Auth::user()->nama)->first();
+    //         // $query->where('kdProviderPst', )
+    //         $query->whereHas('pasien.bpjs', function ($q) use ($provider) {
+    //             // dd($provider->nmprovider);
+    //             $q->where('nmprovider1', $provider->nmprovider);
+    //         });
+    //     }
+
+    //     // Eksekusi query
+    //     // $data = $query->get();
+
+    //     // dd($data);
+    //     // return response()->json($data);
+
+    //     $perPage = $request->input('length', 10);  // jumlah per halaman
+    //     $page = floor($request->input('start', 0) / $perPage) + 1;  // hi
+
+    //     $data = $query->paginate($perPage, ['*'], 'page', $page);
+    //     // Return the paginated results in the DataTable format
+    //     return response()->json([
+    //         'draw' => $request->input('draw'),
+    //         'recordsTotal' => $data->total(),
+    //         'recordsFiltered' => $data->total(),  // You can adjust this if you apply additional filters
+    //         'data' => $data->items(),
+    //     ]);
+    // }
+
     public function data(Request $request)
     {
         // dd("tes");
-        $role = Auth::user()->role;
-        $id_user = Auth::user()->id;
+        $user = Auth::user();
+        $role = $user->role;
+        $id_user = $user->id;
         $periodeDari = $request->periode_dari;
         $periodeSampai = $request->periode_sampai;
         // dd($role);
@@ -914,11 +989,2284 @@ class RiwayatController extends Controller
     //     }
     // }
 
+    // public function data_simpus_ckg()
+    // {
+    //     try {
+    //         $tanggal_dari = Carbon::now()->subDays(20)->toDateString();
+    //         $tanggal_sampai = Carbon::now()->toDateString();
+    //         Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
+
+    //         $data_login = [
+    //             'email'    => "teknis.dkksemarang@gmail.com",
+    //             'name'     => "simpus",
+    //             'password' => "Pandanaran79!",
+    //         ];
+    //         Log::info('[Simpus CKG] Login API attempt', $data_login);
+
+    //         $response_login = Http::asForm()
+    //             ->withHeaders(['Accept' => 'application/json'])
+    //             ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+    //         if (!$response_login->successful()) {
+    //             Log::error('[Simpus CKG] Login gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+    //             return response()->json([
+    //                 'status'      => 'error',
+    //                 'message'     => 'Gagal login ke API',
+    //                 'http_status' => $response_login->status(),
+    //                 'error_body'  => $response_login->body(),
+    //             ], $response_login->status());
+    //         }
+
+    //         $token_login = $response_login->json()['access_token'];
+    //         Log::info('[Simpus CKG] Login berhasil');
+
+    //         $page = 1;
+    //         $lastPage = 1;
+    //         $log_summary = [];
+
+    //         do {
+    //             Log::info("[Simpus CKG] Ambil data halaman {$page}");
+    //             $requestData = [
+    //                 'tanggal_dari'   => $tanggal_dari,
+    //                 'tanggal_sampai' => $tanggal_sampai,
+    //                 'page'           => $page,
+    //             ];
+    //             $response = Http::asForm()
+    //                 ->withHeaders([
+    //                     'Authorization' => 'Bearer ' . $token_login,
+    //                     'Accept'        => 'application/json',
+    //                 ])
+    //                 ->timeout(3600)
+    //                 ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+
+    //             if (!$response->successful()) {
+    //                 Log::error('[Simpus CKG] Gagal ambil data', ['page' => $page, 'status' => $response->status(), 'body' => $response->body()]);
+    //                 return response()->json([
+    //                     'status'      => 'error',
+    //                     'message'     => 'Gagal mengambil data dari API halaman ' . $page,
+    //                     'http_status' => $response->status(),
+    //                     'error_body'  => $response->body(),
+    //                 ], $response->status());
+    //             }
+
+    //             $json = $response->json();
+    //             $data = $json['data'] ?? [];
+    //             Log::info('[Simpus CKG] Data diterima', ['count' => count($data)]);
+
+    //             foreach ($data as $dt) {
+    //                 $pusk_code = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                 $puskesmas = optional(Puskesmas::find($pusk_code))->nama ?? 'Tidak Diketahui';
+    //                 Log::info('[Simpus CKG] Proses record', ['tanggal' => $dt['tanggal'], 'nik' => $dt['nik'], 'puskesmas' => $puskesmas]);
+
+    //                 $cek = Riwayat::with(['pasien', 'pemeriksa', 'user'])
+    //                     ->whereHas('pasien', function ($query) use ($dt) {
+    //                         $query->where('nik', $dt['nik']);
+    //                     })
+    //                     ->where('tanggal_pemeriksaan', $dt['tanggal'])
+    //                     ->first();
+
+    //                 $usia = Carbon::parse($dt['tg_lahir'])->diffInYears(Carbon::parse($dt['tanggal']));
+    //                 $id_pasien = '';
+
+    //                 if ($cek) {
+    //                     $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                     if (!$cari_pasien) {
+    //                         $pasien = new Pasien();
+    //                         $pasien->nik = $dt['nik'];
+    //                         $pasien->nama = $dt['nama'];
+    //                         $pasien->jenis_kelamin = $dt['jkl'];
+    //                         $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $pasien->provinsi_ktp = $prov;
+    //                         $pasien->kota_kab_ktp = $kota_kab;
+    //                         $pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $pasien->alamat_ktp = $dt['jalan'];
+    //                         $pasien->no_hp = $dt['telp'];
+    //                         $pasien->save();
+    //                         $id_pasien = $pasien->id;
+    //                     } else {
+    //                         $cari_pasien->nik = $dt['nik'];
+    //                         $cari_pasien->nama = $dt['nama'];
+    //                         $cari_pasien->jenis_kelamin = $dt['jkl'];
+    //                         $cari_pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $cari_pasien->provinsi_ktp = $prov;
+    //                         $cari_pasien->kota_kab_ktp = $kota_kab;
+    //                         $cari_pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $cari_pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $cari_pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $cari_pasien->alamat_ktp = $dt['jalan'];
+    //                         $cari_pasien->no_hp = $dt['telp'];
+    //                         $cari_pasien->save();
+    //                         $id_pasien = $cari_pasien->id;
+    //                     }
+    //                     $cek->id_pasien = $id_pasien;
+
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $mapping_simpus = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (!is_array($hp)) continue;
+    //                                 foreach ($hp as $obj => $val) {
+    //                                     $sudah = false;
+    //                                     foreach ($mapping_simpus as $ms) {
+    //                                         // if($hp_obj=="status_gizi_bb_pb_atau_bb_tb"){
+    //                                         // dd($hasil_pemeriksaan, $hp, $hp_obj, $ms);
+    //                                         if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $val
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $ms['status']
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "gigi_karies") {
+    //                                                 // dd($hp_obj);
+    //                                                 if ($usia <= 6 && $ms['kondisi'] == "<=6 tahun") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($usia > 0 && $ms['kondisi'] == "dewasa") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "hasil_pemeriksaan_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val >= 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin normal (≥11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val < 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin di bawah normal (< 11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_apri_score") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val <= 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score ≤ 0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val > 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score >0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_pemeriksaan_rapid_test_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val < 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Tidak Normal (Hb <12 gr/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val >= 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Normal"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         }
+    //                                         // }
+
+    //                                     }
+    //                                     if (!$sudah) {
+    //                                         if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                             $kesimpulan = $val;
+    //                                         } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                             $program[]['edukasi'] = $val;
+    //                                         } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                             $program[]['rujuk_fktrl'] = $val;
+    //                                         } else {
+    //                                             $hp_lainnya[] = $hp;
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                             $cek->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $cek->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $cek->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $cek->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                         }
+    //                     }
+    //                     $cek->save();
+    //                     Log::info('[Simpus CKG] Riwayat updated', ['id' => $cek->id]);
+    //                 } else {
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                             if (!$cari_pasien) {
+    //                                 // buat pasien baru
+    //                                 $pasien = new Pasien();
+    //                                 $pasien->nik = $dt['nik'];
+    //                                 $pasien->nama = $dt['nama'];
+    //                                 $pasien->jenis_kelamin = $dt['jkl'];
+    //                                 $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                                 // substring dan mapping kelurahan sama seperti update
+    //                                 $pasien->alamat_ktp = $dt['jalan'];
+    //                                 $pasien->no_hp = $dt['telp'];
+    //                                 $pasien->save();
+    //                                 $id_pasien = $pasien->id;
+    //                             } else {
+    //                                 $id_pasien = $cari_pasien->id;
+    //                             }
+    //                             $id_pemeriksa = null;
+    //                             if (isset($dt['nik_dokter'])) {
+    //                                 $dok = Pemeriksa::where('nik', $dt['nik_dokter'])->first();
+    //                                 if (!$dok) {
+    //                                     $p = new Pemeriksa();
+    //                                     $p->nik = $dt['nik_dokter'];
+    //                                     $p->nama = $dt['nama_dokter'];
+    //                                     $p->save();
+    //                                     $id_pemeriksa = $p->id;
+    //                                 } else {
+    //                                     $dok->nik = $dt['nik_dokter'];
+    //                                     $dok->nama = $dt['nama_dokter'];
+    //                                     $dok->save();
+    //                                     $id_pemeriksa = $dok->id;
+    //                                 }
+    //                             }
+    //                             $id_pusk = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                             $pusk = Puskesmas::find($id_pusk);
+    //                             $id_user = $id_pusk + 1;
+    //                             $tempat = 'Puskesmas';
+    //                             $nama_fktp = $pusk ? $pusk->nama : 'Tidak Diketahui';
+
+    //                             // mapping hasil pemeriksaan sama seperti di update
+    //                             $mapping = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (is_array($hp)) {
+    //                                     foreach ($hp as $obj => $val) {
+    //                                         $s = false;
+    //                                         foreach ($mapping as $ms) {
+    //                                             if ($obj === $ms['val_simpus']) {
+    //                                                 if ($ms['status_simpus'] == '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $val;
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } elseif ($ms['status_simpus'] != '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } else {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 }
+    //                                                 break;
+    //                                             }
+    //                                         }
+    //                                         if (!$s) {
+    //                                             if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                                 $kesimpulan = $val;
+    //                                             } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                                 $program[]['edukasi'] = $val;
+    //                                             } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                                 $program[]['rujuk_fktrl'] = $val;
+    //                                             } else {
+    //                                                 $hp_lainnya[] = $hp;
+    //                                             }
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+
+    //                             $riwayat = new Riwayat();
+    //                             $riwayat->id_user = $id_user;
+    //                             $riwayat->tanggal_pemeriksaan = $dt['tanggal'];
+    //                             $riwayat->tempat_periksa = $tempat;
+    //                             $riwayat->nama_fktp_pj = $nama_fktp;
+    //                             $riwayat->id_pemeriksa = $id_pemeriksa;
+    //                             $riwayat->id_pasien = $id_pasien;
+    //                             $riwayat->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $riwayat->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $riwayat->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $riwayat->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                             $riwayat->save();
+    //                             Log::info('[Simpus CKG] Riwayat insert berhasil', ['id' => $riwayat->id]);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+    //             Log::info('[Simpus CKG] Halaman selesai', ['page' => $page, 'count' => count($data)]);
+    //             $lastPage = $json['last_page'] ?? $page;
+    //             $page++;
+    //             sleep(10);
+    //         } while ($page <= $lastPage);
+
+    //         $grouped = collect($log_summary)->groupBy('tanggal');
+    //         foreach ($grouped as $tgl => $items) {
+    //             $byP = collect($items)->groupBy('nama_puskesmas');
+    //             foreach ($byP as $pus => $ent) {
+    //                 Log::info("[Simpus CKG] Ringkasan {$tgl}|{$pus}|" . count($ent));
+    //             }
+    //         }
+
+    //         Log::info('[Simpus CKG] Selesai seluruh proses');
+    //         return response()->json(['status' => 'success', 'message' => 'Berhasil', 'http_status' => 200, 'data_count' => count($log_summary)], 200);
+    //     } catch (\Exception $e) {
+    //         Log::error('[Simpus CKG] Exception', ['msg' => $e->getMessage()]);
+    //         return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
+
+    // public function data_simpus_ckg()
+    // {
+    //     try {
+    //         $tanggal_dari = Carbon::now()->subDays(20)->toDateString();
+    //         $tanggal_sampai = Carbon::now()->subDays(3)->toDateString();
+
+    //         // $tanggal_sampai = Carbon::now()->toDateString();
+
+    //         $startLoginTime = now();
+    //         Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
+
+    //         $data_login = [
+    //             'email'    => "teknis.dkksemarang@gmail.com",
+    //             'name'     => "simpus",
+    //             'password' => "Pandanaran79!",
+    //         ];
+    //         Log::info('[Simpus CKG] Login API attempt', $data_login);
+
+    //         $response_login = Http::asForm()
+    //             ->withHeaders(['Accept' => 'application/json'])
+    //             ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+    //         if (!$response_login->successful()) {
+    //             Log::error('[Simpus CKG] Login gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+    //             return response()->json([
+    //                 'status'      => 'error',
+    //                 'message'     => 'Gagal login ke API',
+    //                 'http_status' => $response_login->status(),
+    //                 'error_body'  => $response_login->body(),
+    //             ], $response_login->status());
+    //         }
+
+    //         $token_login = $response_login->json()['access_token'];
+
+    //         Log::info('[Simpus CKG] Login berhasil');
+
+    //         $page = 1;
+    //         $lastPage = 1;
+    //         $log_summary = [];
+
+    //         $lastRefreshMinute = null;
+
+    //         do {
+    //             $minutesSinceStart = $startLoginTime->diffInMinutes(now());
+
+    //             if ($minutesSinceStart > 0 && $minutesSinceStart % 60 === 0 && $minutesSinceStart !== $lastRefreshMinute) {
+    //                 Log::info('[Simpus CKG] Token expired (kelipatan 60 menit), mencoba login ulang');
+
+    //                 $response_login = Http::asForm()
+    //                     ->withHeaders(['Accept' => 'application/json'])
+    //                     ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+    //                 if (!$response_login->successful()) {
+    //                     Log::error('[Simpus CKG] Login ulang gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+    //                     return response()->json([
+    //                         'status'      => 'error',
+    //                         'message'     => 'Gagal login ulang ke API',
+    //                         'http_status' => $response_login->status(),
+    //                         'error_body'  => $response_login->body(),
+    //                     ], $response_login->status());
+    //                 }
+
+    //                 $token_login = $response_login->json()['access_token'];
+    //                 $lastRefreshMinute = $minutesSinceStart;
+    //                 Log::info('[Simpus CKG] Login ulang berhasil, token diperbarui');
+    //             }
+
+    //             Log::info("[Simpus CKG] Ambil data halaman {$page}");
+    //             $requestData = [
+    //                 'tanggal_dari'   => $tanggal_dari,
+    //                 'tanggal_sampai' => $tanggal_sampai,
+    //                 'page'           => $page,
+    //             ];
+    //             $response = Http::asForm()
+    //                 ->withHeaders([
+    //                     'Authorization' => 'Bearer ' . $token_login,
+    //                     'Accept'        => 'application/json',
+    //                 ])
+    //                 ->timeout(3600)
+    //                 ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+
+    //             if (!$response->successful()) {
+    //                 Log::error('[Simpus CKG] Gagal ambil data', ['page' => $page, 'status' => $response->status(), 'body' => $response->body()]);
+    //                 return response()->json([
+    //                     'status'      => 'error',
+    //                     'message'     => 'Gagal mengambil data dari API halaman ' . $page,
+    //                     'http_status' => $response->status(),
+    //                     'error_body'  => $response->body(),
+    //                 ], $response->status());
+    //             }
+
+    //             $json = $response->json();
+    //             $data = $json['data'] ?? [];
+    //             Log::info('[Simpus CKG] Data diterima', ['count' => count($data)]);
+
+    //             foreach ($data as $dt) {
+    //                 $pusk_code = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                 $puskesmas = optional(Puskesmas::find($pusk_code))->nama ?? 'Tidak Diketahui';
+    //                 Log::info('[Simpus CKG] Proses record', ['tanggal' => $dt['tanggal'], 'nik' => $dt['nik'], 'puskesmas' => $puskesmas]);
+
+    //                 $cek = Riwayat::with(['pasien', 'pemeriksa', 'user'])
+    //                     ->whereHas('pasien', function ($query) use ($dt) {
+    //                         $query->where('nik', $dt['nik']);
+    //                     })
+    //                     ->where('tanggal_pemeriksaan', $dt['tanggal'])
+    //                     ->first();
+
+    //                 $usia = Carbon::parse($dt['tg_lahir'])->diffInYears(Carbon::parse($dt['tanggal']));
+    //                 $id_pasien = '';
+
+    //                 if ($cek) {
+    //                     $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                     if (!$cari_pasien) {
+    //                         $pasien = new Pasien();
+    //                         $pasien->nik = $dt['nik'];
+    //                         $pasien->nama = $dt['nama'];
+    //                         $pasien->jenis_kelamin = $dt['jkl'];
+    //                         $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $pasien->provinsi_ktp = $prov;
+    //                         $pasien->kota_kab_ktp = $kota_kab;
+    //                         $pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $pasien->alamat_ktp = $dt['jalan'];
+    //                         $pasien->no_hp = $dt['telp'];
+    //                         $pasien->save();
+    //                         $id_pasien = $pasien->id;
+    //                     } else {
+    //                         $cari_pasien->nik = $dt['nik'];
+    //                         $cari_pasien->nama = $dt['nama'];
+    //                         $cari_pasien->jenis_kelamin = $dt['jkl'];
+    //                         $cari_pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $cari_pasien->provinsi_ktp = $prov;
+    //                         $cari_pasien->kota_kab_ktp = $kota_kab;
+    //                         $cari_pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $cari_pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $cari_pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $cari_pasien->alamat_ktp = $dt['jalan'];
+    //                         $cari_pasien->no_hp = $dt['telp'];
+    //                         $cari_pasien->save();
+    //                         $id_pasien = $cari_pasien->id;
+    //                     }
+    //                     $cek->id_pasien = $id_pasien;
+
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $mapping_simpus = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (!is_array($hp)) continue;
+    //                                 foreach ($hp as $obj => $val) {
+    //                                     $sudah = false;
+    //                                     foreach ($mapping_simpus as $ms) {
+    //                                         // if($hp_obj=="status_gizi_bb_pb_atau_bb_tb"){
+    //                                         // dd($hasil_pemeriksaan, $hp, $hp_obj, $ms);
+    //                                         if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $val
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $ms['status']
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "gigi_karies") {
+    //                                                 // dd($hp_obj);
+    //                                                 if ($usia <= 6 && $ms['kondisi'] == "<=6 tahun") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($usia > 0 && $ms['kondisi'] == "dewasa") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "hasil_pemeriksaan_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val >= 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin normal (≥11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val < 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin di bawah normal (< 11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_apri_score") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val <= 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score ≤ 0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val > 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score >0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_pemeriksaan_rapid_test_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val < 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Tidak Normal (Hb <12 gr/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val >= 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Normal"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         }
+    //                                         // }
+
+    //                                     }
+    //                                     if (!$sudah) {
+    //                                         if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                             $kesimpulan = $val;
+    //                                         } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                             $program[]['edukasi'] = $val;
+    //                                         } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                             $program[]['rujuk_fktrl'] = $val;
+    //                                         } else {
+    //                                             $hp_lainnya[] = $hp;
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                             $cek->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $cek->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $cek->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $cek->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                         }
+    //                     }
+    //                     $cek->save();
+    //                     Log::info('[Simpus CKG] Riwayat updated', ['id' => $cek->id]);
+    //                 } else {
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                             if (!$cari_pasien) {
+    //                                 // buat pasien baru
+    //                                 $pasien = new Pasien();
+    //                                 $pasien->nik = $dt['nik'];
+    //                                 $pasien->nama = $dt['nama'];
+    //                                 $pasien->jenis_kelamin = $dt['jkl'];
+    //                                 $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                                 // substring dan mapping kelurahan sama seperti update
+    //                                 $pasien->alamat_ktp = $dt['jalan'];
+    //                                 $pasien->no_hp = $dt['telp'];
+    //                                 $pasien->save();
+    //                                 $id_pasien = $pasien->id;
+    //                             } else {
+    //                                 $id_pasien = $cari_pasien->id;
+    //                             }
+    //                             $id_pemeriksa = null;
+    //                             if (isset($dt['nik_dokter'])) {
+    //                                 $dok = Pemeriksa::where('nik', $dt['nik_dokter'])->first();
+    //                                 if (!$dok) {
+    //                                     $p = new Pemeriksa();
+    //                                     $p->nik = $dt['nik_dokter'];
+    //                                     $p->nama = $dt['nama_dokter'];
+    //                                     $p->save();
+    //                                     $id_pemeriksa = $p->id;
+    //                                 } else {
+    //                                     $dok->nik = $dt['nik_dokter'];
+    //                                     $dok->nama = $dt['nama_dokter'];
+    //                                     $dok->save();
+    //                                     $id_pemeriksa = $dok->id;
+    //                                 }
+    //                             }
+    //                             $id_pusk = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                             $pusk = Puskesmas::find($id_pusk);
+    //                             $id_user = $id_pusk + 1;
+    //                             $tempat = 'Puskesmas';
+    //                             $nama_fktp = $pusk ? $pusk->nama : 'Tidak Diketahui';
+
+    //                             // mapping hasil pemeriksaan sama seperti di update
+    //                             $mapping = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (is_array($hp)) {
+    //                                     foreach ($hp as $obj => $val) {
+    //                                         $s = false;
+    //                                         foreach ($mapping as $ms) {
+    //                                             if ($obj === $ms['val_simpus']) {
+    //                                                 if ($ms['status_simpus'] == '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $val;
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } elseif ($ms['status_simpus'] != '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } else {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 }
+    //                                                 break;
+    //                                             }
+    //                                         }
+    //                                         if (!$s) {
+    //                                             if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                                 $kesimpulan = $val;
+    //                                             } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                                 $program[]['edukasi'] = $val;
+    //                                             } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                                 $program[]['rujuk_fktrl'] = $val;
+    //                                             } else {
+    //                                                 $hp_lainnya[] = $hp;
+    //                                             }
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+
+    //                             $riwayat = new Riwayat();
+    //                             $riwayat->id_user = $id_user;
+    //                             $riwayat->tanggal_pemeriksaan = $dt['tanggal'];
+    //                             $riwayat->tempat_periksa = $tempat;
+    //                             $riwayat->nama_fktp_pj = $nama_fktp;
+    //                             $riwayat->id_pemeriksa = $id_pemeriksa;
+    //                             $riwayat->id_pasien = $id_pasien;
+    //                             $riwayat->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $riwayat->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $riwayat->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $riwayat->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                             $riwayat->save();
+    //                             Log::info('[Simpus CKG] Riwayat insert berhasil', ['id' => $riwayat->id]);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+    //             Log::info('[Simpus CKG] Halaman selesai', ['page' => $page, 'count' => count($data)]);
+    //             $lastPage = $json['last_page'] ?? $page;
+    //             $page++;
+    //             sleep(5);
+    //         } while ($page <= $lastPage);
+
+    //         $grouped = collect($log_summary)->groupBy('tanggal');
+    //         foreach ($grouped as $tgl => $items) {
+    //             $byP = collect($items)->groupBy('nama_puskesmas');
+    //             foreach ($byP as $pus => $ent) {
+    //                 Log::info("[Simpus CKG] Ringkasan {$tgl}|{$pus}|" . count($ent));
+    //             }
+    //         }
+
+    //         Log::info('[Simpus CKG] Selesai seluruh proses');
+    //         return response()->json(['status' => 'success', 'message' => 'Berhasil', 'http_status' => 200, 'data_count' => count($log_summary)], 200);
+    //     } catch (\Exception $e) {
+    //         Log::error('[Simpus CKG] Exception', ['msg' => $e->getMessage()]);
+    //         return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
+
+    // public function data_simpus_ckg_h3()
+    // {
+    //     try {
+    //         // $tanggal_dari = "2025-05-16";
+    //         // $tanggal_sampai = "2025-05-16";
+    //         $tanggal_dari = Carbon::now()->subDays(3)->toDateString();
+    //         // $tanggal_sampai = Carbon::now()->subDays(1)->toDateString();
+    //         $tanggal_sampai = Carbon::now()->toDateString();
+
+    //         $startLoginTime = now();
+    //         Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
+
+    //         $data_login = [
+    //             'email'    => "teknis.dkksemarang@gmail.com",
+    //             'name'     => "simpus",
+    //             'password' => "Pandanaran79!",
+    //         ];
+    //         Log::info('[Simpus CKG] Login API attempt', $data_login);
+
+    //         $response_login = Http::asForm()
+    //             ->withHeaders(['Accept' => 'application/json'])
+    //             ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+    //         if (!$response_login->successful()) {
+    //             Log::error('[Simpus CKG] Login gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+    //             return response()->json([
+    //                 'status'      => 'error',
+    //                 'message'     => 'Gagal login ke API',
+    //                 'http_status' => $response_login->status(),
+    //                 'error_body'  => $response_login->body(),
+    //             ], $response_login->status());
+    //         }
+
+    //         $token_login = $response_login->json()['access_token'];
+
+    //         Log::info('[Simpus CKG] Login berhasil');
+
+    //         $page = 1;
+    //         $lastPage = 1;
+    //         $log_summary = [];
+
+    //         $lastRefreshMinute = null;
+
+    //         do {
+    //             $minutesSinceStart = $startLoginTime->diffInMinutes(now());
+
+    //             if ($minutesSinceStart > 0 && $minutesSinceStart % 60 === 0 && $minutesSinceStart !== $lastRefreshMinute) {
+    //                 Log::info('[Simpus CKG] Token expired (kelipatan 60 menit), mencoba login ulang');
+
+    //                 $response_login = Http::asForm()
+    //                     ->withHeaders(['Accept' => 'application/json'])
+    //                     ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+    //                 if (!$response_login->successful()) {
+    //                     Log::error('[Simpus CKG] Login ulang gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+    //                     return response()->json([
+    //                         'status'      => 'error',
+    //                         'message'     => 'Gagal login ulang ke API',
+    //                         'http_status' => $response_login->status(),
+    //                         'error_body'  => $response_login->body(),
+    //                     ], $response_login->status());
+    //                 }
+
+    //                 $token_login = $response_login->json()['access_token'];
+    //                 $lastRefreshMinute = $minutesSinceStart;
+    //                 Log::info('[Simpus CKG] Login ulang berhasil, token diperbarui');
+    //             }
+
+    //             Log::info("[Simpus CKG] Ambil data halaman {$page}");
+    //             $requestData = [
+    //                 'tanggal_dari'   => $tanggal_dari,
+    //                 'tanggal_sampai' => $tanggal_sampai,
+    //                 'page'           => $page,
+    //             ];
+    //             $response = Http::asForm()
+    //                 ->withHeaders([
+    //                     'Authorization' => 'Bearer ' . $token_login,
+    //                     'Accept'        => 'application/json',
+    //                 ])
+    //                 ->timeout(3600)
+    //                 ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+
+    //             if (!$response->successful()) {
+    //                 Log::error('[Simpus CKG] Gagal ambil data', ['page' => $page, 'status' => $response->status(), 'body' => $response->body()]);
+    //                 return response()->json([
+    //                     'status'      => 'error',
+    //                     'message'     => 'Gagal mengambil data dari API halaman ' . $page,
+    //                     'http_status' => $response->status(),
+    //                     'error_body'  => $response->body(),
+    //                 ], $response->status());
+    //             }
+
+    //             $json = $response->json();
+    //             $data = $json['data'] ?? [];
+    //             // Log::info('[Simpus CKG] Data total', ['count' => count($data)]);
+    //             Log::info('[Simpus CKG] Data total', ['count' => $json['total']]);
+
+    //             foreach ($data as $dt) {
+    //                 $pusk_code = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                 $puskesmas = optional(Puskesmas::find($pusk_code))->nama ?? 'Tidak Diketahui';
+    //                 Log::info('[Simpus CKG] Proses record', ['tanggal' => $dt['tanggal'], 'nik' => $dt['nik'], 'puskesmas' => $puskesmas]);
+
+    //                 $cek = Riwayat::with(['pasien', 'pemeriksa', 'user'])
+    //                     ->whereHas('pasien', function ($query) use ($dt) {
+    //                         $query->where('nik', $dt['nik']);
+    //                     })
+    //                     ->where('tanggal_pemeriksaan', $dt['tanggal'])
+    //                     ->first();
+
+    //                 $usia = Carbon::parse($dt['tg_lahir'])->diffInYears(Carbon::parse($dt['tanggal']));
+    //                 $id_pasien = '';
+
+    //                 if ($cek) {
+    //                     $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                     if (!$cari_pasien) {
+    //                         $pasien = new Pasien();
+    //                         $pasien->nik = $dt['nik'];
+    //                         $pasien->nama = $dt['nama'];
+    //                         $pasien->jenis_kelamin = $dt['jkl'];
+    //                         $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $pasien->provinsi_ktp = $prov;
+    //                         $pasien->kota_kab_ktp = $kota_kab;
+    //                         $pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $pasien->alamat_ktp = $dt['jalan'];
+    //                         $pasien->no_hp = $dt['telp'];
+    //                         $pasien->save();
+    //                         $id_pasien = $pasien->id;
+    //                     } else {
+    //                         $cari_pasien->nik = $dt['nik'];
+    //                         $cari_pasien->nama = $dt['nama'];
+    //                         $cari_pasien->jenis_kelamin = $dt['jkl'];
+    //                         $cari_pasien->tgl_lahir = $dt['tg_lahir'];
+    //                         $prov = substr($dt['nik'], 0, 2) ?: '';
+    //                         $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+    //                         $kec = substr($dt['nik'], 0, 6) ?: '';
+    //                         $cari_pasien->provinsi_ktp = $prov;
+    //                         $cari_pasien->kota_kab_ktp = $kota_kab;
+    //                         $cari_pasien->kecamatan_ktp = $kec;
+    //                         if (!empty($dt['kdesa'])) {
+    //                             $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+    //                             $cari_pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+    //                         } else {
+    //                             $cari_pasien->kelurahan_ktp = '';
+    //                         }
+    //                         $cari_pasien->alamat_ktp = $dt['jalan'];
+    //                         $cari_pasien->no_hp = $dt['telp'];
+    //                         $cari_pasien->save();
+    //                         $id_pasien = $cari_pasien->id;
+    //                     }
+    //                     $cek->id_pasien = $id_pasien;
+
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $mapping_simpus = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (!is_array($hp)) continue;
+    //                                 foreach ($hp as $obj => $val) {
+    //                                     $sudah = false;
+    //                                     foreach ($mapping_simpus as $ms) {
+    //                                         // if($hp_obj=="status_gizi_bb_pb_atau_bb_tb"){
+    //                                         // dd($hasil_pemeriksaan, $hp, $hp_obj, $ms);
+    //                                         if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $val
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] == "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                 $hp_baru[] = [
+    //                                                     $ms['val'] => $ms['status']
+    //                                                 ];
+    //                                             }
+    //                                             $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                             break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "gigi_karies") {
+    //                                                 // dd($hp_obj);
+    //                                                 if ($usia <= 6 && $ms['kondisi'] == "<=6 tahun") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($usia > 0 && $ms['kondisi'] == "dewasa") {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => $ms['status']
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] != "") {
+    //                                             // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+    //                                             // dd($hp_obj);
+    //                                             if ($obj == "hasil_pemeriksaan_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val >= 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin normal (≥11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val < 11) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Hemoglobin di bawah normal (< 11 g/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_apri_score") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val <= 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score ≤ 0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val > 0.5) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "APRI Score >0.5"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             }
+    //                                             if ($obj == "hasil_pemeriksaan_rapid_test_hb") {
+    //                                                 // dd($hp_val);
+    //                                                 if ($val < 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Tidak Normal (Hb <12 gr/dL)"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 } else if ($val >= 12) {
+    //                                                     if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                         $hp_baru[] = [
+    //                                                             $ms['val'] => "Normal"
+    //                                                         ];
+    //                                                     }
+    //                                                     $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                     break;
+    //                                                 }
+    //                                             } else {
+    //                                                 if (!array_key_exists($ms['val'], $hp_baru)) {
+    //                                                     $hp_baru[] = [
+    //                                                         $ms['val'] => $ms['status']
+    //                                                     ];
+    //                                                 }
+    //                                                 $sudah_cek = true; // Tandai bahwa data sudah dicek
+    //                                                 break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+    //                                             }
+    //                                         }
+    //                                         // }
+
+    //                                     }
+    //                                     if (!$sudah) {
+    //                                         if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                             $kesimpulan = $val;
+    //                                         } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                             $program[]['edukasi'] = $val;
+    //                                         } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                             $program[]['rujuk_fktrl'] = $val;
+    //                                         } else {
+    //                                             $hp_lainnya[] = $hp;
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+    //                             $cek->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $cek->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $cek->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $cek->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                         }
+    //                     }
+    //                     $cek->save();
+    //                     Log::info('[Simpus CKG] Riwayat updated', ['id' => $cek->id]);
+    //                 } else {
+    //                     if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+    //                         $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+    //                         if (is_array($hasil)) {
+    //                             $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+    //                             if (!$cari_pasien) {
+    //                                 // buat pasien baru
+    //                                 $pasien = new Pasien();
+    //                                 $pasien->nik = $dt['nik'];
+    //                                 $pasien->nama = $dt['nama'];
+    //                                 $pasien->jenis_kelamin = $dt['jkl'];
+    //                                 $pasien->tgl_lahir = $dt['tg_lahir'];
+    //                                 // substring dan mapping kelurahan sama seperti update
+    //                                 $pasien->alamat_ktp = $dt['jalan'];
+    //                                 $pasien->no_hp = $dt['telp'];
+    //                                 $pasien->save();
+    //                                 $id_pasien = $pasien->id;
+    //                             } else {
+    //                                 $id_pasien = $cari_pasien->id;
+    //                             }
+    //                             $id_pemeriksa = null;
+    //                             if (isset($dt['nik_dokter'])) {
+    //                                 $dok = Pemeriksa::where('nik', $dt['nik_dokter'])->first();
+    //                                 if (!$dok) {
+    //                                     $p = new Pemeriksa();
+    //                                     $p->nik = $dt['nik_dokter'];
+    //                                     $p->nama = $dt['nama_dokter'];
+    //                                     $p->save();
+    //                                     $id_pemeriksa = $p->id;
+    //                                 } else {
+    //                                     $dok->nik = $dt['nik_dokter'];
+    //                                     $dok->nama = $dt['nama_dokter'];
+    //                                     $dok->save();
+    //                                     $id_pemeriksa = $dok->id;
+    //                                 }
+    //                             }
+    //                             $id_pusk = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+    //                             $pusk = Puskesmas::find($id_pusk);
+    //                             $id_user = $id_pusk + 1;
+    //                             $tempat = 'Puskesmas';
+    //                             $nama_fktp = $pusk ? $pusk->nama : 'Tidak Diketahui';
+
+    //                             // mapping hasil pemeriksaan sama seperti di update
+    //                             $mapping = Mapping_simpus::get();
+    //                             $hp_baru = [];
+    //                             $hp_lainnya = [];
+    //                             $kesimpulan = null;
+    //                             $program = null;
+    //                             foreach ($hasil as $hp) {
+    //                                 if (is_array($hp)) {
+    //                                     foreach ($hp as $obj => $val) {
+    //                                         $s = false;
+    //                                         foreach ($mapping as $ms) {
+    //                                             if ($obj === $ms['val_simpus']) {
+    //                                                 if ($ms['status_simpus'] == '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $val;
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } elseif ($ms['status_simpus'] != '' && $ms['kondisi'] == '') {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 } else {
+    //                                                     if (!isset($hp_baru[$ms['val']])) {
+    //                                                         $hp_baru[$ms['val']] = $ms['status'];
+    //                                                     }
+    //                                                     $s = true;
+    //                                                 }
+    //                                                 break;
+    //                                             }
+    //                                         }
+    //                                         if (!$s) {
+    //                                             if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+    //                                                 $kesimpulan = $val;
+    //                                             } elseif ($obj === 'edukasi_yang_diberikan') {
+    //                                                 $program[]['edukasi'] = $val;
+    //                                             } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+    //                                                 $program[]['rujuk_fktrl'] = $val;
+    //                                             } else {
+    //                                                 $hp_lainnya[] = $hp;
+    //                                             }
+    //                                         }
+    //                                     }
+    //                                 }
+    //                             }
+
+    //                             $riwayat = new Riwayat();
+    //                             $riwayat->id_user = $id_user;
+    //                             $riwayat->tanggal_pemeriksaan = $dt['tanggal'];
+    //                             $riwayat->tempat_periksa = $tempat;
+    //                             $riwayat->nama_fktp_pj = $nama_fktp;
+    //                             $riwayat->id_pemeriksa = $id_pemeriksa;
+    //                             $riwayat->id_pasien = $id_pasien;
+    //                             $riwayat->hasil_pemeriksaan = json_encode($hp_baru);
+    //                             $riwayat->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+    //                             $riwayat->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+    //                             $riwayat->program_tindak_lanjut = $program ? json_encode($program) : null;
+    //                             $riwayat->save();
+    //                             Log::info('[Simpus CKG] Riwayat insert berhasil', ['id' => $riwayat->id]);
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+    //             Log::info('[Simpus CKG] Halaman selesai', ['page' => $page, 'count' => count($data)]);
+    //             $lastPage = $json['last_page'] ?? $page;
+    //             $page++;
+    //             sleep(3);
+    //         } while ($page <= $lastPage);
+
+    //         $grouped = collect($log_summary)->groupBy('tanggal');
+    //         foreach ($grouped as $tgl => $items) {
+    //             $byP = collect($items)->groupBy('nama_puskesmas');
+    //             foreach ($byP as $pus => $ent) {
+    //                 Log::info("[Simpus CKG] Ringkasan {$tgl}|{$pus}|" . count($ent));
+    //             }
+    //         }
+
+    //         Log::info('[Simpus CKG] Selesai seluruh proses');
+    //         return response()->json(['status' => 'success', 'message' => 'Berhasil', 'http_status' => 200, 'data_count' => count($log_summary)], 200);
+    //     } catch (\Exception $e) {
+    //         Log::error('[Simpus CKG] Exception', ['msg' => $e->getMessage()]);
+    //         return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+    //     }
+    // }
+
+    public function data_simpus_ckg_h3()
+    {
+        try {
+            $tanggal_dari = Carbon::now()->subDays(2)->toDateString();
+            // $tanggal_sampai = Carbon::now()->subDays(2)->toDateString();
+            $tanggal_sampai = Carbon::now()->toDateString();
+            $startLoginTime = now();
+
+            Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
+
+            $data_login = [
+                'email'    => "teknis.dkksemarang@gmail.com",
+                'name'     => "simpus",
+                'password' => "Pandanaran79!",
+            ];
+
+            // Fungsi login ulang
+            $loginUlang = function () use ($data_login) {
+                $res = Http::asForm()
+                    ->withHeaders(['Accept' => 'application/json'])
+                    ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+                if (!$res->successful()) {
+                    Log::error('[Simpus CKG] Gagal login ulang', ['status' => $res->status(), 'body' => $res->body()]);
+                    return null;
+                }
+                return $res->json()['access_token'];
+            };
+
+            Log::info('[Simpus CKG] Login API attempt', $data_login);
+            $response_login = Http::asForm()
+                ->withHeaders(['Accept' => 'application/json'])
+                ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+            if (!$response_login->successful()) {
+                Log::error('[Simpus CKG] Login gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal login ke API',
+                    'http_status' => $response_login->status(),
+                    'error_body' => $response_login->body(),
+                ], $response_login->status());
+            }
+
+            $token_login = $response_login->json()['access_token'];
+            Log::info('[Simpus CKG] Login berhasil');
+
+            $page = 1;
+            $lastPage = 1;
+
+            do {
+                Log::info("[Simpus CKG] Ambil data halaman {$page}");
+
+                $requestData = [
+                    'tanggal_dari' => $tanggal_dari,
+                    'tanggal_sampai' => $tanggal_sampai,
+                    'page' => $page,
+                ];
+
+                // Cek apakah halaman merupakan kelipatan 3
+                if ($page % 3 == 0) {
+                    Log::warning("[Simpus CKG] Halaman {$page} adalah kelipatan 3, login ulang...");
+
+                    // Melakukan login ulang
+                    $new_token = $loginUlang();
+                    if ($new_token) {
+                        $token_login = $new_token;
+                        Log::info('[Simpus CKG] Login ulang berhasil');
+                    } else {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Gagal login ulang ke API setelah token expired',
+                            'http_status' => 401,
+                        ], 401);
+                    }
+                }
+
+                // Request data dari API
+                $response = Http::asForm()
+                    ->withHeaders([
+                        'Authorization' => 'Bearer ' . $token_login,
+                        'Accept'        => 'application/json',
+                    ])
+                    ->timeout(3600)
+                    ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+
+                // 🔁 Jika token expired (401), login ulang dan retry sekali
+                if ($response->status() === 401) {
+                    Log::warning("[Simpus CKG] Token expired saat ambil halaman {$page}, login ulang...");
+                    $new_token = $loginUlang();
+                    if ($new_token) {
+                        $token_login = $new_token;
+                        Log::info('[Simpus CKG] Login ulang berhasil');
+
+                        $response = Http::asForm()
+                            ->withHeaders([
+                                'Authorization' => 'Bearer ' . $token_login,
+                                'Accept'        => 'application/json',
+                            ])
+                            ->timeout(3600)
+                            ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+                    } else {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Gagal login ulang ke API setelah token expired',
+                            'http_status' => 401,
+                        ], 401);
+                    }
+                }
+
+                if (!$response->successful()) {
+                    Log::error('[Simpus CKG] Gagal ambil data', [
+                        'page' => $page,
+                        'status' => $response->status(),
+                        'body' => $response->body()
+                    ]);
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengambil data dari API halaman ' . $page,
+                        'http_status' => $response->status(),
+                        'error_body' => $response->body(),
+                    ], $response->status());
+                }
+
+                $json = $response->json();
+                $data = $json['data'] ?? [];
+                Log::info('[Simpus CKG] Data total', ['count' => $json['total'] ?? count($data)]);
+                Log::info('[Simpus CKG] Data page=' . $page . " last page=" . $json['last_page']);
+
+                // Proses data di sini
+                foreach ($data as $dt) {
+                    $pusk_code = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+                    $puskesmas = optional(Puskesmas::find($pusk_code))->nama ?? 'Tidak Diketahui';
+                    Log::info('[Simpus CKG] Proses record', ['tanggal' => $dt['tanggal'], 'nik' => $dt['nik'], 'puskesmas' => $puskesmas]);
+
+                    $cek = Riwayat::with(['pasien', 'pemeriksa', 'user'])
+                        ->whereHas('pasien', function ($query) use ($dt) {
+                            $query->where('nik', $dt['nik']);
+                        })
+                        ->where('tanggal_pemeriksaan', $dt['tanggal'])
+                        ->first();
+
+                    $usia = Carbon::parse($dt['tg_lahir'])->diffInYears(Carbon::parse($dt['tanggal']));
+                    $id_pasien = '';
+
+                    if ($cek) {
+                        $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+                        if (!$cari_pasien) {
+                            $pasien = new Pasien();
+                            $pasien->nik = $dt['nik'];
+                            $pasien->nama = $dt['nama'];
+                            $pasien->jenis_kelamin = $dt['jkl'];
+                            $pasien->tgl_lahir = $dt['tg_lahir'];
+                            $prov = substr($dt['nik'], 0, 2) ?: '';
+                            $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+                            $kec = substr($dt['nik'], 0, 6) ?: '';
+                            $pasien->provinsi_ktp = $prov;
+                            $pasien->kota_kab_ktp = $kota_kab;
+                            $pasien->kecamatan_ktp = $kec;
+                            if (!empty($dt['kdesa'])) {
+                                $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                $pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+                            } else {
+                                $pasien->kelurahan_ktp = '';
+                            }
+                            $pasien->alamat_ktp = $dt['jalan'];
+                            $pasien->no_hp = $dt['telp'];
+                            $pasien->save();
+                            $id_pasien = $pasien->id;
+                        } else {
+                            $cari_pasien->nik = $dt['nik'];
+                            $cari_pasien->nama = $dt['nama'];
+                            $cari_pasien->jenis_kelamin = $dt['jkl'];
+                            $cari_pasien->tgl_lahir = $dt['tg_lahir'];
+                            $prov = substr($dt['nik'], 0, 2) ?: '';
+                            $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+                            $kec = substr($dt['nik'], 0, 6) ?: '';
+                            $cari_pasien->provinsi_ktp = $prov;
+                            $cari_pasien->kota_kab_ktp = $kota_kab;
+                            $cari_pasien->kecamatan_ktp = $kec;
+                            if (!empty($dt['kdesa'])) {
+                                $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                $cari_pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+                            } else {
+                                $cari_pasien->kelurahan_ktp = '';
+                            }
+                            $cari_pasien->alamat_ktp = $dt['jalan'];
+                            $cari_pasien->no_hp = $dt['telp'];
+                            $cari_pasien->save();
+                            $id_pasien = $cari_pasien->id;
+                        }
+                        $cek->id_pasien = $id_pasien;
+
+                        if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+                            $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+                            if (is_array($hasil)) {
+                                $mapping_simpus = Mapping_simpus::get();
+                                $hp_baru = [];
+                                $hp_lainnya = [];
+                                $kesimpulan = null;
+                                $program = null;
+                                foreach ($hasil as $hp) {
+                                    if (!is_array($hp)) continue;
+                                    foreach ($hp as $obj => $val) {
+                                        $sudah = false;
+                                        foreach ($mapping_simpus as $ms) {
+                                            // if($hp_obj=="status_gizi_bb_pb_atau_bb_tb"){
+                                            // dd($hasil_pemeriksaan, $hp, $hp_obj, $ms);
+                                            if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] == "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                    $hp_baru[] = [
+                                                        $ms['val'] => $val
+                                                    ];
+                                                }
+                                                $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] == "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                    $hp_baru[] = [
+                                                        $ms['val'] => $ms['status']
+                                                    ];
+                                                }
+                                                $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] != "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                // dd($hp_obj);
+                                                if ($obj == "gigi_karies") {
+                                                    // dd($hp_obj);
+                                                    if ($usia <= 6 && $ms['kondisi'] == "<=6 tahun") {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => $ms['status']
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($usia > 0 && $ms['kondisi'] == "dewasa") {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => $ms['status']
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                } else {
+                                                    if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                        $hp_baru[] = [
+                                                            $ms['val'] => $ms['status']
+                                                        ];
+                                                    }
+                                                    $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                    break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                                }
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] != "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                // dd($hp_obj);
+                                                if ($obj == "hasil_pemeriksaan_hb") {
+                                                    // dd($hp_val);
+                                                    if ($val >= 11) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Hemoglobin normal (≥11 g/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val < 11) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Hemoglobin di bawah normal (< 11 g/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                }
+                                                if ($obj == "hasil_apri_score") {
+                                                    // dd($hp_val);
+                                                    if ($val <= 0.5) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "APRI Score ≤ 0.5"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val > 0.5) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "APRI Score >0.5"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                }
+                                                if ($obj == "hasil_pemeriksaan_rapid_test_hb") {
+                                                    // dd($hp_val);
+                                                    if ($val < 12) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Tidak Normal (Hb <12 gr/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val >= 12) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Normal"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                } else {
+                                                    if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                        $hp_baru[] = [
+                                                            $ms['val'] => $ms['status']
+                                                        ];
+                                                    }
+                                                    $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                    break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                                }
+                                            }
+                                            // }
+
+                                        }
+                                        if (!$sudah) {
+                                            if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+                                                $kesimpulan = $val;
+                                            } elseif ($obj === 'edukasi_yang_diberikan') {
+                                                $program[]['edukasi'] = $val;
+                                            } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+                                                $program[]['rujuk_fktrl'] = $val;
+                                            } else {
+                                                $hp_lainnya[] = $hp;
+                                            }
+                                        }
+                                    }
+                                }
+                                $cek->hasil_pemeriksaan = json_encode($hp_baru);
+                                $cek->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+                                $cek->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+                                $cek->program_tindak_lanjut = $program ? json_encode($program) : null;
+                            }
+                        }
+                        $cek->save();
+                        Log::info('[Simpus CKG] Riwayat updated', ['id' => $cek->id]);
+                    } else {
+                        if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+                            $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+                            if (is_array($hasil)) {
+                                $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+                                if (!$cari_pasien) {
+                                    // buat pasien baru
+                                    $pasien = new Pasien();
+                                    $pasien->nik = $dt['nik'];
+                                    $pasien->nama = $dt['nama'];
+                                    $pasien->jenis_kelamin = $dt['jkl'];
+                                    $pasien->tgl_lahir = $dt['tg_lahir'];
+                                    // substring dan mapping kelurahan sama seperti update
+                                    $pasien->alamat_ktp = $dt['jalan'];
+                                    $pasien->no_hp = $dt['telp'];
+                                    $pasien->save();
+                                    $id_pasien = $pasien->id;
+                                } else {
+                                    $id_pasien = $cari_pasien->id;
+                                }
+                                $id_pemeriksa = null;
+                                if (isset($dt['nik_dokter'])) {
+                                    $dok = Pemeriksa::where('nik', $dt['nik_dokter'])->first();
+                                    if (!$dok) {
+                                        $p = new Pemeriksa();
+                                        $p->nik = $dt['nik_dokter'];
+                                        $p->nama = $dt['nama_dokter'];
+                                        $p->save();
+                                        $id_pemeriksa = $p->id;
+                                    } else {
+                                        $dok->nik = $dt['nik_dokter'];
+                                        $dok->nama = $dt['nama_dokter'];
+                                        $dok->save();
+                                        $id_pemeriksa = $dok->id;
+                                    }
+                                }
+                                $id_pusk = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+                                $pusk = Puskesmas::find($id_pusk);
+                                $id_user = $id_pusk + 1;
+                                $tempat = 'Puskesmas';
+                                $nama_fktp = $pusk ? $pusk->nama : 'Tidak Diketahui';
+
+                                // mapping hasil pemeriksaan sama seperti di update
+                                $mapping = Mapping_simpus::get();
+                                $hp_baru = [];
+                                $hp_lainnya = [];
+                                $kesimpulan = null;
+                                $program = null;
+                                foreach ($hasil as $hp) {
+                                    if (is_array($hp)) {
+                                        foreach ($hp as $obj => $val) {
+                                            $s = false;
+                                            foreach ($mapping as $ms) {
+                                                if ($obj === $ms['val_simpus']) {
+                                                    if ($ms['status_simpus'] == '' && $ms['kondisi'] == '') {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $val;
+                                                        }
+                                                        $s = true;
+                                                    } elseif ($ms['status_simpus'] != '' && $ms['kondisi'] == '') {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $ms['status'];
+                                                        }
+                                                        $s = true;
+                                                    } else {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $ms['status'];
+                                                        }
+                                                        $s = true;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            if (!$s) {
+                                                if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+                                                    $kesimpulan = $val;
+                                                } elseif ($obj === 'edukasi_yang_diberikan') {
+                                                    $program[]['edukasi'] = $val;
+                                                } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+                                                    $program[]['rujuk_fktrl'] = $val;
+                                                } else {
+                                                    $hp_lainnya[] = $hp;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $riwayat = new Riwayat();
+                                $riwayat->id_user = $id_user;
+                                $riwayat->tanggal_pemeriksaan = $dt['tanggal'];
+                                $riwayat->tempat_periksa = $tempat;
+                                $riwayat->nama_fktp_pj = $nama_fktp;
+                                $riwayat->id_pemeriksa = $id_pemeriksa;
+                                $riwayat->id_pasien = $id_pasien;
+                                $riwayat->hasil_pemeriksaan = json_encode($hp_baru);
+                                $riwayat->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+                                $riwayat->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+                                $riwayat->program_tindak_lanjut = $program ? json_encode($program) : null;
+                                $riwayat->save();
+                                Log::info('[Simpus CKG] Riwayat insert berhasil', ['id' => $riwayat->id]);
+                            }
+                        }
+                    }
+                }
+
+                $lastPage = $json['last_page'] ?? $page;
+                $page++;
+                sleep(3); // jeda aman
+            } while ($page <= $lastPage);
+
+            Log::info('[Simpus CKG] Selesai seluruh proses');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Sinkronisasi berhasil',
+                'http_status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('[Simpus CKG] Exception', ['msg' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function data_simpus_ckg()
     {
         try {
-            $tanggal_dari = Carbon::now()->subDays(20)->toDateString();
+            $tanggal_dari = Carbon::now()->subDays(30)->toDateString();
+            // $tanggal_sampai = Carbon::now()->subDays(2)->toDateString();
             $tanggal_sampai = Carbon::now()->toDateString();
+            // $startLoginTime = now();
+
+            Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
+
+            $data_login = [
+                'email'    => "teknis.dkksemarang@gmail.com",
+                'name'     => "simpus",
+                'password' => "Pandanaran79!",
+            ];
+
+            // Fungsi login ulang
+            $loginUlang = function () use ($data_login) {
+                $res = Http::asForm()
+                    ->withHeaders(['Accept' => 'application/json'])
+                    ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+                if (!$res->successful()) {
+                    Log::error('[Simpus CKG] Gagal login ulang', ['status' => $res->status(), 'body' => $res->body()]);
+                    return null;
+                }
+                return $res->json()['access_token'];
+            };
+
+            Log::info('[Simpus CKG] Login API attempt', $data_login);
+            $response_login = Http::asForm()
+                ->withHeaders(['Accept' => 'application/json'])
+                ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+            if (!$response_login->successful()) {
+                Log::error('[Simpus CKG] Login gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Gagal login ke API',
+                    'http_status' => $response_login->status(),
+                    'error_body' => $response_login->body(),
+                ], $response_login->status());
+            }
+
+            $token_login = $response_login->json()['access_token'];
+            Log::info('[Simpus CKG] Login berhasil');
+
+            $page = 1;
+            $lastPage = 1;
+
+            do {
+                Log::info("[Simpus CKG] Ambil data halaman {$page}");
+
+                $requestData = [
+                    'tanggal_dari' => $tanggal_dari,
+                    'tanggal_sampai' => $tanggal_sampai,
+                    'page' => $page,
+                ];
+
+                // Cek apakah halaman merupakan kelipatan 3
+                if ($page % 3 == 0) {
+                    Log::warning("[Simpus CKG] Halaman {$page} adalah kelipatan 3, login ulang...");
+
+                    // Melakukan login ulang
+                    $new_token = $loginUlang();
+                    if ($new_token) {
+                        $token_login = $new_token;
+                        Log::info('[Simpus CKG] Login ulang berhasil');
+                    } else {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Gagal login ulang ke API setelah token expired',
+                            'http_status' => 401,
+                        ], 401);
+                    }
+                }
+
+                // Request data dari API
+                $response = Http::asForm()
+                    ->withHeaders([
+                        'Authorization' => 'Bearer ' . $token_login,
+                        'Accept'        => 'application/json',
+                    ])
+                    ->timeout(3600)
+                    ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+
+                // 🔁 Jika token expired (401), login ulang dan retry sekali
+                if ($response->status() === 401) {
+                    Log::warning("[Simpus CKG] Token expired saat ambil halaman {$page}, login ulang...");
+                    $new_token = $loginUlang();
+                    if ($new_token) {
+                        $token_login = $new_token;
+                        Log::info('[Simpus CKG] Login ulang berhasil');
+
+                        $response = Http::asForm()
+                            ->withHeaders([
+                                'Authorization' => 'Bearer ' . $token_login,
+                                'Accept'        => 'application/json',
+                            ])
+                            ->timeout(3600)
+                            ->post('http://119.2.50.170/db_lb1/api/data_pasien_ckg_simpus', $requestData);
+                    } else {
+                        return response()->json([
+                            'status' => 'error',
+                            'message' => 'Gagal login ulang ke API setelah token expired',
+                            'http_status' => 401,
+                        ], 401);
+                    }
+                }
+
+                if (!$response->successful()) {
+                    Log::error('[Simpus CKG] Gagal ambil data', [
+                        'page' => $page,
+                        'status' => $response->status(),
+                        'body' => $response->body()
+                    ]);
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Gagal mengambil data dari API halaman ' . $page,
+                        'http_status' => $response->status(),
+                        'error_body' => $response->body(),
+                    ], $response->status());
+                }
+
+                $json = $response->json();
+                $data = $json['data'] ?? [];
+                Log::info('[Simpus CKG] Data total', ['count' => $json['total'] ?? count($data)]);
+                Log::info('[Simpus CKG] Data page=' . $page . " last page=" . $json['last_page']);
+
+                // Proses data di sini
+                foreach ($data as $dt) {
+                    $pusk_code = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+                    $puskesmas = optional(Puskesmas::find($pusk_code))->nama ?? 'Tidak Diketahui';
+                    Log::info('[Simpus CKG] Proses record', ['tanggal' => $dt['tanggal'], 'nik' => $dt['nik'], 'puskesmas' => $puskesmas]);
+
+                    $cek = Riwayat::with(['pasien', 'pemeriksa', 'user'])
+                        ->whereHas('pasien', function ($query) use ($dt) {
+                            $query->where('nik', $dt['nik']);
+                        })
+                        ->where('tanggal_pemeriksaan', $dt['tanggal'])
+                        ->first();
+
+                    $usia = Carbon::parse($dt['tg_lahir'])->diffInYears(Carbon::parse($dt['tanggal']));
+                    $id_pasien = '';
+
+                    if ($cek) {
+                        $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+                        if (!$cari_pasien) {
+                            $pasien = new Pasien();
+                            $pasien->nik = $dt['nik'];
+                            $pasien->nama = $dt['nama'];
+                            $pasien->jenis_kelamin = $dt['jkl'];
+                            $pasien->tgl_lahir = $dt['tg_lahir'];
+                            $prov = substr($dt['nik'], 0, 2) ?: '';
+                            $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+                            $kec = substr($dt['nik'], 0, 6) ?: '';
+                            $pasien->provinsi_ktp = $prov;
+                            $pasien->kota_kab_ktp = $kota_kab;
+                            $pasien->kecamatan_ktp = $kec;
+                            if (!empty($dt['kdesa'])) {
+                                $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                $pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+                            } else {
+                                $pasien->kelurahan_ktp = '';
+                            }
+                            $pasien->alamat_ktp = $dt['jalan'];
+                            $pasien->no_hp = $dt['telp'];
+                            $pasien->save();
+                            $id_pasien = $pasien->id;
+                        } else {
+                            $cari_pasien->nik = $dt['nik'];
+                            $cari_pasien->nama = $dt['nama'];
+                            $cari_pasien->jenis_kelamin = $dt['jkl'];
+                            $cari_pasien->tgl_lahir = $dt['tg_lahir'];
+                            $prov = substr($dt['nik'], 0, 2) ?: '';
+                            $kota_kab = substr($dt['nik'], 0, 4) ?: '';
+                            $kec = substr($dt['nik'], 0, 6) ?: '';
+                            $cari_pasien->provinsi_ktp = $prov;
+                            $cari_pasien->kota_kab_ktp = $kota_kab;
+                            $cari_pasien->kecamatan_ktp = $kec;
+                            if (!empty($dt['kdesa'])) {
+                                $kel = Mapping_kelurahan::where('kode_kelurahan_lokal', $dt['kdesa'])->first();
+                                $cari_pasien->kelurahan_ktp = $kel ? $kel->kode_kelurahan_nasional : '';
+                            } else {
+                                $cari_pasien->kelurahan_ktp = '';
+                            }
+                            $cari_pasien->alamat_ktp = $dt['jalan'];
+                            $cari_pasien->no_hp = $dt['telp'];
+                            $cari_pasien->save();
+                            $id_pasien = $cari_pasien->id;
+                        }
+                        $cek->id_pasien = $id_pasien;
+
+                        if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+                            $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+                            if (is_array($hasil)) {
+                                $mapping_simpus = Mapping_simpus::get();
+                                $hp_baru = [];
+                                $hp_lainnya = [];
+                                $kesimpulan = null;
+                                $program = null;
+                                foreach ($hasil as $hp) {
+                                    if (!is_array($hp)) continue;
+                                    foreach ($hp as $obj => $val) {
+                                        $sudah = false;
+                                        foreach ($mapping_simpus as $ms) {
+                                            // if($hp_obj=="status_gizi_bb_pb_atau_bb_tb"){
+                                            // dd($hasil_pemeriksaan, $hp, $hp_obj, $ms);
+                                            if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] == "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                    $hp_baru[] = [
+                                                        $ms['val'] => $val
+                                                    ];
+                                                }
+                                                $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] == "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                    $hp_baru[] = [
+                                                        $ms['val'] => $ms['status']
+                                                    ];
+                                                }
+                                                $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] != "" && $ms['kondisi'] != "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                // dd($hp_obj);
+                                                if ($obj == "gigi_karies") {
+                                                    // dd($hp_obj);
+                                                    if ($usia <= 6 && $ms['kondisi'] == "<=6 tahun") {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => $ms['status']
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($usia > 0 && $ms['kondisi'] == "dewasa") {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => $ms['status']
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                } else {
+                                                    if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                        $hp_baru[] = [
+                                                            $ms['val'] => $ms['status']
+                                                        ];
+                                                    }
+                                                    $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                    break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                                }
+                                            } else if ($obj == $ms['val_simpus'] && $ms['status_simpus'] == "" && $ms['kondisi'] != "") {
+                                                // Cek apakah sudah ada dalam array hasil agar tidak push dua kali
+                                                // dd($hp_obj);
+                                                if ($obj == "hasil_pemeriksaan_hb") {
+                                                    // dd($hp_val);
+                                                    if ($val >= 11) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Hemoglobin normal (≥11 g/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val < 11) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Hemoglobin di bawah normal (< 11 g/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                }
+                                                if ($obj == "hasil_apri_score") {
+                                                    // dd($hp_val);
+                                                    if ($val <= 0.5) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "APRI Score ≤ 0.5"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val > 0.5) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "APRI Score >0.5"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                }
+                                                if ($obj == "hasil_pemeriksaan_rapid_test_hb") {
+                                                    // dd($hp_val);
+                                                    if ($val < 12) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Tidak Normal (Hb <12 gr/dL)"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    } else if ($val >= 12) {
+                                                        if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                            $hp_baru[] = [
+                                                                $ms['val'] => "Normal"
+                                                            ];
+                                                        }
+                                                        $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                        break;
+                                                    }
+                                                } else {
+                                                    if (!array_key_exists($ms['val'], $hp_baru)) {
+                                                        $hp_baru[] = [
+                                                            $ms['val'] => $ms['status']
+                                                        ];
+                                                    }
+                                                    $sudah_cek = true; // Tandai bahwa data sudah dicek
+                                                    break; // Keluar dari loop mapping_simpus agar tidak terus mengecek
+                                                }
+                                            }
+                                            // }
+
+                                        }
+                                        if (!$sudah) {
+                                            if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+                                                $kesimpulan = $val;
+                                            } elseif ($obj === 'edukasi_yang_diberikan') {
+                                                $program[]['edukasi'] = $val;
+                                            } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+                                                $program[]['rujuk_fktrl'] = $val;
+                                            } else {
+                                                $hp_lainnya[] = $hp;
+                                            }
+                                        }
+                                    }
+                                }
+                                $cek->hasil_pemeriksaan = json_encode($hp_baru);
+                                $cek->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+                                $cek->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+                                $cek->program_tindak_lanjut = $program ? json_encode($program) : null;
+                            }
+                        }
+                        $cek->save();
+                        Log::info('[Simpus CKG] Riwayat updated', ['id' => $cek->id]);
+                    } else {
+                        if (!empty($dt['hasil_pemeriksaan']) && $dt['hasil_pemeriksaan'] != 'null') {
+                            $hasil = json_decode($dt['hasil_pemeriksaan'], true);
+                            if (is_array($hasil)) {
+                                $cari_pasien = Pasien::where('nik', $dt['nik'])->first();
+                                if (!$cari_pasien) {
+                                    // buat pasien baru
+                                    $pasien = new Pasien();
+                                    $pasien->nik = $dt['nik'];
+                                    $pasien->nama = $dt['nama'];
+                                    $pasien->jenis_kelamin = $dt['jkl'];
+                                    $pasien->tgl_lahir = $dt['tg_lahir'];
+                                    // substring dan mapping kelurahan sama seperti update
+                                    $pasien->alamat_ktp = $dt['jalan'];
+                                    $pasien->no_hp = $dt['telp'];
+                                    $pasien->save();
+                                    $id_pasien = $pasien->id;
+                                } else {
+                                    $id_pasien = $cari_pasien->id;
+                                }
+                                $id_pemeriksa = null;
+                                if (isset($dt['nik_dokter'])) {
+                                    $dok = Pemeriksa::where('nik', $dt['nik_dokter'])->first();
+                                    if (!$dok) {
+                                        $p = new Pemeriksa();
+                                        $p->nik = $dt['nik_dokter'];
+                                        $p->nama = $dt['nama_dokter'];
+                                        $p->save();
+                                        $id_pemeriksa = $p->id;
+                                    } else {
+                                        $dok->nik = $dt['nik_dokter'];
+                                        $dok->nama = $dt['nama_dokter'];
+                                        $dok->save();
+                                        $id_pemeriksa = $dok->id;
+                                    }
+                                }
+                                $id_pusk = intval(preg_replace('/[^0-9]/', '', $dt['kpusk']));
+                                $pusk = Puskesmas::find($id_pusk);
+                                $id_user = $id_pusk + 1;
+                                $tempat = 'Puskesmas';
+                                $nama_fktp = $pusk ? $pusk->nama : 'Tidak Diketahui';
+
+                                // mapping hasil pemeriksaan sama seperti di update
+                                $mapping = Mapping_simpus::get();
+                                $hp_baru = [];
+                                $hp_lainnya = [];
+                                $kesimpulan = null;
+                                $program = null;
+                                foreach ($hasil as $hp) {
+                                    if (is_array($hp)) {
+                                        foreach ($hp as $obj => $val) {
+                                            $s = false;
+                                            foreach ($mapping as $ms) {
+                                                if ($obj === $ms['val_simpus']) {
+                                                    if ($ms['status_simpus'] == '' && $ms['kondisi'] == '') {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $val;
+                                                        }
+                                                        $s = true;
+                                                    } elseif ($ms['status_simpus'] != '' && $ms['kondisi'] == '') {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $ms['status'];
+                                                        }
+                                                        $s = true;
+                                                    } else {
+                                                        if (!isset($hp_baru[$ms['val']])) {
+                                                            $hp_baru[$ms['val']] = $ms['status'];
+                                                        }
+                                                        $s = true;
+                                                    }
+                                                    break;
+                                                }
+                                            }
+                                            if (!$s) {
+                                                if ($obj === 'kesimpulan_hasil_pemeriksaan') {
+                                                    $kesimpulan = $val;
+                                                } elseif ($obj === 'edukasi_yang_diberikan') {
+                                                    $program[]['edukasi'] = $val;
+                                                } elseif ($obj === 'rujuk_fktrl_dengan_keterangan') {
+                                                    $program[]['rujuk_fktrl'] = $val;
+                                                } else {
+                                                    $hp_lainnya[] = $hp;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                $riwayat = new Riwayat();
+                                $riwayat->id_user = $id_user;
+                                $riwayat->tanggal_pemeriksaan = $dt['tanggal'];
+                                $riwayat->tempat_periksa = $tempat;
+                                $riwayat->nama_fktp_pj = $nama_fktp;
+                                $riwayat->id_pemeriksa = $id_pemeriksa;
+                                $riwayat->id_pasien = $id_pasien;
+                                $riwayat->hasil_pemeriksaan = json_encode($hp_baru);
+                                $riwayat->hasil_pemeriksaan_lainnya = $hp_lainnya ? json_encode($hp_lainnya) : null;
+                                $riwayat->kesimpulan_hasil_pemeriksaan = $kesimpulan;
+                                $riwayat->program_tindak_lanjut = $program ? json_encode($program) : null;
+                                $riwayat->save();
+                                Log::info('[Simpus CKG] Riwayat insert berhasil', ['id' => $riwayat->id]);
+                            }
+                        }
+                    }
+                }
+
+                $lastPage = $json['last_page'] ?? $page;
+                $page++;
+                sleep(3); // jeda aman
+            } while ($page <= $lastPage);
+
+            Log::info('[Simpus CKG] Selesai seluruh proses');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Sinkronisasi berhasil',
+                'http_status' => 200
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('[Simpus CKG] Exception', ['msg' => $e->getMessage()]);
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+    public function data_simpus_ckg_h()
+    {
+        try {
+            // $tanggal_dari = "2025-05-16";
+            // $tanggal_sampai = "2025-05-16";
+            // $tanggal_dari = Carbon::now()->subDays(1)->toDateString();
+            $tanggal_dari = Carbon::now()->toDateString();
+            // $tanggal_sampai = Carbon::now()->subDays(1)->toDateString();
+            $tanggal_sampai = Carbon::now()->toDateString();
+
+            $startLoginTime = now();
             Log::info("[Simpus CKG] Mulai sinkron dari {$tanggal_dari} sampai {$tanggal_sampai}");
 
             $data_login = [
@@ -943,13 +3291,40 @@ class RiwayatController extends Controller
             }
 
             $token_login = $response_login->json()['access_token'];
+
             Log::info('[Simpus CKG] Login berhasil');
 
             $page = 1;
             $lastPage = 1;
             $log_summary = [];
 
+            $lastRefreshMinute = null;
+
             do {
+                $minutesSinceStart = $startLoginTime->diffInMinutes(now());
+
+                if ($minutesSinceStart > 0 && $minutesSinceStart % 60 === 0 && $minutesSinceStart !== $lastRefreshMinute) {
+                    Log::info('[Simpus CKG] Token expired (kelipatan 60 menit), mencoba login ulang');
+
+                    $response_login = Http::asForm()
+                        ->withHeaders(['Accept' => 'application/json'])
+                        ->post('http://119.2.50.170/db_lb1/api/login', $data_login);
+
+                    if (!$response_login->successful()) {
+                        Log::error('[Simpus CKG] Login ulang gagal', ['status' => $response_login->status(), 'body' => $response_login->body()]);
+                        return response()->json([
+                            'status'      => 'error',
+                            'message'     => 'Gagal login ulang ke API',
+                            'http_status' => $response_login->status(),
+                            'error_body'  => $response_login->body(),
+                        ], $response_login->status());
+                    }
+
+                    $token_login = $response_login->json()['access_token'];
+                    $lastRefreshMinute = $minutesSinceStart;
+                    Log::info('[Simpus CKG] Login ulang berhasil, token diperbarui');
+                }
+
                 Log::info("[Simpus CKG] Ambil data halaman {$page}");
                 $requestData = [
                     'tanggal_dari'   => $tanggal_dari,
@@ -1310,7 +3685,7 @@ class RiwayatController extends Controller
                 Log::info('[Simpus CKG] Halaman selesai', ['page' => $page, 'count' => count($data)]);
                 $lastPage = $json['last_page'] ?? $page;
                 $page++;
-                sleep(10);
+                sleep(3);
             } while ($page <= $lastPage);
 
             $grouped = collect($log_summary)->groupBy('tanggal');
