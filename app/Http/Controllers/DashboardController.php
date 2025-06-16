@@ -888,130 +888,167 @@ class DashboardController extends Controller
 
     //     return response()->json($data);
     // }
+    // public function data_per_jenis_pemeriksaan(Request $request)
+    // {
+    //     set_time_limit(360);
+    //     $role = Auth::user()->role;
+    //     $id_user = Auth::user()->id;
+
+    //     $ar_tgl = $request->ar_tgl;
+    //     $tgl_dari = $request->tgl_dari;
+    //     $tgl_sampai = $request->tgl_sampai;
+
+    //     // ==== BBL ====
+    //     $bbl_keys = [
+    //         'kekurangan_hormon_tiroid',
+    //         'kekurangan_enzim_d6pd',
+    //         'kekurangan_hormon_adrenal',
+    //         'penyakit_jantung_bawaan',
+    //         'kelainan_saluran_empedu',
+    //         'pertumbuhan_bb'
+    //     ];
+
+    //     $bbl_rows = [];
+    //     Riwayat::with('pasien')
+    //         ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
+    //         ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+    //         ->chunk(1000, function ($rows) use (&$bbl_rows) {
+    //             foreach ($rows as $r) {
+    //                 $pasien = $r->pasien;
+    //                 if (!$pasien || !$pasien->tgl_lahir) continue;
+
+    //                 $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($r->tanggal_pemeriksaan));
+    //                 if ($usia_hari <= 28) $bbl_rows[] = $r;
+    //             }
+    //         });
+
+    //     $dt_bbl = $this->hitungPemeriksaan($bbl_rows, $bbl_keys, 'bbl', $ar_tgl);
+
+    //     // ==== USIA KELOMPOK ====
+    //     $groups = [
+    //         'balita_dan_pra_sekolah' => [
+    //             'range' => [1, 6],
+    //             'keys' => ['indeks_bbpb_bbtb', 'perkembangan', 'tuberkulosis', 'telinga', 'pupil_putih', 'gigi', 'talasemia', 'gula_darah']
+    //         ],
+    //         'dewasa' => [
+    //             'range' => [18, 59],
+    //             'keys' => [
+    //                 'merokok',
+    //                 'aktivitas_fisik',
+    //                 'status_gizi',
+    //                 'gigi',
+    //                 'tekanan_darah',
+    //                 'gula_darah',
+    //                 'risiko_stroke',
+    //                 'risiko_jantung',
+    //                 'fungsi_ginjal',
+    //                 'tuberkulosis',
+    //                 'ppok',
+    //                 'kanker_payudara',
+    //                 'kanker_leher_rahim',
+    //                 'kanker_paru',
+    //                 'kanker_usus',
+    //                 'tes_penglihatan',
+    //                 'tes_pendengaran',
+    //                 'edps',
+    //                 'phq',
+    //                 'hepatits_b',
+    //                 'hepatitis_c',
+    //                 'fibrosis_sirosis',
+    //                 'anemia',
+    //                 'sifilis',
+    //                 'hiv'
+    //             ]
+    //         ],
+    //         'lansia' => [
+    //             'range' => [60, 150],
+    //             'keys' => [
+    //                 'gejala_depresi',
+    //                 'merokok',
+    //                 'aktivitas_fisik',
+    //                 'status_gizi',
+    //                 'gigi',
+    //                 'tekanan_darah',
+    //                 'gula_darah',
+    //                 'risiko_stroke',
+    //                 'risiko_jantung',
+    //                 'fungsi_ginjal',
+    //                 'tuberkulosis',
+    //                 'ppok',
+    //                 'kanker_payudara',
+    //                 'kanker_leher_rahim',
+    //                 'kanker_paru',
+    //                 'kanker_usus',
+    //                 'tes_penglihatan',
+    //                 'tes_pendengaran',
+    //                 'hepatits_b',
+    //                 'hepatitis_c',
+    //                 'fibrosis_sirosis'
+    //             ]
+    //         ]
+    //     ];
+
+    //     $result = $dt_bbl;
+
+    //     foreach ($groups as $label => $config) {
+    //         $usia_rows = [];
+
+    //         Riwayat::with('pasien')
+    //             ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
+    //             ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+    //             ->chunk(1000, function ($rows) use (&$usia_rows, $config, $label) {
+    //                 foreach ($rows as $r) {
+    //                     $pasien = $r->pasien;
+    //                     if (!$pasien || !$pasien->tgl_lahir) continue;
+
+    //                     $usia_th = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInYears(\Carbon\Carbon::parse($r->tanggal_pemeriksaan));
+    //                     [$min, $max] = $config['range'];
+    //                     if ($usia_th >= $min && $usia_th <= $max) $usia_rows[] = $r;
+    //                 }
+    //             });
+
+    //         $result = array_merge($result, $this->hitungPemeriksaan($usia_rows, $config['keys'], $label, $ar_tgl));
+    //     }
+
+    //     return response()->json($result);
+    // }
+
     public function data_per_jenis_pemeriksaan(Request $request)
     {
-        set_time_limit(360);
         $role = Auth::user()->role;
         $id_user = Auth::user()->id;
 
-        $ar_tgl = $request->ar_tgl;
-        $tgl_dari = $request->tgl_dari;
-        $tgl_sampai = $request->tgl_sampai;
+        $ar_tgl = $request->input('ar_tgl', []);
+        $tgl_dari = $request->input('tgl_dari');
+        $tgl_sampai = $request->input('tgl_sampai');
 
-        // ==== BBL ====
-        $bbl_keys = [
-            'kekurangan_hormon_tiroid',
-            'kekurangan_enzim_d6pd',
-            'kekurangan_hormon_adrenal',
-            'penyakit_jantung_bawaan',
-            'kelainan_saluran_empedu',
-            'pertumbuhan_bb'
-        ];
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
+        $draw = (int) $request->input('draw', 1);
 
-        $bbl_rows = [];
-        Riwayat::with('pasien')
+        // Ambil semua data
+        $dt_bbl = $this->dt_per_jenis_pemeriksaan_bbl($role, $id_user, $ar_tgl, $tgl_dari, $tgl_sampai);
+        $data = Riwayat::with('pasien')
             ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
             ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
-            ->chunk(1000, function ($rows) use (&$bbl_rows) {
-                foreach ($rows as $r) {
-                    $pasien = $r->pasien;
-                    if (!$pasien || !$pasien->tgl_lahir) continue;
+            ->get();
+        $dt_balita = $this->dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah($ar_tgl, $tgl_dari, $tgl_sampai, $data);
+        $dt_dewasa = $this->dt_per_jenis_pemeriksaan_dewasa($ar_tgl, $tgl_dari, $tgl_sampai, $data);
+        $dt_lansia = $this->dt_per_jenis_pemeriksaan_lansia($ar_tgl, $tgl_dari, $tgl_sampai, $data);
 
-                    $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($r->tanggal_pemeriksaan));
-                    if ($usia_hari <= 28) $bbl_rows[] = $r;
-                }
-            });
+        $combined = array_merge($dt_bbl, $dt_balita, $dt_dewasa, $dt_lansia);
+        $total = count($combined);
 
-        $dt_bbl = $this->hitungPemeriksaan($bbl_rows, $bbl_keys, 'bbl', $ar_tgl);
+        $pagedData = array_slice($combined, $start, $length);
 
-        // ==== USIA KELOMPOK ====
-        $groups = [
-            'balita_dan_pra_sekolah' => [
-                'range' => [1, 6],
-                'keys' => ['indeks_bbpb_bbtb', 'perkembangan', 'tuberkulosis', 'telinga', 'pupil_putih', 'gigi', 'talasemia', 'gula_darah']
-            ],
-            'dewasa' => [
-                'range' => [18, 59],
-                'keys' => [
-                    'merokok',
-                    'aktivitas_fisik',
-                    'status_gizi',
-                    'gigi',
-                    'tekanan_darah',
-                    'gula_darah',
-                    'risiko_stroke',
-                    'risiko_jantung',
-                    'fungsi_ginjal',
-                    'tuberkulosis',
-                    'ppok',
-                    'kanker_payudara',
-                    'kanker_leher_rahim',
-                    'kanker_paru',
-                    'kanker_usus',
-                    'tes_penglihatan',
-                    'tes_pendengaran',
-                    'edps',
-                    'phq',
-                    'hepatits_b',
-                    'hepatitis_c',
-                    'fibrosis_sirosis',
-                    'anemia',
-                    'sifilis',
-                    'hiv'
-                ]
-            ],
-            'lansia' => [
-                'range' => [60, 150],
-                'keys' => [
-                    'gejala_depresi',
-                    'merokok',
-                    'aktivitas_fisik',
-                    'status_gizi',
-                    'gigi',
-                    'tekanan_darah',
-                    'gula_darah',
-                    'risiko_stroke',
-                    'risiko_jantung',
-                    'fungsi_ginjal',
-                    'tuberkulosis',
-                    'ppok',
-                    'kanker_payudara',
-                    'kanker_leher_rahim',
-                    'kanker_paru',
-                    'kanker_usus',
-                    'tes_penglihatan',
-                    'tes_pendengaran',
-                    'hepatits_b',
-                    'hepatitis_c',
-                    'fibrosis_sirosis'
-                ]
-            ]
-        ];
-
-        $result = $dt_bbl;
-
-        foreach ($groups as $label => $config) {
-            $usia_rows = [];
-
-            Riwayat::with('pasien')
-                ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
-                ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
-                ->chunk(1000, function ($rows) use (&$usia_rows, $config, $label) {
-                    foreach ($rows as $r) {
-                        $pasien = $r->pasien;
-                        if (!$pasien || !$pasien->tgl_lahir) continue;
-
-                        $usia_th = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInYears(\Carbon\Carbon::parse($r->tanggal_pemeriksaan));
-                        [$min, $max] = $config['range'];
-                        if ($usia_th >= $min && $usia_th <= $max) $usia_rows[] = $r;
-                    }
-                });
-
-            $result = array_merge($result, $this->hitungPemeriksaan($usia_rows, $config['keys'], $label, $ar_tgl));
-        }
-
-        return response()->json($result);
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $total,
+            'recordsFiltered' => $total,
+            'data' => $pagedData
+        ]);
     }
+
 
     private function hitungPemeriksaan($rows, $jenis_keys, $sasaran, $ar_tgl)
     {

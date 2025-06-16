@@ -113,9 +113,9 @@ class RiwayatController extends Controller
         set_time_limit(360);
 
         $query = Riwayat::with([
-            'pasien.bpjs' => function ($q) {
-                $q->select('id', 'nik', 'nama', 'kdprovider1', 'nmprovider1');
-            },
+            // 'pasien.bpjs' => function ($q) {
+            //     $q->select('id', 'nik', 'nama', 'kdprovider1', 'nmprovider1');
+            // },
             'pemeriksa',
             'pasien.ref_provinsi_ktp' => function ($q) {
                 $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
@@ -151,10 +151,16 @@ class RiwayatController extends Controller
         } else if ($role == "FaskesLain") {
             $provider = MasterProvider::where('nmprovider', Auth::user()->nama)->first();
             // $query->where('kdProviderPst', )
-            $query->whereHas('pasien.bpjs', function ($q) use ($provider) {
-                // dd($provider->nmprovider);
-                $q->where('nmprovider1', $provider->nmprovider);
-            });
+            // $query->whereHas('pasien.bpjs', function ($q) use ($provider) {
+            //     // dd($provider->nmprovider);
+            //     // $q->where('nmprovider1', $provider->nmprovider);
+            //     $q->where('kdprovider1', $provider->kdprovider);
+            // });
+            if ($provider) {
+                $query->whereHas('pasien', function ($q) use ($provider) {
+                    $q->where('kd_provider', $provider->kdprovider);
+                });
+            }
         }
 
         // Eksekusi query
@@ -175,6 +181,89 @@ class RiwayatController extends Controller
             'data' => $data->items(),
         ]);
     }
+
+    // public function data_tes(Request $request)
+    // {
+    //     $periodeDari = $request->periode_dari;
+    //     $periodeSampai = $request->periode_sampai;
+        
+    //     $user = Auth::user();
+    //     $role = $user->role;
+    //     $id_user = $user->id;
+        
+    //     // $role = Auth::user()->role;
+    //     // $id_user = Auth::user()->id_user;
+
+    //     $perPage = $request->input('length', 10);
+    //     $start = $request->input('start', 0);
+    //     $page = floor($start / $perPage) + 1;
+
+    //     if ($role === 'FaskesLain') {
+    //         $provider = MasterProvider::select('kdprovider')->where('nmprovider', Auth::user()->nama)->first();
+    //         if (!$provider) {
+    //             return response()->json([
+    //                 'draw' => intval($request->input('draw')),
+    //                 'recordsTotal' => 0,
+    //                 'recordsFiltered' => 0,
+    //                 'data' => [],
+    //             ]);
+    //         }
+
+    //         // Manual join untuk performa tinggi
+    //         $query = DB::table('riwayat')
+    //             ->join('pasien', 'riwayat.id_pasien', '=', 'pasien.id')
+    //             ->join('tb_bpjs_pasien_simpus as bpjs', 'bpjs.nik', '=', 'pasien.nik')
+    //             ->where('bpjs.kdprovider1', $provider->kdprovider)
+    //             ->whereBetween('riwayat.tanggal_pemeriksaan', [$periodeDari, $periodeSampai]);
+
+    //         $total = $query->count();
+
+    //         $data = $query
+    //             ->select(
+    //                 'riwayat.id',
+    //                 'riwayat.tanggal_pemeriksaan',
+    //                 'riwayat.tempat_periksa',
+    //                 'riwayat.nama_fktp_pj',
+    //                 'pasien.nik',
+    //                 'pasien.nama as nama_pasien',
+    //                 'bpjs.kdprovider1',
+    //                 'bpjs.nmprovider1'
+    //             )
+    //             ->orderByDesc('riwayat.tanggal_pemeriksaan')
+    //             ->offset($start)
+    //             ->limit($perPage)
+    //             ->get();
+
+    //         return response()->json([
+    //             'draw' => intval($request->input('draw')),
+    //             'recordsTotal' => $total,
+    //             'recordsFiltered' => $total,
+    //             'data' => $data,
+    //         ]);
+    //     }
+
+    //     // Default (Puskesmas atau lainnya pakai Eloquent)
+    //     $query = Riwayat::with([
+    //         'pasien:id,nik,nama',
+    //         'pemeriksa:id,nama',
+    //     ])
+    //         ->whereBetween('tanggal_pemeriksaan', [$periodeDari, $periodeSampai])
+    //         ->orderByDesc('tanggal_pemeriksaan');
+
+    //     if ($role === 'Puskesmas') {
+    //         $query->where('id_user', $id_user);
+    //     }
+
+    //     $data = $query->paginate($perPage, ['*'], 'page', $page);
+
+    //     return response()->json([
+    //         'draw' => intval($request->input('draw')),
+    //         'recordsTotal' => $data->total(),
+    //         'recordsFiltered' => $data->total(),
+    //         'data' => $data->items(),
+    //     ]);
+    // }
+
 
     public function tambah(Request $request)
     {

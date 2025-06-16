@@ -105,6 +105,15 @@
                             </a>
                         </li>
                     </ul>
+                    @if(Auth::user()->role=="Admin" && Auth::user()->nama=="Admin")
+                        <ul class="nav nav-treeview" style="margin-left:5px">
+                            <li class="nav-item">
+                                <a href="{{ url('laporan/sasaran_bpjs') }}" class="nav-link {{ request()->routeIs('laporan.index_wilayah') == 1 ? 'bg-blue' : '' }}">
+                                    <p style="font-weight:bold; color:white">Sasaran BPJS</p>
+                                </a>
+                            </li>
+                        </ul>
+                    @endif
                 </li>
                 @endif
                 <li class="nav-item">

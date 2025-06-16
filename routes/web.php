@@ -48,6 +48,7 @@ Route::prefix('laporan')->group(function () {
     Route::get('/wilayah', [LaporanController::class, 'index_wilayah'])->name('laporan.index_wilayah');
     Route::get('/data_wilayah', [LaporanController::class, 'data_wilayah'])->name('laporan.data_wilayah');
     Route::get('/data_total_per_wilayah', [LaporanController::class, 'data_total_per_wilayah'])->name('laporan.data_total_per_wilayah');
+    Route::get('/sasaran_bpjs', [LaporanController::class, 'index_sasaran_bpjs'])->name('laporan.index_sasaran_bpjs');
 });
 
 Route::prefix('dashboard')->group(function () {
@@ -65,7 +66,10 @@ Route::prefix('dashboard')->group(function () {
 
 Route::prefix('pasien_bpjs')->group(function () {
     Route::get('/data', [PasienBPJSController::class, 'data'])->name('pasien.data');
-    Route::get('/data_simpus', [PasienBPJSController::class, 'data_simpus'])->name('pasien.data_simpus');
+    Route::get('/get_data_simpus', [PasienBPJSController::class, 'get_data_simpus'])->name('pasien.get_data_simpus');
+    Route::get('/filter_data_simpus', [PasienBPJSController::class, 'filter_data_simpus'])->name('pasien.filter_data_simpus');
+    Route::get('/convert_data_simpus', [PasienBPJSController::class, 'convert_data_simpus'])->name('pasien.convert_data_simpus');
+    
 });
 
 Route::prefix('data_simpus')->group(function () {

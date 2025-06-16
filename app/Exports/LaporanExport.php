@@ -128,6 +128,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             'Kecamatan KTP',
             'Kelurahan KTP',
             'Alamat KTP',
+            'Kecamatan Dom',
+            'Kelurahan Dom',
+            'Alamat Dom',
             'No HP',
             'Hasil Pemeriksaan',
             'Hasil Pemeriksaan Lainnya',
@@ -143,23 +146,50 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
     {
         $hasilPemeriksaan = json_decode($riwayat->hasil_pemeriksaan, true);
 
-        $format_hasil_pemeriksaan = $hasilPemeriksaan
-            ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+        // $format_hasil_pemeriksaan = $hasilPemeriksaan
+        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+        //     : '-';
+        $format_hasil_pemeriksaan = is_array($hasilPemeriksaan)
+            ? implode(', ', array_map(
+                fn ($item) => is_array($item)
+                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    : (string)$item,
+                $hasilPemeriksaan
+            ))
             : '-';
 
         $hasilPemeriksaanLainnya = json_decode($riwayat->hasil_pemeriksaan_lainnya, true);
 
-        $format_hasil_pemeriksaan_lainnya = $hasilPemeriksaanLainnya
-            ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+        // $format_hasil_pemeriksaan_lainnya = $hasilPemeriksaanLainnya
+        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+        //     : '-';
+        
+        $format_hasil_pemeriksaan_lainnya = is_array($hasilPemeriksaanLainnya)
+            ? implode(', ', array_map(
+                fn ($item) => is_array($item)
+                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    : (string)$item,
+                $hasilPemeriksaanLainnya
+            ))
             : '-';
+        
 
         $program_tindak_lanjut = json_decode($riwayat->program_tindak_lanjut, true);
 
         // $format_program_tindak_lanjut = $program_tindak_lanjut 
         //     ? implode(', ', array_map(fn($item) => implode(', ', array_map(fn($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan)) 
         //     : '-';
-        $format_program_tindak_lanjut = is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)
-            ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $program_tindak_lanjut))
+        // $format_program_tindak_lanjut = is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)
+        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $program_tindak_lanjut))
+        //     : '-';
+        
+        $format_program_tindak_lanjut = is_array($program_tindak_lanjut)
+            ? implode(', ', array_map(
+                fn ($item) => is_array($item)
+                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    : (string)$item,
+                $program_tindak_lanjut
+            ))
             : '-';
 
         if (isset($riwayat->pasien) && isset($riwayat->pasien->tgl_lahir) && isset($riwayat->tanggal_pemeriksaan)) {
@@ -189,6 +219,11 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             isset($riwayat->pasien->ref_kecamatan_ktp->nama) ? $riwayat->pasien->ref_kecamatan_ktp->nama : '-',
             isset($riwayat->pasien->ref_kelurahan_ktp->nama) ? $riwayat->pasien->ref_kelurahan_ktp->nama : '-',
             isset($riwayat->pasien->alamat_ktp) ? $riwayat->pasien->alamat_ktp : "-",
+            
+            isset($riwayat->pasien->ref_kecamatan_dom->nama) ? $riwayat->pasien->ref_kecamatan_dom->nama : '-',
+            isset($riwayat->pasien->ref_kelurahan_dom->nama) ? $riwayat->pasien->ref_kelurahan_dom->nama : '-',
+            isset($riwayat->pasien->alamat_dom) ? $riwayat->pasien->alamat_dom : "-",
+            
             isset($riwayat->pasien->no_hp) ? $riwayat->pasien->no_hp : "-",
             // $riwayat->hasil_pemeriksaan,
             $format_hasil_pemeriksaan,

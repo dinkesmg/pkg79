@@ -117,6 +117,9 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
+                                <div id="loading_grafik_periode" style="text-align:center; display:none;">
+                                    <img src="{{ asset('loading.gif') }}" alt="Loading..." width="80">
+                                </div>
                                 <div id="id_grafik_per_periode"></div>
                             </div>
                         </div>
@@ -124,6 +127,9 @@
                     <div class="small-box bg-yellow" style="width:100%">
                         <div class="inner text-center">
                             <p>Total Kunjungan Pasien : </p>
+                            <div id="loading_total_kunjungan_pasien" style="text-align:center; display:none;">
+                                <img src="{{ asset('loading.gif') }}" alt="Loading..." width="80">
+                            </div>
                             <h3 id="total_kunjungan_pasien"></h3>
                         </div>
                     </div>
@@ -1788,41 +1794,6 @@
         }, 100); // Beri jeda agar spinner bisa muncul sebelum tugas berjalan
     }
 
-    // function oc_cari() {
-    //     const btn = document.getElementById("btnCari");
-
-    //     // Tambahkan efek loading dengan SVG spinner
-    //     btn.innerHTML = `<img src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Gray_circles_rotate.gif" class="spinner-svg"> Loading...`;
-    //     btn.disabled = true;
-
-    //     // Gunakan setTimeout agar perubahan tombol dirender lebih dulu
-    //     setTimeout(async () => {
-    //         try {
-    //             let tasks = [];
-
-    //             if (role_auth === "Admin") {
-    //                 tasks.push(tabel_per_puskesmas());
-    //             }
-
-    //             tasks.push(hasil_pemeriksaan());
-    //             tasks.push(grafik_per_periode());
-    //             tasks.push(per_kelompok_usia());
-    //             tasks.push(tabel_kesimpulan_hasil());
-    //             tasks.push(tabel_per_jenis_pemeriksaan());
-
-    //             // Tunggu semua fungsi selesai sebelum menghilangkan efek loading
-    //             await Promise.all(tasks);
-    //         } catch (error) {
-    //             console.error("Terjadi kesalahan:", error);
-    //         } finally {
-    //             // Kembalikan tombol ke kondisi semula
-    //             btn.innerHTML = "Cari";
-    //             btn.disabled = false;
-    //         }
-    //     }, 100); // Beri jeda agar spinner bisa muncul sebelum tugas berjalan
-    // }
-
-
     function ar_x_grafik(dari, sampai) {
         var startDate = new Date(dari);
         var endDate = new Date(sampai);
@@ -1879,6 +1850,12 @@
             },
             dataType: 'json',
             async: true,
+            beforeSend: function() {
+                $('#id_grafik_per_periode').hide();
+                $('#total_kunjungan_pasien').hide();
+                $('#loading_grafik_periode').show();
+                $('#loading_total_kunjungan_pasien').show();
+            },
             success: function(data) {
                 // console.log(data.grafik)
                 console.log(data)
@@ -1958,6 +1935,10 @@
                 // deteksi_dini(data)
                 // tempat_pemeriksaan(data)
                 // tabel(data)
+                $('#loading_grafik_periode').hide();
+                $('#loading_total_kunjungan_pasien').hide();
+                $('#id_grafik_per_periode').show();
+                $('#total_kunjungan_pasien').show();
             }
         })
     }
@@ -2712,6 +2693,9 @@
         $("#idtabel_per_jenis_pemeriksaan").DataTable({
             destroy: true,
             scrollX: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 10,
             ajax: {
                 url: "{{url('dashboard/data_per_jenis_pemeriksaan')}}",
                 type: "GET",
@@ -2722,7 +2706,8 @@
                 },
                 dataSrc: function(json) {
                     // console.log("AJAX Data Response:", json);
-                    return json;
+                    // return json;
+                    return json.data;
                 },
             },
             columns: col,

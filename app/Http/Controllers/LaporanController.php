@@ -409,4 +409,9 @@ class LaporanController extends Controller
         // dd($data);
         return response()->json($data);
     }
+
+    public function index_sasaran_bpjs()
+    {
+        return view('Laporan.index_sasaran_bpjs');
+    }
 }
