@@ -39,6 +39,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         $query = Riwayat::with([
             'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
             'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
+            'pasien.ref_bpjs',
             'pemeriksa', 'user'
         ])->whereBetween('tanggal_pemeriksaan', [$this->periodeDari, $this->periodeSampai])
             ->orderBy('tanggal_pemeriksaan', 'desc');
@@ -118,7 +119,8 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             'Faskes',
             'Tanggal Pemeriksaan',
             'Tempat Periksa',
-            'Nama FKTP PJ',
+            'Nama FKTP Pemeriksa',
+            'Nama Faskes BPJS',
             'Nama Pasien',
             'Jenis Kelamin',
             // 'Tanggal Lahir',
@@ -210,6 +212,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             Carbon::parse($riwayat->tanggal_pemeriksaan)->format('d-m-Y'),
             $riwayat->tempat_periksa,
             $riwayat->nama_fktp_pj,
+            isset($riwayat->pasien) && isset($riwayat->pasien->ref_bpjs) && isset($riwayat->pasien->ref_bpjs->nmprovider) ? $riwayat->pasien->ref_bpjs->nmprovider : "-",
             isset($riwayat->pasien->nama) ? $riwayat->pasien->nama : "-",
             isset($riwayat->pasien->jenis_kelamin) ? $riwayat->pasien->jenis_kelamin : "-",
             // isset($riwayat->pasien->tgl_lahir) ? Carbon::parse($riwayat->pasien->tgl_lahir)->format('d-m-Y'):"-", 

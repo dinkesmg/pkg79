@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Puskesmas;
 use App\Models\Riwayat;
+use App\Models\MasterProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -1686,5 +1687,108 @@ class DashboardController extends Controller
         }
 
         return array_values($rekap); // Reset indeks array
+    }
+
+    public function data_pasien_faskes_bpjs(Request $request)
+    {
+        // Perpanjang waktu eksekusi jika data besar
+        // set_time_limit(360);
+        $user = Auth::user();
+
+        $role = $user->role;
+        $id_user = $user->id;
+
+        $tgl_dari = $request->input('tgl_dari');
+        $tgl_sampai = $request->input('tgl_sampai');
+
+        $start = (int) $request->input('start', 0);
+        $length = (int) $request->input('length', 10);
+        $draw = (int) $request->input('draw', 1);
+
+        $totalProviders = MasterProvider::count();
+
+        // $riwayatCountQuery = DB::table('riwayat')
+        //     ->join('pasien', 'riwayat.id_pasien', '=', 'pasien.id')
+        //     ->join('master_provider1', 'pasien.kd_provider', '=', 'master_provider1.kdprovider')
+        //     ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
+        //     ->select(
+        //         'master_provider1.kdprovider',
+        //         'master_provider1.nmprovider',
+        //         DB::raw('COUNT(*) as total')
+        //     )
+        //     ->groupBy('master_provider1.kdprovider', 'master_provider1.nmprovider');
+
+        // // Ambil semua hasil untuk menghitung total yang difilter
+        // $totalFiltered = $riwayatCountQuery->get()->count();
+
+        // // Ambil data yang diurutkan dari yang terbesar
+        // $riwayatCount = $riwayatCountQuery
+        //     ->orderByDesc('total')
+        //     ->skip($start)
+        //     ->take($length)
+        //     ->get();
+
+        // // Format hasil data
+        // $data = [];
+        // foreach ($riwayatCount as $item) {
+        //     $data[] = [
+        //         'nama' => $item->nmprovider,
+        //         'total' => $item->total,
+        //     ];
+        // }
+
+        // // Return response JSON
+        // return response()->json([
+        //     'draw' => intval($draw),
+        //     'recordsTotal' => $totalProviders,
+        //     'recordsFiltered' => $totalFiltered,
+        //     'data' => $data,
+        // ]);
+
+        $riwayatCountQuery = DB::table('riwayat')
+            ->join('pasien', 'riwayat.id_pasien', '=', 'pasien.id')
+            ->join('master_provider1', 'pasien.kd_provider', '=', 'master_provider1.kdprovider')
+            ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai]);
+
+        // Jika role adalah Puskesmas, filter berdasarkan user
+        if ($role == 'Puskesmas') {
+            $riwayatCountQuery->where('riwayat.id_user', $id_user);
+        }
+
+        // Lanjutkan query untuk count dan data
+        $riwayatCountQuery = $riwayatCountQuery
+            ->select(
+                'master_provider1.kdprovider',
+                'master_provider1.nmprovider',
+                DB::raw('COUNT(*) as total')
+            )
+            ->groupBy('master_provider1.kdprovider', 'master_provider1.nmprovider');
+
+        // Hitung total setelah group
+        $totalFiltered = $riwayatCountQuery->get()->count();
+
+        // Ambil data paginasi
+        $riwayatCount = $riwayatCountQuery
+            ->orderByDesc('total')
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+        // Format data untuk DataTables
+        $data = [];
+        foreach ($riwayatCount as $item) {
+            $data[] = [
+                'nama' => $item->nmprovider,
+                'total' => $item->total,
+            ];
+        }
+
+        // Return response
+        return response()->json([
+            'draw' => intval($draw),
+            'recordsTotal' => $totalProviders,
+            'recordsFiltered' => $totalFiltered,
+            'data' => $data,
+        ]);
     }
 }

@@ -58,6 +58,11 @@ class Pasien extends Model
         return $this->belongsTo(PasienBPJS::class, 'nik', 'nik');
     }
 
+    public function ref_bpjs()
+    {
+        return $this->belongsTo(MasterProvider::class, 'kd_provider', 'kdprovider');
+    }
+
     // public function kecamatan()
     // {
     //     return $this->belongsTo(Ref_Kecamatan::class, 'id_kecamatan', 'id');

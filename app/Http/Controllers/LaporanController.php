@@ -295,7 +295,7 @@ class LaporanController extends Controller
         $kecamatan_ktp = $request->kecamatan_ktp;
         $kelurahan_ktp = $request->kelurahan_ktp;
         // dd($role);
-        set_time_limit(300);
+        // set_time_limit(300);
 
         $query = Riwayat::select('tanggal_pemeriksaan', 'id_pasien')
             ->with([

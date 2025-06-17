@@ -1675,6 +1675,33 @@
                     </div>
                 </div>
             </div>
+
+            @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Puskesmas')
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div>
+                                <h4>Total Pasien Faskes BPJS</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <table id="idtabel_pasien_faskes_bpjs" class="table table-bordered table-striped example" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Faskes BPJS</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
             <!-- /.row -->
         </div><!-- /.container-fluid -->
     </div>
@@ -2581,44 +2608,6 @@
         })
     }
 
-    function tabel_kesimpulan_hasil() {
-        let col = [{
-                render: function(data, type, row, meta) {
-                    return meta.row + meta.settings._iDisplayStart + 1;
-                },
-            },
-            {
-                'data': 'status'
-            },
-            {
-                'data': 'total'
-            },
-        ]
-
-
-        $('#idtabel_kesimpulan_hasil').dataTable({
-            destroy: true,
-            scrollX: true,
-            ajax: {
-                url: "{{url('dashboard/data_kesimpulan_hasil')}}",
-                type: "GET",
-                data: function(d) {
-                    d.tgl_dari = $('#dari').val();
-                    d.tgl_sampai = $('#sampai').val();
-                },
-                // dataSrc: '',
-                dataSrc: function(json) {
-                    let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
-
-                    // $('#total_kunjungan_pasien').text(totalSum);
-
-                    return json; // Return data for DataTable
-                },
-            },
-            columns: col
-        });
-    }
-
     function tabel_per_jenis_pemeriksaan() {
         if ($.fn.DataTable.isDataTable("#idtabel_per_jenis_pemeriksaan")) {
             $("#idtabel_per_jenis_pemeriksaan").DataTable().destroy();
@@ -2722,6 +2711,89 @@
             }]
         });
         // }, 1000);
+    }
+
+    function tabel_kesimpulan_hasil() {
+        let col = [{
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                },
+            },
+            {
+                'data': 'status'
+            },
+            {
+                'data': 'total'
+            },
+        ]
+
+
+        $('#idtabel_kesimpulan_hasil').dataTable({
+            destroy: true,
+            scrollX: true,
+            ajax: {
+                url: "{{url('dashboard/data_kesimpulan_hasil')}}",
+                type: "GET",
+                data: function(d) {
+                    d.tgl_dari = $('#dari').val();
+                    d.tgl_sampai = $('#sampai').val();
+                },
+                // dataSrc: '',
+                dataSrc: function(json) {
+                    let totalSum = json.reduce((sum, row) => sum + (parseInt(row.total) || 0), 0);
+
+                    // $('#total_kunjungan_pasien').text(totalSum);
+
+                    return json; // Return data for DataTable
+                },
+            },
+            columns: col
+        });
+
+        tabel_pasien_faskes_bpjs()
+    }
+
+    function tabel_pasien_faskes_bpjs() {
+        console.log("pasien faskes bpjs")
+
+        let col = [{
+                render: function(data, type, row, meta) {
+                    return meta.row + meta.settings._iDisplayStart + 1;
+                },
+            },
+            {
+                'data': 'nama'
+            },
+            {
+                'data': 'total'
+            },
+        ]
+
+
+        $('#idtabel_pasien_faskes_bpjs').dataTable({
+            destroy: true,
+            scrollX: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 10,
+            ajax: {
+                url: "{{url('dashboard/data_pasien_faskes_bpjs')}}",
+                type: "GET",
+                data: function(d) {
+                    d.tgl_dari = $('#dari').val();
+                    d.tgl_sampai = $('#sampai').val();
+                    d.start = d.start || 0;
+                    d.length = d.length || 10;
+                },
+                // dataSrc: '',
+                dataSrc: function(json) {
+                    console.log(json)
+                    return json.data; // Return data for DataTable
+                },
+            },
+            columns: col, 
+        });
+
     }
 </script>
 
