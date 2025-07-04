@@ -793,9 +793,12 @@ class RiwayatController extends Controller
             $tgl_lahir = $dt['tg_lahir'];
             $usia = Carbon::parse($tgl_lahir)->diffInYears(Carbon::parse($tanggal));
 
+            $id_user = intval(preg_replace('/[^0-9]/', '', $dt['kpusk'])) + 1;
+                    
             $riwayat = Riwayat::with(['pasien', 'pemeriksa', 'user'])
                 ->whereHas('pasien', fn($q) => $q->where('nik', $nik))
                 ->where('tanggal_pemeriksaan', $tanggal)
+                ->where('id_user', $id_user)
                 ->first();
 
             if (!$riwayat) {
