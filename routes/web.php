@@ -7,6 +7,7 @@ use App\Http\Controllers\MasterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PasienBPJSController;
+use App\Http\Controllers\CkgSekolahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,10 @@ Route::prefix('pasien_bpjs')->group(function () {
 
 Route::prefix('data_simpus')->group(function () {
     Route::get('/master_provider1', [MasterController::class, 'data_simpus_master_provider1'])->name('data_simpus.provider1');
+});
+
+Route::prefix('ckg_sekolah')->group(function () {
+    Route::get('/', [CkgSekolahController::class, 'index'])->name('ckg_sekolah.index');
 });
 
 Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
