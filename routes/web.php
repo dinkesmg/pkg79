@@ -70,7 +70,6 @@ Route::prefix('pasien_bpjs')->group(function () {
     Route::get('/get_data_simpus', [PasienBPJSController::class, 'get_data_simpus'])->name('pasien.get_data_simpus');
     Route::get('/filter_data_simpus', [PasienBPJSController::class, 'filter_data_simpus'])->name('pasien.filter_data_simpus');
     Route::get('/convert_data_simpus', [PasienBPJSController::class, 'convert_data_simpus'])->name('pasien.convert_data_simpus');
-    
 });
 
 Route::prefix('data_simpus')->group(function () {
@@ -84,3 +83,4 @@ Route::get('master_kecamatan', [MasterController::class, 'kecamatan'])->name('ma
 Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('master_kelurahan.data');
 Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('master_instrumen.data');
 Route::get('master_instrumen/detail', [MasterController::class, 'instrumen_detail'])->name('master_instrumen.detail');
+Route::get('master_instrumen_sekolah', [MasterController::class, 'instrumen_sekolah'])->name('master_instrumen_sekolah.data');
