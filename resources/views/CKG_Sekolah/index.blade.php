@@ -605,8 +605,10 @@
 
                 <!-- Action Buttons -->
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button type="submit" onclick="submitData()"
-                        class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-500 sm:ml-3 sm:w-auto">
+                    <button id="btn-kirim" type="submit" disabled
+                        class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold 
+           text-white bg-red-600 hover:bg-red-500 
+           disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:opacity-70 sm:ml-3 sm:w-auto transition">
                         Kirim Sekarang
                     </button>
                     <button type="button" onclick="closeModal()"
@@ -619,6 +621,22 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const radios = document.querySelectorAll('input[name="persetujuan"]');
+            const btnKirim = document.getElementById('btn-kirim');
+
+            // 1. Disable tombol saat awal load
+            btnKirim.disabled = true;
+
+            // 2. Enable jika radio dipilih
+            radios.forEach(radio => {
+                radio.addEventListener('change', () => {
+                    const selected = document.querySelector('input[name="persetujuan"]:checked');
+                    btnKirim.disabled = !selected;
+                });
+            });
+        });
+
         const submitData = () => {
             let nama_lengkap = document.getElementById("nama_lengkap")?.value || "";
             let nik = document.getElementById("nama_lengkap")?.value || "";
