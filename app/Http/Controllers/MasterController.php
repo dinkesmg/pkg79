@@ -13,6 +13,7 @@ use App\Models\MasterKotaKab;
 use App\Models\MasterKelurahan;
 use App\Models\MasterKecamatan;
 use App\Models\MasterInstrumen;
+use App\Models\MasterInstrumenSekolah;
 use App\Models\MasterProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
@@ -281,5 +282,23 @@ class MasterController extends Controller
             Log::info('Master Provider Gagal');
             dd('API Request Error:', $e->getMessage());
         }
+    }
+
+    public function instrumen_sekolah(Request $request)
+    {
+        $validated = $request->validate([
+            'kelas' => 'required|integer',
+            'jenis_kelamin' => 'required|string|in:L,P',
+        ]);
+
+        $kelas = (int) $validated['kelas'];
+        $jenis_kelamin = $validated['jenis_kelamin'];
+
+
+        $data = MasterInstrumenSekolah::select('id', 'judul', 'pertanyaan', 'kelas', 'jenis_kelamin', 'objek', 'tipe_input', 'value_tipe_input')->whereJsonContains('kelas', $kelas)
+            ->whereJsonContains('jenis_kelamin', $jenis_kelamin)
+            ->get();
+
+        return response()->json($data);
     }
 }

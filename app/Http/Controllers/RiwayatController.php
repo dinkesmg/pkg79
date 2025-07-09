@@ -15,6 +15,7 @@ use App\Models\Mapping_simpus;
 use App\Models\Mapping_kelurahan;
 use App\Models\MasterProvider;
 use App\Models\Puskesmas;
+use App\Models\PasienSekolah;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -186,11 +187,11 @@ class RiwayatController extends Controller
     // {
     //     $periodeDari = $request->periode_dari;
     //     $periodeSampai = $request->periode_sampai;
-        
+
     //     $user = Auth::user();
     //     $role = $user->role;
     //     $id_user = $user->id;
-        
+
     //     // $role = Auth::user()->role;
     //     // $id_user = Auth::user()->id_user;
 
@@ -3795,7 +3796,7 @@ class RiwayatController extends Controller
 
     public function cari_nik_pasien(Request $request)
     {
-        $data = Pasien::with(
+        $data_pasien_sekolah = PasienSekolah::with(
             'ref_provinsi_ktp',
             'ref_kota_kab_ktp',
             'ref_kecamatan_ktp',
@@ -3803,8 +3804,26 @@ class RiwayatController extends Controller
             'ref_provinsi_dom',
             'ref_kota_kab_dom',
             'ref_kecamatan_dom',
-            'ref_kelurahan_dom'
+            'ref_kelurahan_dom',
+            'ref_sekolah',
+            'ref_riwayat_sekolah.puskesmas',
         )->where('nik', $request->nik)->first();
+        if ($data_pasien_sekolah != null) {
+            $data = $data_pasien_sekolah;
+
+            // dd($data);
+        } else if ($data_pasien_sekolah == null) {
+            $data = Pasien::with(
+                'ref_provinsi_ktp',
+                'ref_kota_kab_ktp',
+                'ref_kecamatan_ktp',
+                'ref_kelurahan_ktp',
+                'ref_provinsi_dom',
+                'ref_kota_kab_dom',
+                'ref_kecamatan_dom',
+                'ref_kelurahan_dom'
+            )->where('nik', $request->nik)->first();
+        }
 
         return response()->json($data);
     }
