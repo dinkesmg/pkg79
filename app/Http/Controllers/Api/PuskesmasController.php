@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Riwayat;
+use App\Models\Puskesmas;
 
 class PuskesmasController extends Controller
 {
@@ -17,5 +18,17 @@ class PuskesmasController extends Controller
         })->get();
 
         return response()->json($data);
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('q'); // keyword dari inputan user
+
+        $results = Puskesmas::where('nama', 'LIKE', '%' . $search . '%')
+                    ->select('id', 'nama')
+                    ->limit(10)
+                    ->get();
+
+        return response()->json($results);
     }
 }

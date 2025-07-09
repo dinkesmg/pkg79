@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\PasienBPJSController;
 use App\Http\Controllers\CkgSekolahController;
+use App\Http\Controllers\Api\PuskesmasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,3 +90,4 @@ Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('ma
 Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('master_instrumen.data');
 Route::get('master_instrumen/detail', [MasterController::class, 'instrumen_detail'])->name('master_instrumen.detail');
 Route::get('master_instrumen_sekolah', [MasterController::class, 'instrumen_sekolah'])->name('master_instrumen_sekolah.data');
+Route::get('/master_puskesmas/search', [PuskesmasController::class, 'search']);
