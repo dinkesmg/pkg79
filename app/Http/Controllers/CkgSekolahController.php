@@ -10,4 +10,9 @@ class CkgSekolahController extends Controller
     {
         return view('CKG_sekolah.index');
     }
+
+    public function index_screening()
+    {
+        return view('CKG_Sekolah.Screening_CKG_Sekolah.index');
+    }
 }

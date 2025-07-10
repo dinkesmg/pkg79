@@ -80,6 +80,7 @@ Route::prefix('data_simpus')->group(function () {
 
 Route::prefix('ckg_sekolah')->group(function () {
     Route::get('/', [CkgSekolahController::class, 'index'])->name('ckg_sekolah.index');
+    Route::get('/screening', [CkgSekolahController::class, 'index_screening'])->name('screening_ckg_sekolah.index');
 });
 
 Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');

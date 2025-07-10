@@ -80,7 +80,7 @@
 
             <div id="mainContent" class="hidden">
             
-        <section class=" py-1 bg-blueGray-50">
+        <section class="py-1 bg-blueGray-50">
             <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
                 <div
                     class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-100 border-0">
@@ -117,9 +117,19 @@
                                     <div class="relative w-full mb-3">
                                         <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                                             htmlfor="grid-password">
-                                            Nomor Induk Kependudukan
+                                            Nomor Induk Kependudukan (NIK)
                                         </label>
                                         <input type="text" id="nik" name="nik"
+                                            class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-6/12 px-4">
+                                    <div class="relative w-full mb-3">
+                                        <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                                            htmlfor="grid-password">
+                                            Nomor Induk Siswa Nasional (NISN)
+                                        </label>
+                                        <input type="text" id="nisn" name="nisn"
                                             class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                                     </div>
                                 </div>
@@ -165,6 +175,15 @@
                 Nama Orangtua / Wali
             </label>
             <input type="text" id="nama_ortu_wali" name="nama_ortu_wali"
+                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+        </div>
+    </div>
+    <div class="w-full lg:w-6/12 px-4">
+        <div class="relative w-full mb-3">
+            <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlfor="grid-password">
+                Nomor HP/WA
+            </label>
+            <input type="text" id="no_hp" name="no_hp"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
         </div>
     </div>
@@ -550,7 +569,8 @@
                         <div class="mt-3 sm:mt-0 sm:ml-4 sm:text-left">
                             <h3 class="text-base font-semibold text-gray-900 mb-2" id="modal-title">FORMULIR SKRINING
                                 KESEHATAN ANAK USIA SEKOLAH DAN REMAJA
-                                <h3 class="text-base font-semibold text-gray-900">PUSKESMAS …………………………… </h3>
+                                <h3 class="text-base font-semibold text-gray-900">PUSKESMAS <span class="uppercase"
+                                        id="output_puskesmas"></span> </h3>
                             </h3>
                             <div class="mt-2">
                                 <p class="text-sm text-gray-500 mb-4">
@@ -590,11 +610,11 @@
                                 </div>
                             </div>
                             <div class="mt-2 flex flex-col space-y-3">
-                                <label class="inline-flex items-center">
+                                <label class="inline-flex items-center w-fit">
                                     <input type="radio" name="persetujuan" class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Setuju</span>
                                 </label>
-                                <label class="inline-flex items-center">
+                                <label class="inline-flex items-center w-fit">
                                     <input type="radio" name="persetujuan" class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Tidak setuju</span>
                                 </label>
@@ -605,15 +625,159 @@
 
                 <!-- Action Buttons -->
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button id="btn-kirim" type="submit" disabled
+                    <button id="btn-kirim" onclick="cekModal()" type="submit" disabled
                         class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold 
-           text-white bg-red-600 hover:bg-red-500 
-           disabled:bg-gray-400 disabled:hover:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:opacity-70 sm:ml-3 sm:w-auto transition">
+text-white bg-red-600 hover:bg-red-500 
+disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:opacity-50 
+disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                         Kirim Sekarang
                     </button>
+
                     <button type="button" onclick="closeModal()"
                         class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100 sm:mt-0 sm:w-auto">
                         Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cekModal" class="hidden fixed inset-0 z-10 overflow-y-auto transition-opacity duration-300 ease-out"
+        aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+        <!-- Backdrop -->
+        <div id="cekModalBackdrop" class="fixed inset-0 bg-gray-500/75 transition-opacity duration-300 opacity-0"
+            aria-hidden="true"></div>
+
+        <!-- Modal Content Wrapper -->
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <div id="cekModalContent"
+                class="relative transform scale-95 opacity-0 overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all duration-300 sm:my-8 sm:w-full sm:max-w-3xl">
+
+                <!-- Modal Inner -->
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h2 class="mb-3 font-semibold text-xl">Periksa kembali data yang sudah dimasukan!</h2>
+                    <h3 class="text-lg font-semibold mb-2">Identitas Peserta Didik</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 space-y-3 px-2">
+                        <div>
+                            <p class="font-semibold">Nama Lengkap</p>
+                            <p id="output_nama_lengkap"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">NIK</p>
+                            <p id="output_nik"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Tempat / Tanggal Lahir</p>
+                            <p id="output_tempat_tanggal_lahir"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Nama Orangtua / Wali</p>
+                            <p id="output_nama_orangtua"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">No HP / WA</p>
+                            <p id="output_no_hp"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Umur</p>
+                            <p id="output_umur"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Nama Sekolah</p>
+                            <p id="output_nama_sekolah"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Alamat Sekolah</p>
+                            <p id="output_alamat_sekolah"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kelas</p>
+                            <p id="output_kelas"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Puskesmas</p>
+                            <p id="output_puskesmas"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Jenis Kelamin</p>
+                            <p id="output_jenis_kelamin"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Golongan Darah</p>
+                            <p id="output_gol_darah"></p>
+                        </div>
+                    </div>
+                    <hr class="mb-3">
+                    <h3 class="text-lg font-semibold mb-2">Alamat Peserta Didik (Sesuai KTP / KK)</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 space-y-3 px-2">
+                        <div>
+                            <p class="font-semibold">Provinsi</p>
+                            <p id="output_provinsi_ktp"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kota / Kabupaten</p>
+                            <p id="output_kota_ktp"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kecamatan</p>
+                            <p id="output_kecamatan_ktp"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kelurahan</p>
+                            <p id="output_kelurahan_ktp"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Alamat</p>
+                            <p id="output_alamat_ktp"></p>
+                        </div>
+                    </div>
+
+                    <hr class="mb-3">
+                    <h3 class="text-lg font-semibold mb-2">Alamat Peserta Didik Domisili</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 space-y-3 px-2">
+                        <div>
+                            <p class="font-semibold">Provinsi</p>
+                            <p id="output_provinsi_dom"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kota / Kabupaten</p>
+                            <p id="output_kota_dom"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kecamatan</p>
+                            <p id="output_kecamatan_dom"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Kelurahan</p>
+                            <p id="output_kelurahan_dom"></p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Alamat</p>
+                            <p id="output_alamat_dom"></p>
+                        </div>
+                    </div>
+                    <hr class="mb-3">
+                    <h3 class="text-lg font-semibold mb-2">Jenis Disabilitas</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 space-y-3 px-2">
+                        <div>
+                            <p class="font-semibold">Jenis</p>
+                            <p id="output_disabilitas"></p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Action Buttons -->
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button type="submit" onclick="submitData()"
+                        class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 sm:ml-3 sm:w-auto transition">
+                        Kirim Data
+                    </button>
+
+                    <button type="button" onclick="closeModal()"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-100 sm:mt-0 sm:w-auto">
+                        Edit Kembali
                     </button>
                 </div>
             </div>
@@ -636,93 +800,7 @@
                 });
             });
         });
-
-        const submitData = () => {
-            let nama_lengkap = document.getElementById("nama_lengkap")?.value || "";
-            let nik = document.getElementById("nama_lengkap")?.value || "";
-            let tempat_lahir = document.getElementById("tempat_lahir")?.value || "";
-            let tanggal_lahir = document.getElementById("tanggal_lahir")?.value || "";
-            let bulan_lahir = document.getElementById("bulan_lahir")?.value || "";
-            let tahun_lahir = document.getElementById("tahun_lahir")?.value || "";
-            let nama_ortu_wali = document.getElementById("nama_ortu_wali")?.value || "";
-            let umur = document.getElementById("umur")?.value || "";
-            let nama_sekolah = document.getElementById("nama_sekolah")?.value || "";
-            let alamat_sekolah = document.getElementById("alamat_sekolah")?.value || "";
-            let kelas = document.getElementById("kelas")?.value || "";
-            let puskesmas = document.getElementById("puskesmas")?.value || "";
-            let jenis_kelamin = document.querySelector('input[name="jenis_kelamin"]:checked')?.value || '';
-            let golongan_darah = document.querySelector('input[name="golongan_darah"]:checked')?.value || "";
-            let provinsi = document.getElementById("provinsi")?.value || "";
-            let kota = document.getElementById("kota")?.value || "";
-            let kecamatan = document.getElementById("kecamatan")?.value || "";
-            let kelurahan = document.getElementById("kelurahan")?.value || "";
-            let alamat = document.getElementById("alamat")?.value || "";
-
-
-            console.log(nama_lengkap);
-            console.log(nik);
-            console.log(tempat_lahir);
-            console.log(tanggal_lahir);
-            console.log(bulan_lahir);
-            console.log(tahun_lahir);
-            console.log(nama_ortu_wali);
-            console.log(umur);
-            console.log(nama_sekolah);
-            console.log(alamat_sekolah);
-            console.log(kelas);
-            console.log(puskesmas);
-            console.log(jenis_kelamin)
-            console.log(golongan_darah);
-            console.log(provinsi);
-            console.log(kota);
-            console.log(kecamatan);
-            console.log(kelurahan);
-            console.log(alamat);
-
-        }
     </script>
-
-    {{-- <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script> --}}
-
-    {{-- <script>
-        const canvas = document.getElementById('signature-pad');
-        const signaturePad = new SignaturePad(canvas);
-
-        function resizeCanvasIfNeeded() {
-            const screenWidth = window.innerWidth;
-            const defaultWidth = 480;
-            const defaultHeight = 200;
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-
-            let newWidth = defaultWidth;
-
-            // Atur ulang ukuran jika layar kecil
-            if (screenWidth < 520) {
-                newWidth = screenWidth - 40; // beri padding
-            }
-
-            let newHeight = Math.floor((newWidth / defaultWidth) * defaultHeight);
-
-            // Set ukuran visual
-            canvas.style.width = newWidth + "px";
-            canvas.style.height = newHeight + "px";
-
-            // Set ukuran internal pixel
-            canvas.width = newWidth * ratio;
-            canvas.height = newHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-
-            signaturePad.clear(); // opsional: reset coretan saat resize
-        }
-
-        window.addEventListener("load", resizeCanvasIfNeeded);
-        window.addEventListener("resize", resizeCanvasIfNeeded);
-
-        document.getElementById('clear').addEventListener('click', () => {
-            signaturePad.clear();
-        });
-    </script> --}}
-
 
 
     <script>
@@ -771,9 +849,37 @@
             // Jalankan chaining
             await fetchProvinsi();
 
+            // Setelah provinsi terload
+            const savedProv = localStorage.getItem('provinsi');
+            if (savedProv) {
+                provinsi.value = savedProv;
+                await fetchKota(savedProv);
+            }
+
+            // Setelah kota terload
+            const savedKota = localStorage.getItem('kota');
+            if (savedKota) {
+                kota.value = savedKota;
+                await fetchKecamatan(savedKota);
+            }
+
+            // Setelah kecamatan terload
+            const savedKec = localStorage.getItem('kecamatan');
+            if (savedKec) {
+                kecamatan.value = savedKec;
+                await fetchKelurahan(savedKec);
+            }
+
+            // Setelah kelurahan terload
+            const savedKel = localStorage.getItem('kelurahan');
+            if (savedKel) {
+                kelurahan.value = savedKel;
+            }
+
             provinsi.addEventListener('change', async () => {
                 const kode = provinsi.value;
                 if (kode) {
+                    localStorage.setItem('provinsi', kode);
                     await fetchKota(kode);
                     kecamatan.innerHTML = '';
                     kelurahan.innerHTML = '';
@@ -783,6 +889,7 @@
             kota.addEventListener('change', async () => {
                 const kode = kota.value;
                 if (kode) {
+                    localStorage.setItem('kota', kode);
                     await fetchKecamatan(kode);
                     kelurahan.innerHTML = '';
                 }
@@ -791,9 +898,18 @@
             kecamatan.addEventListener('change', async () => {
                 const kode = kecamatan.value;
                 if (kode) {
+                    localStorage.setItem('kecamatan', kode);
                     await fetchKelurahan(kode);
                 }
             });
+
+            kelurahan.addEventListener('change', () => {
+                const kode = kelurahan.value;
+                if (kode) {
+                    localStorage.setItem('kelurahan', kode);
+                }
+            });
+
         });
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -814,23 +930,84 @@
             const checkbox = document.getElementById('checkbox-alamat-sesuai');
 
             // Bantu isi dropdown
-            const fillSelect = (el, data, placeholder, selectedKode = '') => {
+            // const fillSelect = (el, data, placeholder, selectedKode = '') => {
+            //     el.innerHTML = `<option value="">-- ${placeholder} --</option>`;
+            //     data.forEach(item => {
+            //         const selected = item.kode === selectedKode ? 'selected' : '';
+            //         el.innerHTML += `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
+            //     });
+            // };
+
+            const fillSelect = async (el, data, placeholder, selectedKode = '') => {
                 el.innerHTML = `<option value="">-- ${placeholder} --</option>`;
                 data.forEach(item => {
                     const selected = item.kode === selectedKode ? 'selected' : '';
-                    el.innerHTML += `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
+                    el.innerHTML +=
+                        `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
                 });
+
+                // 🧠 Tambahan perlindungan kalau selectedKode tidak langsung match
+                if (selectedKode && el.querySelector(`option[value="${selectedKode}"]`)) {
+                    el.value = selectedKode;
+                }
             };
 
-            // Fetch data dari endpoint master
             const fetchData = async (url) => {
                 const res = await fetch(url);
                 return await res.json();
             };
 
-            // Copy data satu kali saat checkbox dicentang
+            // Simpan ke localStorage jika input manual
+            const storeDomisili = () => {
+                if (!checkbox.checked) {
+                    localStorage.setItem('alamat_sesuai_kk', 'false');
+                    localStorage.setItem('dom-provinsi', domProvinsi.value);
+                    localStorage.setItem('dom-kota', domKota.value);
+                    localStorage.setItem('dom-kecamatan', domKecamatan.value);
+                    localStorage.setItem('dom-kelurahan', domKelurahan.value);
+                    localStorage.setItem('dom-alamat', domAlamat.value);
+                }
+            };
+
+            // Restore jika input manual
+            const restoreDomisili = async () => {
+                const savedProv = localStorage.getItem('dom-provinsi');
+                const savedKota = localStorage.getItem('dom-kota');
+                const savedKec = localStorage.getItem('dom-kecamatan');
+                const savedKel = localStorage.getItem('dom-kelurahan');
+                const savedAlamat = localStorage.getItem('dom-alamat');
+
+                if (savedProv) {
+                    const provData = await fetchData('/master_provinsi?search=');
+                    fillSelect(domProvinsi, provData, 'Pilih Provinsi', savedProv);
+                }
+
+                if (savedKota && savedProv) {
+                    const kotaData = await fetchData(`/master_kota_kab?search=&kode_parent=${savedProv}`);
+                    fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', savedKota);
+                }
+
+                if (savedKec && savedKota) {
+                    const kecData = await fetchData(`/master_kecamatan?search=&kode_parent=${savedKota}`);
+                    fillSelect(domKecamatan, kecData, 'Pilih Kecamatan', savedKec);
+                }
+
+                if (savedKel && savedKec) {
+                    const kelData = await fetchData(`/master_kelurahan?search=&kode_parent=${savedKec}`);
+                    fillSelect(domKelurahan, kelData, 'Pilih Kelurahan', savedKel);
+                }
+
+                if (savedAlamat) domAlamat.value = savedAlamat;
+            };
+
+            // Checkbox kontrol salin / manual
             checkbox.addEventListener('change', async function() {
+                localStorage.setItem('alamat_sesuai_kk', this.checked);
+
                 if (this.checked) {
+                    ['dom-provinsi', 'dom-kota', 'dom-kecamatan', 'dom-kelurahan', 'dom-alamat'].forEach
+                        (key => localStorage.removeItem(key));
+
                     const kodeProv = provinsi.value;
                     const kodeKota = kota.value;
                     const kodeKec = kecamatan.value;
@@ -843,9 +1020,14 @@
                         `/master_kota_kab?search=&kode_parent=${kodeProv}`);
                     fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
 
+                    // Tunggu render sebelum lanjut
+                    await new Promise(r => setTimeout(r, 10));
+
                     const kecamatanData = await fetchData(
                         `/master_kecamatan?search=&kode_parent=${kodeKota}`);
                     fillSelect(domKecamatan, kecamatanData, 'Pilih Kecamatan', kodeKec);
+
+                    await new Promise(r => setTimeout(r, 10));
 
                     const kelurahanData = await fetchData(
                         `/master_kelurahan?search=&kode_parent=${kodeKec}`);
@@ -853,7 +1035,6 @@
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
                 } else {
-                    // Reset jika tidak dicentang
                     domProvinsi.selectedIndex = 0;
                     domKota.innerHTML = '';
                     domKecamatan.innerHTML = '';
@@ -862,7 +1043,8 @@
                 }
             });
 
-            // Chaining manual domisili
+
+            // Chaining manual domisili (plus simpan)
             domProvinsi.addEventListener('change', async () => {
                 const kode = domProvinsi.value;
                 if (kode) {
@@ -871,6 +1053,7 @@
                     domKecamatan.innerHTML = '';
                     domKelurahan.innerHTML = '';
                 }
+                storeDomisili();
             });
 
             domKota.addEventListener('change', async () => {
@@ -880,6 +1063,7 @@
                     fillSelect(domKecamatan, kecData, 'Pilih Kecamatan');
                     domKelurahan.innerHTML = '';
                 }
+                storeDomisili();
             });
 
             domKecamatan.addEventListener('change', async () => {
@@ -888,12 +1072,25 @@
                     const kelData = await fetchData(`/master_kelurahan?search=&kode_parent=${kode}`);
                     fillSelect(domKelurahan, kelData, 'Pilih Kelurahan');
                 }
+                storeDomisili();
             });
 
-            // Saat load awal, isi dropdown provinsi domisili
+            domKelurahan.addEventListener('change', storeDomisili);
+            domAlamat.addEventListener('input', storeDomisili);
+
+            // Saat load awal
             (async () => {
                 const provinsiData = await fetchData('/master_provinsi?search=');
                 fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi');
+
+                const fromStorage = localStorage.getItem('alamat_sesuai_kk');
+                checkbox.checked = fromStorage === 'true';
+
+                if (checkbox.checked) {
+                    checkbox.dispatchEvent(new Event('change'));
+                } else {
+                    restoreDomisili();
+                }
             })();
         });
     </script>
@@ -956,12 +1153,110 @@
             const nama = $(this).text();
             $('#puskesmas').val(nama);
             $('#puskesmas-list').hide();
+
+            $('#output_puskesmas').text(nama);
         });
     </script>
 
 
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputElements = document.querySelectorAll(
+                'input[type="text"], input[type="number"], select, textarea');
+
+            // Restore nilai dari localStorage
+            inputElements.forEach(input => {
+                const savedValue = localStorage.getItem(input.id);
+                if (savedValue !== null) {
+                    input.value = savedValue;
+                }
+            });
+
+            // Simpan saat input berubah
+            inputElements.forEach(input => {
+                input.addEventListener('input', () => {
+                    if (input.id) {
+                        localStorage.setItem(input.id, input.value);
+                    }
+                });
+            });
+
+            // Restore radio button
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                const saved = localStorage.getItem(radio.name);
+                if (saved === radio.value) {
+                    radio.checked = true;
+                }
+                radio.addEventListener('change', () => {
+                    localStorage.setItem(radio.name, radio.value);
+                });
+            });
+
+            // Restore checkbox
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const saved = localStorage.getItem(checkbox.id || checkbox.value);
+                if (saved === 'true') {
+                    checkbox.checked = true;
+                }
+                checkbox.addEventListener('change', () => {
+                    localStorage.setItem(checkbox.id || checkbox.value, checkbox.checked);
+                });
+            });
+
+            // Hitung umur berdasarkan TTL
+            function hitungUmur() {
+                const tgl = document.getElementById('tanggal_lahir').value;
+                const bln = document.getElementById('bulan_lahir').value;
+                const thn = document.getElementById('tahun_lahir').value;
+                const umurInput = document.getElementById('umur');
+
+                if (tgl && bln && thn) {
+                    const today = new Date();
+                    const birthDate = new Date(thn, bln - 1, tgl);
+                    let umur = today.getFullYear() - birthDate.getFullYear();
+                    const m = today.getMonth() - birthDate.getMonth();
+
+                    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                        umur--;
+                    }
+
+                    umurInput.value = umur + ' tahun';
+                    localStorage.setItem('umur', umurInput.value); // ✅ simpan umur
+                } else {
+                    umurInput.value = '';
+                    localStorage.removeItem('umur');
+                }
+            }
+
+            // Restore umur setelah reload
+            const umurInput = document.getElementById('umur');
+            const savedUmur = localStorage.getItem('umur');
+            if (savedUmur !== null && umurInput) {
+                umurInput.value = savedUmur;
+            }
+
+            // ✅ Tambahkan event listener agar umur dihitung saat TTL berubah
+            document.getElementById('tanggal_lahir')?.addEventListener('change', hitungUmur);
+            document.getElementById('bulan_lahir')?.addEventListener('change', hitungUmur);
+            document.getElementById('tahun_lahir')?.addEventListener('change', hitungUmur);
+
+            // Jalankan hitung umur jika TTL sudah terisi saat load
+            hitungUmur();
+        });
+
+        // ✅ Fungsi untuk hapus semua data dari localStorage saat submit
+        function clearFormStorage() {
+            const all = document.querySelectorAll('input, select, textarea');
+            all.forEach(el => {
+                if (el.id) localStorage.removeItem(el.id);
+                if (el.name && el.type === 'radio') localStorage.removeItem(el.name);
+                if (el.type === 'checkbox') localStorage.removeItem(el.id || el.value);
+            });
+        }
+
         function openModal() {
             const modal = document.getElementById('myModal');
             const content = document.getElementById('modalContent');
@@ -979,10 +1274,112 @@
             }, 10);
         }
 
+        function cekModal() {
+            let nama_lengkap = document.getElementById("nama_lengkap")?.value || "";
+            let nik = document.getElementById("nik")?.value || "";
+            let no_hp = document.getElementById("no_hp")?.value || "";
+            let tempat_lahir = document.getElementById("tempat_lahir")?.value || "";
+            let tanggal_lahir = document.getElementById("tanggal_lahir")?.value || "";
+            let bulan_lahir = document.getElementById("bulan_lahir")?.value || "";
+            let tahun_lahir = document.getElementById("tahun_lahir")?.value || "";
+            let nama_ortu_wali = document.getElementById("nama_ortu_wali")?.value || "";
+            let umur = document.getElementById("umur")?.value || "";
+            let nama_sekolah = document.getElementById("nama_sekolah")?.value || "";
+            let alamat_sekolah = document.getElementById("alamat_sekolah")?.value || "";
+            let kelas = document.getElementById("kelas")?.value || "";
+            let puskesmas = document.getElementById("puskesmas")?.value || "";
+            let jenis_kelamin = document.querySelector('input[name="jenis_kelamin"]:checked')?.value || '';
+            let golongan_darah = document.querySelector('input[name="golongan_darah"]:checked')?.value || "";
+            let provinsi = document.getElementById("provinsi")?.selectedOptions[0]?.text || "";
+            let kota = document.getElementById("kota")?.selectedOptions[0]?.text || "";
+            let kecamatan = document.getElementById("kecamatan")?.selectedOptions[0]?.text || "";
+            let kelurahan = document.getElementById("kelurahan")?.selectedOptions[0]?.text || "";
+            let alamat = document.getElementById("alamat")?.value || "";
+
+            let disabilitasCheckboxes = document.querySelectorAll('input[name="jenis_disabilitas[]"]:checked');
+            let disabilitasList = Array.from(disabilitasCheckboxes).map(cb => cb.value);
+
+            let provinsi_dom = document.getElementById("dom-provinsi")?.selectedOptions[0]?.text || "";
+            let kota_dom = document.getElementById("dom-kota")?.selectedOptions[0]?.text || "";
+            let kecamatan_dom = document.getElementById("dom-kecamatan")?.selectedOptions[0]?.text || "";
+            let kelurahan_dom = document.getElementById("dom-kelurahan")?.selectedOptions[0]?.text || "";
+            let alamat_dom = document.getElementById("dom-alamat")?.value || "";
+
+            document.getElementById("output_nama_lengkap").innerText = nama_lengkap;
+            document.getElementById("output_nik").innerText = nik;
+            document.getElementById("output_no_hp").innerText = no_hp;
+            document.getElementById("output_tempat_tanggal_lahir").innerText =
+                `${tempat_lahir}, ${tanggal_lahir}-${bulan_lahir}-${tahun_lahir}`;
+            document.getElementById("output_nama_orangtua").innerText = nama_ortu_wali;
+            document.getElementById("output_umur").innerText = umur;
+            document.getElementById("output_nama_sekolah").innerText = nama_sekolah;
+            document.getElementById("output_alamat_sekolah").innerText = alamat_sekolah;
+            document.getElementById("output_kelas").innerText = kelas;
+            document.getElementById("output_puskesmas").innerText = puskesmas;
+            document.getElementById("output_jenis_kelamin").innerText = jenis_kelamin;
+            document.getElementById("output_gol_darah").innerText = golongan_darah;
+
+            document.getElementById("output_provinsi_dom").innerText = provinsi_dom;
+            document.getElementById("output_kota_dom").innerText = kota_dom;
+            document.getElementById("output_kecamatan_dom").innerText = kecamatan_dom;
+            document.getElementById("output_kelurahan_dom").innerText = kelurahan_dom;
+            document.getElementById("output_alamat_dom").innerText = alamat_dom;
+
+            // Jika alamat KTP/KK sama dengan domisili, bisa isi otomatis juga:
+            document.getElementById("output_provinsi_ktp").innerText = provinsi;
+            document.getElementById("output_kota_ktp").innerText = kota;
+            document.getElementById("output_kecamatan_ktp").innerText = kecamatan;
+            document.getElementById("output_kelurahan_ktp").innerText = kelurahan;
+
+            // Jika ada jenis disabilitas:
+            document.getElementById("output_disabilitas").innerText = disabilitasList.join(', ');
+
+
+            const persetujuanModal = document.getElementById('cekModal');
+            const persetujuanModalContent = document.getElementById('cekModalContent');
+            const persetujuanModalBackdrop = document.getElementById('cekModalBackdrop');
+
+            // persetujuanModalContent.classList.remove('scale-100', 'opacity-100');
+            // persetujuanModalContent.classList.add('scale-95', 'opacity-0');
+
+            // persetujuanModalBackdrop.classList.remove('opacity-100');
+            // persetujuanModalBackdrop.classList.add('opacity-0');
+
+            const modal = document.getElementById('myModal');
+            // const content = document.getElementById('modalContent');
+            // const backdrop = document.getElementById('modalBackdrop');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+
+            persetujuanModal.classList.remove('hidden');
+
+            // Delay untuk trigger transition
+            setTimeout(() => {
+                persetujuanModalContent.classList.remove('scale-95', 'opacity-0');
+                persetujuanModalContent.classList.add('scale-100', 'opacity-100');
+
+                persetujuanModalBackdrop.classList.remove('opacity-0');
+                persetujuanModalBackdrop.classList.add('opacity-100');
+            }, 10);
+
+        }
+
         function closeModal() {
             const modal = document.getElementById('myModal');
             const content = document.getElementById('modalContent');
             const backdrop = document.getElementById('modalBackdrop');
+
+            const persetujuanModal = document.getElementById('cekModal');
+            const persetujuanModalContent = document.getElementById('cekModalContent');
+            const persetujuanModalBackdrop = document.getElementById('cekModalBackdrop');
+
+            persetujuanModalContent.classList.remove('scale-100', 'opacity-100');
+            persetujuanModalContent.classList.add('scale-95', 'opacity-0');
+
+            persetujuanModalBackdrop.classList.remove('opacity-100');
+            persetujuanModalBackdrop.classList.add('opacity-0');
 
             // Tambahkan kelas keluar
             content.classList.remove('scale-100', 'opacity-100');
@@ -993,8 +1390,19 @@
 
             // Setelah animasi selesai, sembunyikan modal
             setTimeout(() => {
+                persetujuanModal.classList.add('hidden');
                 modal.classList.add('hidden');
             }, 300);
+        }
+
+        function submitData() {
+            const kelas = localStorage.getItem('kelas') || '';
+            const jenis_kelamin = localStorage.getItem('jenis_kelamin') || '';
+
+            clearFormStorage();
+
+            window.location.href =
+                `/ckg_sekolah/screening?kelas=${encodeURIComponent(kelas)}&jk=${encodeURIComponent(jenis_kelamin)}`;
         }
     </script>
 
