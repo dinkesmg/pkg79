@@ -857,12 +857,14 @@
             </div>'
             if (fitur == "Edit") {
                 html +=
-                    '<div class="row mb-3" style="display:flex">\
-                    <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
-                </div>\
-                <div class="row mb-3" style="display:flex">\
-                    <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>' + dt.hasil_pemeriksaan_lainnya + '</textarea></div>\
-                </div>'
+                    '<div id="id_hasil_pemeriksaan_kesehatan_lainnya_asik" style="display:block">\
+                        <div class="row mb-3" style="display:flex">\
+                            <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
+                        </div>\
+                        <div class="row mb-3" style="display:flex">\
+                            <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>' + dt.hasil_pemeriksaan_lainnya + '</textarea></div>\
+                        </div>\
+                    </div>'
             }
             html += '<div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Kesimpulan Hasil</b></div>\
@@ -909,6 +911,10 @@
         get_kota_kab_dom(dt.pasien_kota_kab_dom, dt.pasien_kota_kab_dom_nama)
         get_kecamatan_dom(dt.pasien_kecamatan_dom, dt.pasien_kecamatan_dom_nama)
         get_kelurahan_dom(dt.pasien_kelurahan_dom, dt.pasien_kelurahan_dom_nama)
+
+        if (dt.pasien_nik != null) {
+            oc_cari_nik()
+        }
 
 
 
@@ -3159,6 +3165,7 @@
                 oc_tgl_pemeriksaan_dan_lahir()
 
                 if (typeof data.kelas !== 'undefined' && data.kelas !== '') {
+                    $('#id_hasil_pemeriksaan_kesehatan_lainnya_asik').hide()
                     cek_pasien_sekolah(data)
                     // $('#pasien_sekolah').show();
                     // $('#pasien_sekolah_hasil_skrining_mandiri').show();
@@ -3274,6 +3281,13 @@
                     const colInput = document.createElement("div");
                     colInput.classList.add("col-md-8");
 
+                    const hasilPemeriksaanObj = Object.assign({}, ...dt.hasil_pemeriksaan);
+                    const existingValue = hasilPemeriksaanObj?.[item.objek] || "";
+                    console.log("existing")
+                    console.log(item.objek)
+                    console.log(existingValue)
+                    console.log(dt.hasil_pemeriksaan)
+
                     // RADIO
                     if (item.tipe_input === "radio") {
                         let options = item.value_tipe_input;
@@ -3293,6 +3307,10 @@
                                 input.value = val;
                                 input.id = `${item.objek}-${idx}`;
                                 input.style.marginRight = "0.25rem";
+
+                                if (existingValue === val) {
+                                    input.checked = true;
+                                }
 
                                 input.addEventListener("change", (e) => {
                                     oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
@@ -3319,6 +3337,8 @@
                         input.classList.add("form-control");
                         input.placeholder = "Maks 999,99";
                         input.inputMode = "decimal";
+
+                        if (existingValue) input.value = existingValue;
 
                         input.addEventListener("input", (e) => {
                             let inputValue = e.target.value;
@@ -3352,6 +3372,8 @@
                         // input.placeholder = "Maks 999";
                         input.inputMode = "numeric"; // karena tidak pakai koma/titik
 
+                        if (existingValue) input.value = existingValue;
+
                         input.addEventListener("input", (e) => {
                             let inputValue = e.target.value;
 
@@ -3373,6 +3395,8 @@
                         input.name = item.objek;
                         input.id = item.objek;
                         input.classList.add("form-control");
+
+                        if (existingValue) input.value = existingValue;
 
                         input.addEventListener("input", (e) => {
                             oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
@@ -3417,18 +3441,24 @@
                             select.add(option);
                         });
 
+                        select.value = existingValue;
+
+                        select.addEventListener("change", (e) => {
+                            oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
+                        });
+
                         colInput.appendChild(select);
                     }
 
-                    // TEXTAREA
-                    else if (item.tipe_input === "textarea") {
-                        const textarea = document.createElement("textarea");
-                        textarea.name = item.objek;
-                        textarea.id = item.objek;
-                        textarea.classList.add("form-control");
-                        textarea.rows = 3;
-                        colInput.appendChild(textarea);
-                    }
+                    // // TEXTAREA
+                    // else if (item.tipe_input === "textarea") {
+                    //     const textarea = document.createElement("textarea");
+                    //     textarea.name = item.objek;
+                    //     textarea.id = item.objek;
+                    //     textarea.classList.add("form-control");
+                    //     textarea.rows = 3;
+                    //     colInput.appendChild(textarea);
+                    // }
 
                     // Gabungkan ke wrapper
                     wrapper.appendChild(colLabel);
@@ -3437,14 +3467,6 @@
                     // Tambahkan ke container
                     container.appendChild(wrapper);
                 });
-
-                if (dt.hasil_pemeriksaan != null) {
-
-                }
-
-
-
-                // id_hasil_pemeriksaan
             }
         })
     }
