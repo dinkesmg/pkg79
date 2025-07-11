@@ -92,3 +92,4 @@ Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('ma
 Route::get('master_instrumen/detail', [MasterController::class, 'instrumen_detail'])->name('master_instrumen.detail');
 Route::get('master_instrumen_sekolah', [MasterController::class, 'instrumen_sekolah'])->name('master_instrumen_sekolah.data');
 Route::get('/master_puskesmas/search', [PuskesmasController::class, 'search']);
+Route::get('master_puskesmas', [PuskesmasController::class, 'all'])->name('master_puskesmas.data');

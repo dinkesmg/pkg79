@@ -255,14 +255,10 @@
             <label for="puskesmas" class="block uppercase text-gray-600 text-xs font-bold mb-2">
                 Puskesmas
             </label>
-            <input type="text" id="puskesmas" placeholder="Cari Puskesmas..."
-                class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-
-            <!-- Dropdown Result -->
-            <ul id="puskesmas-list"
-                class="absolute left-0 right-0 mt-1 space-y-2 bg-white border border-gray-200 rounded-md shadow-lg z-50 hidden max-h-60 overflow-y-auto">
-
-            </ul>
+            <select id="puskesmas"
+                class="border-0 px-3 py-3 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                <option value="">-- Pilih Puskesmas --</option>
+            </select>
         </div>
     </div>
     <div class="w-full lg:w-6/12 px-4">
@@ -309,6 +305,11 @@
                     <input type="radio" id="golongan_darah" name="golongan_darah" value="O"
                         class="form-radio text-pink-500">
                     <span class="ml-2">O</span>
+                </label>
+                <label class="inline-flex items-center">
+                    <input type="radio" id="golongan_darah" name="golongan_darah" value="O"
+                        class="form-radio text-pink-500">
+                    <span class="ml-2">Tidak Tahu</span>
                 </label>
             </div>
         </div>
@@ -599,14 +600,6 @@
                             <div class="flex justify-end items-center px-4 sm:px-6 py-4">
                                 <div class="w-full max-w-md">
                                     @include('CKG_Sekolah\signature-pad')
-                                    {{-- <p class="mb-2 text-sm font-semibold">Tanda Tangan</p> --}}
-                                    {{-- <div class="signature-container">
-                            <canvas id="signature-pad" width="480" height="200"></canvas>
-                        </div> --}}
-                                    {{-- <div class="mt-3 flex gap-3 justify-end">
-                            <button id="clear" type="button"
-                                class="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition">Clear</button>
-                        </div> --}}
                                 </div>
                             </div>
                             <div class="mt-2 flex flex-col space-y-3">
@@ -668,7 +661,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                             <p id="output_nik"></p>
                         </div>
                         <div>
-                            <p class="font-semibold">Tempat / Tanggal Lahir</p>
+                            <p class="font-semibold">Tempat / Tanggal Lahir Siswa</p>
                             <p id="output_tempat_tanggal_lahir"></p>
                         </div>
                         <div>
@@ -697,7 +690,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                         </div>
                         <div>
                             <p class="font-semibold">Puskesmas</p>
-                            <p id="output_puskesmas"></p>
+                            <p id="output_puskesmas_result"></p>
                         </div>
                         <div>
                             <p class="font-semibold">Jenis Kelamin</p>
@@ -1020,7 +1013,6 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                         `/master_kota_kab?search=&kode_parent=${kodeProv}`);
                     fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
 
-                    // Tunggu render sebelum lanjut
                     await new Promise(r => setTimeout(r, 10));
 
                     const kecamatanData = await fetchData(
@@ -1034,6 +1026,10 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     fillSelect(domKelurahan, kelurahanData, 'Pilih Kelurahan', kodeKel);
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
+
+                    // ✅ Simpan hasil salinan
+                    storeDomisili();
+
                 } else {
                     domProvinsi.selectedIndex = 0;
                     domKota.innerHTML = '';
@@ -1042,6 +1038,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     domAlamat.value = '';
                 }
             });
+
 
 
             // Chaining manual domisili (plus simpan)
@@ -1080,18 +1077,43 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
             // Saat load awal
             (async () => {
-                const provinsiData = await fetchData('/master_provinsi?search=');
-                fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi');
-
                 const fromStorage = localStorage.getItem('alamat_sesuai_kk');
                 checkbox.checked = fromStorage === 'true';
 
                 if (checkbox.checked) {
-                    checkbox.dispatchEvent(new Event('change'));
+                    // Tunggu elemen utama terisi
+                    const waitUntilFilled = async (el) => {
+                        let attempts = 0;
+                        while (!el.value && attempts < 20) {
+                            await new Promise(res => setTimeout(res, 50));
+                            attempts++;
+                        }
+                        return el.value;
+                    };
+
+                    const kodeProv = await waitUntilFilled(provinsi);
+                    const kodeKota = await waitUntilFilled(kota);
+                    const kodeKec = await waitUntilFilled(kecamatan);
+                    const kodeKel = await waitUntilFilled(kelurahan);
+
+                    const provinsiData = await fetchData('/master_provinsi?search=');
+                    const kotaData = await fetchData(`/master_kota_kab?search=&kode_parent=${kodeProv}`);
+                    const kecamatanData = await fetchData(
+                        `/master_kecamatan?search=&kode_parent=${kodeKota}`);
+                    const kelurahanData = await fetchData(
+                        `/master_kelurahan?search=&kode_parent=${kodeKec}`);
+
+                    await fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi', kodeProv);
+                    await fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
+                    await fillSelect(domKecamatan, kecamatanData, 'Pilih Kecamatan', kodeKec);
+                    await fillSelect(domKelurahan, kelurahanData, 'Pilih Kelurahan', kodeKel);
+
+                    if (alamat && domAlamat) domAlamat.value = alamat.value;
                 } else {
                     restoreDomisili();
                 }
             })();
+
         });
     </script>
 
@@ -1122,41 +1144,39 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $('#puskesmas').on('keyup', function() {
-            let query = $(this).val();
+        $(document).ready(function() {
+            $.ajax({
+                url: '/master_puskesmas',
+                type: 'GET',
+                success: function(data) {
+                    const select = $('#puskesmas');
+                    data.forEach(function(item) {
+                        select.append(`<option value="${item.id}">${item.nama}</option>`);
+                    });
 
-            if (query.length >= 2) {
-                $.ajax({
-                    url: '/master_puskesmas/search',
-                    type: 'GET',
-                    data: {
-                        q: query
-                    },
-                    success: function(data) {
-                        let list = $('#puskesmas-list');
-                        list.empty();
-                        data.forEach(function(item) {
-                            list.append(
-                                `<li class="list-group-item text-sm puskesmas-item hover:bg-gray-200 px-2 py-1" data-id="${item.id}">${item.nama}</li>`
-                            );
-                        });
-                        list.show();
+                    const savedValue = localStorage.getItem('puskesmas');
+                    if (savedValue) {
+                        select.val(savedValue);
                     }
-                });
-            } else {
-                $('#puskesmas-list').hide();
-            }
-        });
 
-        // Menangani klik pada hasil pencarian
-        $(document).on('click', '.puskesmas-item', function() {
-            const nama = $(this).text();
-            $('#puskesmas').val(nama);
-            $('#puskesmas-list').hide();
+                    const selectedText = $('#puskesmas option:selected').text();
+                    $('#output_puskesmas').text(selectedText);
+                    $('#output_puskesmas_result').text(selectedText);
+                },
+                error: function() {
+                    alert('Gagal mengambil data puskesmas.');
+                }
+            });
 
-            $('#output_puskesmas').text(nama);
+            $('#puskesmas').on('change', function() {
+                const selectedText = $('#puskesmas option:selected').text();
+                $('#output_puskesmas').text(selectedText);
+                $('#output_puskesmas_result').text(selectedText);
+                localStorage.setItem('puskesmas', this.value);
+            });
         });
     </script>
+
 
 
 

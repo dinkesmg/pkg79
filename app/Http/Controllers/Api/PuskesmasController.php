@@ -31,4 +31,11 @@ class PuskesmasController extends Controller
 
         return response()->json($results);
     }
+
+    public function all(Request $request)
+    {
+        $data = Puskesmas::select('id', 'nama', 'kode_kc')->get();
+
+        return response()->json($data);
+    }
 }
