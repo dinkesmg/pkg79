@@ -111,6 +111,8 @@
                             <span class="ml-2">Perempuan</span>
                         </label>
                     </div>
+
+                    <ul id="hasil-instrumen"></ul>
                 </div>
             </section>
 
@@ -131,6 +133,42 @@
                         document.getElementById('loadingScreen').style.display = 'none';
                         document.getElementById('mainContent').classList.remove('hidden');
                     }, 1000);
+                });
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const kelas = urlParams.get('kelas');
+                    const jkText = urlParams.get('jk');
+                    const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
+                    const hasilList = document.getElementById('hasil-instrumen');
+
+                    if (!kelas || !jenisKelamin) {
+                        hasilList.innerHTML = '<li>Parameter tidak lengkap.</li>';
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(`/instrumen-sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
+                        if (!res.ok) throw new Error('Gagal mengambil data');
+
+                        const data = await res.json();
+
+                        if (data.length === 0) {
+                            hasilList.innerHTML = '<li>Tidak ada instrumen ditemukan.</li>';
+                            return;
+                        }
+
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                            hasilList.appendChild(li);
+                        });
+
+                    } catch (err) {
+                        hasilList.innerHTML = `<li>Error: ${err.message}</li>`;
+                    }
                 });
             </script>
         </div>

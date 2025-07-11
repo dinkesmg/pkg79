@@ -1419,10 +1419,10 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             const kelas = localStorage.getItem('kelas') || '';
             const jenis_kelamin = localStorage.getItem('jenis_kelamin') || '';
 
-            clearFormStorage();
+            // clearFormStorage();
 
             window.location.href =
-                `/ckg_sekolah/screening?kelas=${encodeURIComponent(kelas)}&jk=${encodeURIComponent(jenis_kelamin)}`;
+                `/ckg_sekolah/screening?kelas=${encodeURIComponent(kelas)}&jk=${encodeURIComponent(jenis_kelamin)}&jenis=mandiri`;
         }
     </script>
 
