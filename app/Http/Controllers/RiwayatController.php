@@ -16,6 +16,7 @@ use App\Models\Mapping_kelurahan;
 use App\Models\MasterProvider;
 use App\Models\Puskesmas;
 use App\Models\PasienSekolah;
+use App\Models\RiwayatSekolah;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -316,6 +317,16 @@ class RiwayatController extends Controller
             $cari_pasien->save();
         }
 
+        $id_pasien_sekolah = null;
+        $cari_pasien_sekolah = PasienSekolah::where('nik', $request->nik_pasien)->first();
+        if ($cari_pasien_sekolah != null) {
+            $id_pasien_sekolah = $cari_pasien_sekolah->id;
+
+            $cari_pasien_sekolah->id_pasien = $id_pasien;
+            $cari_pasien_sekolah->save();
+        }
+
+
         // dd($cari_pasien);
         $cari_pemeriksa = Pemeriksa::where('nik', $request->nik_pemeriksa)->first();
         $id_pemeriksa = '';
@@ -336,6 +347,7 @@ class RiwayatController extends Controller
         $data->id_user = $id_user;
         $data->tanggal_pemeriksaan = $request->tanggal_pemeriksaan;
         $data->tempat_periksa = $request->tempat_periksa;
+        $data->nama_tempat_periksa = $request->nama_tempat_periksa;
         $data->nama_fktp_pj = $request->nama_fktp_pj;
         $data->id_pemeriksa = $id_pemeriksa;
         $data->id_pasien = $id_pasien;
@@ -343,6 +355,12 @@ class RiwayatController extends Controller
         $data->kesimpulan_hasil_pemeriksaan = $request->kesimpulan_hasil_pemeriksaan;
         $data->program_tindak_lanjut = $request->program_tindak_lanjut ? json_encode($request->program_tindak_lanjut) : null;
         $data->save();
+
+        if ($id_pasien_sekolah != null) {
+            $cari_riwayat_sekolah = RiwayatSekolah::where('id_pasien_sekolah', $id_pasien_sekolah)->latest()->first();
+            $cari_riwayat_sekolah->id_riwayat = $data->id;
+            $cari_riwayat_sekolah->save();
+        }
 
         return response()->json(['status' => "Berhasil", 'data' => $data]);
     }
@@ -436,6 +454,7 @@ class RiwayatController extends Controller
         $data->id_user = $id_user;
         $data->tanggal_pemeriksaan = $request->tanggal_pemeriksaan;
         $data->tempat_periksa = $request->tempat_periksa;
+        $data->nama_tempat_periksa = $request->nama_tempat_periksa;
         $data->nama_fktp_pj = $request->nama_fktp_pj;
         $data->id_pemeriksa = $id_pemeriksa;
         $data->id_pasien = $id_pasien;

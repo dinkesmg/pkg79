@@ -532,12 +532,54 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12">Nama Tempat Periksa:' + dt.nama_tempat_periksa + '</div>\
-            </div>\
-            <div class="row mb-3" style="display:flex">\
+            </div>'
+            html +=
+                '<div id="pasien_sekolah" style="display:none">\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Tempat Lahir</div>\
+                    <div class="col-8"><div id="tempat_lahir"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Golongan Darah</div>\
+                    <div class="col-8"><div id="golongan_darah"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Jenis Disabilitas</div>\
+                    <div class="col-8"><div id="jenis_disabilitas"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Nama Orang Tua / Wali</div>\
+                    <div class="col-8"><div id="nama_orangtua_wali"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Kelas</div>\
+                    <div class="col-8"><div id="kelas"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Sekolah</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Nama Sekolah</div>\
+                    <div class="col-8"><div id="nama_sekolah"></div></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-4">Alamat Sekolah</div>\
+                    <div class="col-8"><div id="alamat_sekolah"></div></div>\
+                </div>\
+            </div>'
+            html += '<div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Identitas Pemeriksa</b></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12">Nama:' + dt.pemeriksa_nama + '</div>\
+            </div>\
+            <div id="pasien_sekolah_hasil_skrining_mandiri" style="display:none">\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Hasil Skrining Mandiri</b></div>\
+                </div>\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12" id="hasil_skrining_mandiri"></div>\
+                </div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
@@ -545,8 +587,10 @@
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" style="width:100%">' + l_ar_hasil_pemeriksaan + '</div>\
             </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya</b></div>\
+            <div id="id_hasil_pemeriksaan_kesehatan_lainnya_asik" style="display:block">\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya</b></div>\
+                </div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" style="width:100%">' + l_ar_hasil_pemeriksaan_lainnya + '</div>\
@@ -664,8 +708,10 @@
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" style="width:100%">' + l_ar_hasil_pemeriksaan + '</div>\
             </div>\
-            <div class="row mb-3" style="display:flex">\
-                <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya</b></div>\
+            <div id="id_hasil_pemeriksaan_kesehatan_lainnya_asik" style="display:block">\
+                <div class="row mb-3" style="display:flex">\
+                    <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya</b></div>\
+                </div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12" style="width:100%">' + l_ar_hasil_pemeriksaan_lainnya + '</div>\
@@ -793,7 +839,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama Tempat Periksa</div>\
-                <div class="col-8"><input id="nama_tempat_periksa" type="text" value="' + ((dt.nama_tempat_periksa != "") != "" ? dt.nama_tempat_periksa : "") + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_tempat_periksa" type="text" value="' + (dt.nama_tempat_periksa != "" ? dt.nama_tempat_periksa : 'Puskesmas ' + auth_nama) + '" style="width:100%"></input></div>\
             </div>'
             html +=
                 '<div id="pasien_sekolah" style="display:none">\
@@ -842,19 +888,19 @@
             </div>'
             html +=
                 '<div id="pasien_sekolah_hasil_skrining_mandiri" style="display:none">\
-                <div class="row mb-3" style="display:flex">\
-                    <div class="col-12"><b>Hasil Skrining Mandiri</b></div>\
-                </div>\
-                <div class="row mb-3" style="display:flex">\
-                    <div class="col-12" id="hasil_skrining_mandiri"></div>\
+                    <div class="row mb-3" style="display:flex">\
+                        <div class="col-12"><b>Hasil Skrining Mandiri</b></div>\
+                    </div>\
+                    <div class="row mb-3" style="display:flex">\
+                        <div class="col-12" id="hasil_skrining_mandiri"></div>\
+                    </div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-12"><b>Hasil Pemeriksaan Kesehatan</b></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-12" id="id_hasil_pemeriksaan" style="width:100%"></div>\
-                </div>\
-            </div>'
+                </div>'
             if (fitur == "Edit") {
                 html +=
                     '<div id="id_hasil_pemeriksaan_kesehatan_lainnya_asik" style="display:block">\
@@ -912,12 +958,9 @@
         get_kecamatan_dom(dt.pasien_kecamatan_dom, dt.pasien_kecamatan_dom_nama)
         get_kelurahan_dom(dt.pasien_kelurahan_dom, dt.pasien_kelurahan_dom_nama)
 
-        if (dt.pasien_nik != null) {
-            oc_cari_nik()
+        if (dt.pasien_nik != null && dt.pasien_nik != '') {
+            oc_cari_nik(dt.pasien_nik, fitur)
         }
-
-
-
 
         $('#exampleModal').modal('show');
     }
@@ -1419,6 +1462,7 @@
         } else if (vurl == "tambah" || vurl == "edit") {
             let tanggal_pemeriksaan = $('#tanggal_pemeriksaan').val();
             let tempat_periksa = $('#tempat_periksa').val();
+            let nama_tempat_periksa = $('#nama_tempat_periksa').val();
             let nama_fktp_pj = $('#nama_fktp_pj').val();
 
             let nik_pemeriksa = $('#nik_pemeriksa').val();
@@ -1472,6 +1516,7 @@
                     id: id_riwayat,
                     tanggal_pemeriksaan: tanggal_pemeriksaan,
                     tempat_periksa: tempat_periksa,
+                    nama_tempat_periksa: nama_tempat_periksa,
                     nama_fktp_pj: nama_fktp_pj,
 
                     nik_pemeriksa: nik_pemeriksa,
@@ -1660,6 +1705,7 @@
     }
 
     function bbl() {
+        console.log("bbl")
         console.log(dt)
 
         let variabel = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu']
@@ -1730,6 +1776,9 @@
                     </div>\
                 </div>'
 
+        console.log(html)
+
+        console.log($('#id_hasil_pemeriksaan').length);
         $('#id_hasil_pemeriksaan').html(html);
 
         if (dt.id != "" && dt.hasil_pemeriksaan != null) {
@@ -3113,8 +3162,11 @@
         }
     }
 
-    function oc_cari_nik() {
+    function oc_cari_nik(nik_cari, fitur) {
         let nik = $('#nik_pasien').val()
+        if (nik_cari != null && nik_cari != '') {
+            nik = nik_cari
+        }
 
         console.log(nik)
         $.ajax({
@@ -3127,94 +3179,92 @@
             async: true,
             success: function(data) {
                 console.log(data)
-                $('#nik_pasien').val(data.nik)
-                $('#nama_pasien').val(data.nama)
-                $('#jenis_kelamin').val(data.jenis_kelamin)
-                $('#tgl_lahir').val(data.tgl_lahir)
-                if (data.ref_provinsi_ktp) {
-                    get_provinsi_ktp(data.ref_provinsi_ktp.kode_provinsi, data.ref_provinsi_ktp.nama)
-                }
-                if (data.ref_kota_kab_ktp) {
-                    get_kota_kab_ktp(data.ref_kota_kab_ktp.kode_kota_kab, data.ref_kota_kab_ktp.nama);
-                }
-                if (data.ref_kecamatan_ktp) {
-                    get_kecamatan_ktp(data.ref_kecamatan_ktp.kode_kecamatan, data.ref_kecamatan_ktp.nama);
-                }
-                if (data.ref_kelurahan_ktp) {
-                    get_kelurahan_ktp(data.ref_kelurahan_ktp.kode_kelurahan, data.ref_kelurahan_ktp.nama);
-                }
+                if (fitur != "Detail") {
+                    $('#nik_pasien').val(data.nik)
+                    $('#nama_pasien').val(data.nama)
+                    $('#jenis_kelamin').val(data.jenis_kelamin)
+                    $('#tgl_lahir').val(data.tgl_lahir)
+                    if (data.ref_provinsi_ktp) {
+                        get_provinsi_ktp(data.ref_provinsi_ktp.kode_provinsi, data.ref_provinsi_ktp.nama)
+                    }
+                    if (data.ref_kota_kab_ktp) {
+                        get_kota_kab_ktp(data.ref_kota_kab_ktp.kode_kota_kab, data.ref_kota_kab_ktp.nama);
+                    }
+                    if (data.ref_kecamatan_ktp) {
+                        get_kecamatan_ktp(data.ref_kecamatan_ktp.kode_kecamatan, data.ref_kecamatan_ktp.nama);
+                    }
+                    if (data.ref_kelurahan_ktp) {
+                        get_kelurahan_ktp(data.ref_kelurahan_ktp.kode_kelurahan, data.ref_kelurahan_ktp.nama);
+                    }
 
-                // Cek dan set data Domisili
-                if (data.ref_provinsi_dom) {
-                    get_provinsi_dom(data.ref_provinsi_dom.kode_provinsi, data.ref_provinsi_dom.nama);
-                }
-                if (data.ref_kota_kab_dom) {
-                    get_kota_kab_dom(data.ref_kota_kab_dom.kode_kota_kab, data.ref_kota_kab_dom.nama);
-                }
-                if (data.ref_kecamatan_dom) {
-                    get_kecamatan_dom(data.ref_kecamatan_dom.kode_kecamatan, data.ref_kecamatan_dom.nama);
-                }
-                if (data.ref_kelurahan_dom) {
-                    get_kelurahan_dom(data.ref_kelurahan_dom.kode_kelurahan, data.ref_kelurahan_dom.nama);
-                }
+                    // Cek dan set data Domisili
+                    if (data.ref_provinsi_dom) {
+                        get_provinsi_dom(data.ref_provinsi_dom.kode_provinsi, data.ref_provinsi_dom.nama);
+                    }
+                    if (data.ref_kota_kab_dom) {
+                        get_kota_kab_dom(data.ref_kota_kab_dom.kode_kota_kab, data.ref_kota_kab_dom.nama);
+                    }
+                    if (data.ref_kecamatan_dom) {
+                        get_kecamatan_dom(data.ref_kecamatan_dom.kode_kecamatan, data.ref_kecamatan_dom.nama);
+                    }
+                    if (data.ref_kelurahan_dom) {
+                        get_kelurahan_dom(data.ref_kelurahan_dom.kode_kelurahan, data.ref_kelurahan_dom.nama);
+                    }
 
-                $('#alamat_ktp').val(data.alamat_ktp)
-                $('#alamat_dom').val(data.alamat_dom)
-                $('#no_hp').val(data.no_hp)
+                    $('#alamat_ktp').val(data.alamat_ktp)
+                    $('#alamat_dom').val(data.alamat_dom)
+                    $('#no_hp').val(data.no_hp)
 
-                oc_tgl_pemeriksaan_dan_lahir()
+                    oc_tgl_pemeriksaan_dan_lahir()
 
-                if (typeof data.kelas !== 'undefined' && data.kelas !== '') {
-                    $('#id_hasil_pemeriksaan_kesehatan_lainnya_asik').hide()
-                    cek_pasien_sekolah(data)
-                    // $('#pasien_sekolah').show();
-                    // $('#pasien_sekolah_hasil_skrining_mandiri').show();
-
-                    // $('#nama_tempat_periksa').val(data.ref_sekolah.nama)
-
-                    // $('#tempat_lahir').val(data.tempat_lahir)
-                    // $('#golongan_darah').val(data.golongan_darah)
-                    // $('#jenis_disabilitas').val(data.jenis_disabilitas)
-                    // $('#nama_orangtua_wali').val(data.nama_orangtua_wali)
-                    // $('#kelas').val(data.kelas)
-
-                    // $('#nama_sekolah').val(data.ref_sekolah.nama)
-                    // $('#alamat_sekolah').val(data.ref_sekolah.alamat)
-
-                    // if (typeof data.ref_riwayat_sekolah !== 'undefined' && data.ref_riwayat_sekolah !== '') {
-                    //     let riwayat_sekolah = JSON.parse(data.ref_riwayat_sekolah.skrining_mandiri);
-                    //     // console.log(riwayat_sekolah)
-                    //     let html = '';
-                    //     riwayat_sekolah.forEach(obj => {
-                    //         for (const key in obj) {
-                    //             html += `${key}: ${obj[key]}<br>`;
-                    //         }
-                    //     });
-                    //     $('#hasil_skrining_mandiri').html(html)
-
+                    // if (typeof data.kelas !== 'undefined' && data.kelas !== '') {
+                    //     $('#id_hasil_pemeriksaan_kesehatan_lainnya_asik').hide()
+                    //     cek_pasien_sekolah(data)
                     // }
 
-                    // skrining_nakes_sekolah(data.kelas, data.jenis_kelamin)
+                }
+
+                if (typeof data.kelas !== 'undefined' && data.kelas !== '') {
+                    console.log("hide")
+                    $('#id_hasil_pemeriksaan_kesehatan_lainnya_asik').hide()
+                    console.log($("#id_hasil_pemeriksaan_kesehatan_lainnya_asik").length)
+                    cek_pasien_sekolah(data, fitur)
                 }
 
             }
         })
     }
 
-    function cek_pasien_sekolah(data) {
+    function cek_pasien_sekolah(data, fitur) {
+        console.log(fitur)
         $('#pasien_sekolah').show();
         $('#pasien_sekolah_hasil_skrining_mandiri').show();
 
-        $('#nama_tempat_periksa').val(data.ref_sekolah.nama)
+        if (fitur != "Detail") {
+            $('#tempat_periksa').val("Sekolah")
+            $('#nama_tempat_periksa').val(data.ref_sekolah.nama)
 
-        $('#tempat_lahir').val(data.tempat_lahir)
-        $('#golongan_darah').val(data.golongan_darah)
-        $('#jenis_disabilitas').val(data.jenis_disabilitas)
-        $('#nama_orangtua_wali').val(data.nama_orangtua_wali)
-        $('#kelas').val(data.kelas)
+            $('#tempat_lahir').val(data.tempat_lahir)
+            $('#golongan_darah').val(data.golongan_darah)
+            $('#jenis_disabilitas').val(data.jenis_disabilitas)
+            $('#nama_orangtua_wali').val(data.nama_orangtua_wali)
+            $('#kelas').val(data.kelas)
 
-        $('#nama_sekolah').val(data.ref_sekolah.nama)
-        $('#alamat_sekolah').val(data.ref_sekolah.alamat)
+            $('#nama_sekolah').val(data.ref_sekolah.nama)
+            $('#alamat_sekolah').val(data.ref_sekolah.alamat)
+        } else if (fitur == "Detail") {
+            $('#tempat_periksa').html("Sekolah")
+            $('#nama_tempat_periksa').html(data.ref_sekolah.nama)
+
+            $('#tempat_lahir').html(data.tempat_lahir)
+            $('#golongan_darah').html(data.golongan_darah)
+            $('#jenis_disabilitas').html(data.jenis_disabilitas)
+            $('#nama_orangtua_wali').html(data.nama_orangtua_wali)
+            $('#kelas').html(data.kelas)
+
+            $('#nama_sekolah').html(data.ref_sekolah.nama)
+            $('#alamat_sekolah').html(data.ref_sekolah.alamat)
+        }
 
         if (typeof data.ref_riwayat_sekolah !== 'undefined' && data.ref_riwayat_sekolah !== '') {
             let riwayat_sekolah = JSON.parse(data.ref_riwayat_sekolah.skrining_mandiri);
@@ -3229,7 +3279,9 @@
 
         }
 
-        skrining_nakes_sekolah(data.kelas, data.jenis_kelamin)
+        if (fitur != "Detail") {
+            skrining_nakes_sekolah(data.kelas, data.jenis_kelamin)
+        }
 
         console.log("hasil pemeriksaan")
         console.log(ar_hasil_pemeriksaan)
@@ -3471,24 +3523,7 @@
         })
     }
 
-    function data_hasil_pemeriksaan_nakes_sekolah(data) {
-
-    }
-
-    // var hasil_pemeriksaan_kesehatan_sekolah = []
-
     function oc_hasil_pemeriksaan_kesehatan_sekolah(objek, value) {
-        // const existing = hasil_pemeriksaan_kesehatan_sekolah.find((item) => Object.keys(item)[0] === objek);
-        // if (existing) {
-        //     existing[objek] = value;
-        // } else {
-        //     hasil_pemeriksaan_kesehatan_sekolah.push({
-        //         [objek]: value
-        //     });
-        // }
-
-        // console.log("hasilAkhir =", JSON.stringify(hasil_pemeriksaan_kesehatan_sekolah));
-
         const existing = ar_hasil_pemeriksaan.find((item) => Object.keys(item)[0] === objek);
         if (existing) {
             existing[objek] = value;
