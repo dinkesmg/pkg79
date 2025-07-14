@@ -47,43 +47,43 @@ class CkgSekolahController extends Controller
     {
         $data = $request->all();
 
-         $validated = $request->validate([
-        'nisn' => 'nullable|string|max:20',
-        'nik' => 'required|string|size:16',
-        'nama_lengkap' => 'required|string|max:255',
-        'tempat_lahir' => 'required|string|max:100',
-        'tanggal_lahir' => 'required|numeric|min:1|max:31',
-        'bulan_lahir' => 'required|numeric|min:1|max:12',
-        'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
-        // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
-        'jenis_kelamin' => 'required|string|in:L,P',
-        'provinsi' => 'required|string',
-        'kota' => 'required|string',
-        'kecamatan' => 'required|string',
-        'kelurahan' => 'required|string',
-        'alamat' => 'required|string',
+    //      $validated = $request->validate([
+    //     'nisn' => 'nullable|string|max:20',
+    //     'nik' => 'required|string|size:16',
+    //     'nama_lengkap' => 'required|string|max:255',
+    //     'tempat_lahir' => 'required|string|max:100',
+    //     'tanggal_lahir' => 'required|numeric|min:1|max:31',
+    //     'bulan_lahir' => 'required|numeric|min:1|max:12',
+    //     'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
+    //     // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
+    //     'jenis_kelamin' => 'required|string|in:L,P',
+    //     'provinsi' => 'required|string',
+    //     'kota' => 'required|string',
+    //     'kecamatan' => 'required|string',
+    //     'kelurahan' => 'required|string',
+    //     'alamat' => 'required|string',
 
-        'dom-provinsi' => 'required|string',
-        'dom-kota' => 'required|string',
-        'dom-kecamatan' => 'required|string',
-        'dom-kelurahan' => 'required|string',
-        'dom-alamat' => 'required|string',
+    //     'dom-provinsi' => 'required|string',
+    //     'dom-kota' => 'required|string',
+    //     'dom-kecamatan' => 'required|string',
+    //     'dom-kelurahan' => 'required|string',
+    //     'dom-alamat' => 'required|string',
 
-        'kelas' => 'required|numeric|min:1|max:12',
-        'disabilitas_tidak_ada' => 'required|in:true,false',
-        'nama_ortu_wali' => 'required|string|max:255',
-        'no_hp' => 'required|string|max:20',
+    //     'kelas' => 'required|numeric|min:1|max:12',
+    //     'disabilitas_tidak_ada' => 'required|in:true,false',
+    //     'nama_ortu_wali' => 'required|string|max:255',
+    //     'no_hp' => 'required|string|max:20',
 
-        'persetujuan' => 'required|in:Setuju,Tidak',
-        // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
-        'puskesmas' => 'required|integer',
-        'id_sekolah' => 'required|integer',
-    ], [
-        'nik.required' => 'NIK wajib diisi',
-        'nama_lengkap.required' => 'Nama lengkap wajib diisi',
-        'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
-        'tanda_tangan.required' => 'Tanda tangan wajib diisi',
-    ]);
+    //     'persetujuan' => 'required|in:Setuju,Tidak',
+    //     // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
+    //     'puskesmas' => 'required|integer',
+    //     'id_sekolah' => 'required|integer',
+    // ], [
+    //     'nik.required' => 'NIK wajib diisi',
+    //     'nama_lengkap.required' => 'Nama lengkap wajib diisi',
+    //     'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
+    //     'tanda_tangan.required' => 'Tanda tangan wajib diisi',
+    // ]);
 
 
         DB::beginTransaction();
