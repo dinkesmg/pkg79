@@ -47,43 +47,76 @@ class CkgSekolahController extends Controller
     {
         $data = $request->all();
 
-    //      $validated = $request->validate([
-    //     'nisn' => 'nullable|string|max:20',
-    //     'nik' => 'required|string|size:16',
-    //     'nama_lengkap' => 'required|string|max:255',
-    //     'tempat_lahir' => 'required|string|max:100',
-    //     'tanggal_lahir' => 'required|numeric|min:1|max:31',
-    //     'bulan_lahir' => 'required|numeric|min:1|max:12',
-    //     'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
-    //     // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
-    //     'jenis_kelamin' => 'required|string|in:L,P',
-    //     'provinsi' => 'required|string',
-    //     'kota' => 'required|string',
-    //     'kecamatan' => 'required|string',
-    //     'kelurahan' => 'required|string',
-    //     'alamat' => 'required|string',
 
-    //     'dom-provinsi' => 'required|string',
-    //     'dom-kota' => 'required|string',
-    //     'dom-kecamatan' => 'required|string',
-    //     'dom-kelurahan' => 'required|string',
-    //     'dom-alamat' => 'required|string',
 
-    //     'kelas' => 'required|numeric|min:1|max:12',
-    //     'disabilitas_tidak_ada' => 'required|in:true,false',
-    //     'nama_ortu_wali' => 'required|string|max:255',
-    //     'no_hp' => 'required|string|max:20',
+        $validated = $request->validate([
+            'nisn' => 'nullable|string|max:20',
+            'nik' => 'required|string|size:16',
+            'nama_lengkap' => 'required|string|max:255',
+            'tempat_lahir' => 'required|string|max:100',
+            'tanggal_lahir' => 'required|numeric|min:1|max:31',
+            'bulan_lahir' => 'required|numeric|min:1|max:12',
+            'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
+            // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
+            'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
+            'provinsi' => 'required|string',
+            'kota' => 'required|string',
+            'kecamatan' => 'required|string',
+            'kelurahan' => 'required|string',
+            'alamat' => 'required|string',
 
-    //     'persetujuan' => 'required|in:Setuju,Tidak',
-    //     // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
-    //     'puskesmas' => 'required|integer',
-    //     'id_sekolah' => 'required|integer',
-    // ], [
-    //     'nik.required' => 'NIK wajib diisi',
-    //     'nama_lengkap.required' => 'Nama lengkap wajib diisi',
-    //     'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
-    //     'tanda_tangan.required' => 'Tanda tangan wajib diisi',
-    // ]);
+            'dom-provinsi' => 'required|string',
+            'dom-kota' => 'required|string',
+            'dom-kecamatan' => 'required|string',
+            'dom-kelurahan' => 'required|string',
+            'dom-alamat' => 'required|string',
+
+            'kelas' => 'required|numeric|min:1|max:12',
+            // 'disabilitas_tidak_ada' => 'required|in:true,false',
+            'nama_ortu_wali' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:20',
+
+            'persetujuan' => 'required|in:Setuju,Tidak',
+            // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
+            'puskesmas' => 'required|integer',
+            // 'id_sekolah' => 'required|integer',
+        ], [
+            'nik.required' => 'NIK wajib diisi',
+            'nama_lengkap.required' => 'Nama lengkap wajib diisi',
+            'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
+            'tanda_tangan.required' => 'Tanda tangan wajib diisi',
+        ]);
+
+        $kelas = (int) $request->kelas;
+        $jenis_kelamin = $request->jenis_kelamin;
+        if ($jenis_kelamin === 'laki-laki') {
+            $jenis_kelamin = 'L';
+            $data['jenis_kelamin'] = "Laki-laki";
+        } elseif ($jenis_kelamin === 'perempuan') {
+            $jenis_kelamin = 'P';
+            $data['jenis_kelamin'] = "Perempuan";
+        }
+
+
+        $instrumen_sekolah = MasterInstrumenSekolah::whereJsonContains('kelas', $kelas)
+            ->whereJsonContains('jenis_kelamin', $jenis_kelamin)
+            ->where('jenis', 'mandiri')
+            ->get(['objek']);
+
+        // $status_objek = [];
+
+        // foreach ($instrumen_sekolah as $item) {
+        //     $objek = $item->objek;
+        //     $status_objek[$objek] = array_key_exists($objek, $data);
+        // }
+
+        $jumlah_instrumen_sekolah_yang_belum_diisi = $instrumen_sekolah->filter(function ($item) use ($data) {
+            return !array_key_exists($item->objek, $data);
+        })->count();
+        // dd($jumlah_instrumen_sekolah_yang_belum_diisi);
+        if ($jumlah_instrumen_sekolah_yang_belum_diisi > 0) {
+            return response()->json(['success' => false, 'message' => 'Semua Kuesioner Harus Diisi']);
+        }
 
 
         DB::beginTransaction();
@@ -125,7 +158,7 @@ class CkgSekolahController extends Controller
             $persetujuan->persetujuan = ($data['persetujuan'] ?? '') === 'Setuju' ? 1 : 0;
             $persetujuan->save();
 
-            
+
             $ttd = new FormPersetujuanTandaTangan();
             $ttd->id_form_persetujuan = $persetujuan->id;
             $ttd->value = $data['tanda_tangan'] ?? null;
@@ -148,7 +181,7 @@ class CkgSekolahController extends Controller
             $riwayat = new RiwayatSekolah();
             $riwayat->id_pasien_sekolah = $pasien->id;
             $riwayat->id_puskesmas = $data['puskesmas'] ?? null;
-            
+
             $flattened = [];
 
             foreach ($jawaban as $key => $value) {
@@ -183,6 +216,4 @@ class CkgSekolahController extends Controller
         }
         return null;
     }
-
-    
 }

@@ -13,8 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
-    <link rel="stylesheet"
-        href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     {{-- @include('layouts.header') --}}
 </head>
 
@@ -114,9 +113,14 @@
 
                     <ul id="hasil-instrumen"></ul>
                 </div>
-                <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
+                <!-- <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
                     Kirim Data
-                </button>
+                </button> -->
+                <div class="flex justify-center mt-6 mb-7">
+                    <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
+                        Kirim Data
+                    </button>
+                </div>
             </section>
 
 
@@ -140,6 +144,89 @@
             </script>
 
             <script>
+                // document.addEventListener('DOMContentLoaded', async () => {
+                //     const urlParams = new URLSearchParams(window.location.search);
+                //     const kelas = urlParams.get('kelas');
+                //     const jkText = urlParams.get('jk');
+                //     const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
+                //     const hasilList = document.getElementById('hasil-instrumen');
+
+                //     if (!kelas || !jenisKelamin) {
+                //         hasilList.innerHTML = '<li>Parameter tidak lengkap.</li>';
+                //         return;
+                //     }
+
+                //     try {
+                //         const res = await fetch(`/instrumen_sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
+                //         if (!res.ok) throw new Error('Gagal mengambil data');
+
+                //         const data = await res.json();
+
+                //         if (data.length === 0) {
+                //             hasilList.innerHTML = '<li>Tidak ada instrumen ditemukan.</li>';
+                //             return;
+                //         }
+
+                //         data.data.forEach(item => {
+                //             const li = document.createElement('li');
+                //             const inputName = `${item.objek}`;
+
+                //             const label = document.createElement('label');
+                //             label.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                //             li.appendChild(label);
+                //             li.appendChild(document.createElement('br'));
+
+                //             // Get saved value from localStorage
+                //             const savedValue = localStorage.getItem(inputName);
+
+                //             if (item.tipe_input === 'radio') {
+                //                 ['YA', 'TIDAK'].forEach(value => {
+                //                     const radio = document.createElement('input');
+                //                     radio.type = 'radio';
+                //                     radio.className = 'form-checkbox text-pink-500';
+                //                     radio.name = inputName;
+                //                     radio.value = value;
+
+                //                     if (savedValue === value) {
+                //                         radio.checked = true;
+                //                     }
+
+                //                     radio.addEventListener('change', () => {
+                //                         localStorage.setItem(inputName, radio.value);
+                //                     });
+
+                //                     const labelRadio = document.createElement('label');
+                //                     labelRadio.textContent = ` ${value} `;
+                //                     labelRadio.prepend(radio);
+
+                //                     li.appendChild(labelRadio);
+                //                 });
+
+                //             } else if (item.tipe_input === 'number') {
+                //                 const input = document.createElement('input');
+                //                 input.type = 'number';
+                //                 input.name = inputName;
+
+                //                 if (savedValue !== null) {
+                //                     input.value = savedValue;
+                //                 }
+
+                //                 input.addEventListener('input', () => {
+                //                     localStorage.setItem(inputName, input.value);
+                //                 });
+
+                //                 li.appendChild(input);
+                //             }
+
+                //             hasilList.appendChild(li);
+                //         });
+
+
+                //     } catch (err) {
+                //         hasilList.innerHTML = `<li>Error: ${err.message}</li>`;
+                //     }
+                // });
+
                 document.addEventListener('DOMContentLoaded', async () => {
                     const urlParams = new URLSearchParams(window.location.search);
                     const kelas = urlParams.get('kelas');
@@ -158,19 +245,21 @@
 
                         const data = await res.json();
 
-                        if (data.length === 0) {
+                        if (data.length === 0 || data.data.length === 0) {
                             hasilList.innerHTML = '<li>Tidak ada instrumen ditemukan.</li>';
                             return;
                         }
 
                         data.data.forEach(item => {
                             const li = document.createElement('li');
+                            li.classList.add('mb-4'); // jarak antar instrumen
+
                             const inputName = `${item.objek}`;
 
                             const label = document.createElement('label');
                             label.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                            label.classList.add('block', 'font-medium', 'mb-1');
                             li.appendChild(label);
-                            li.appendChild(document.createElement('br'));
 
                             // Get saved value from localStorage
                             const savedValue = localStorage.getItem(inputName);
@@ -179,7 +268,7 @@
                                 ['YA', 'TIDAK'].forEach(value => {
                                     const radio = document.createElement('input');
                                     radio.type = 'radio';
-                                    radio.className = 'form-checkbox text-pink-500';
+                                    radio.className = 'form-radio text-pink-500';
                                     radio.name = inputName;
                                     radio.value = value;
 
@@ -194,6 +283,7 @@
                                     const labelRadio = document.createElement('label');
                                     labelRadio.textContent = ` ${value} `;
                                     labelRadio.prepend(radio);
+                                    labelRadio.classList.add('mr-4', 'inline-flex', 'items-center');
 
                                     li.appendChild(labelRadio);
                                 });
@@ -202,6 +292,7 @@
                                 const input = document.createElement('input');
                                 input.type = 'number';
                                 input.name = inputName;
+                                input.classList.add('border', 'rounded', 'px-2', 'py-1', 'mt-1', 'w-32');
 
                                 if (savedValue !== null) {
                                     input.value = savedValue;
@@ -217,45 +308,45 @@
                             hasilList.appendChild(li);
                         });
 
-
                     } catch (err) {
-                        hasilList.innerHTML = `<li>Error: ${err.message}</li>`;
+                        hasilList.innerHTML = `<li class="text-red-500">Error: ${err.message}</li>`;
                     }
                 });
             </script>
 
             <!-- kirim data -->
             <script>
-            function kirimData() {
-                // Ambil semua key dari localStorage
-                const data = {};
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    data[key] = localStorage.getItem(key);
-                }
-
-                fetch('/ckg_sekolah/simpan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.json())
-                .then(res => {
-                    if (res.success) {
-                        alert('Data berhasil disimpan!');
-                        // localStorage.clear(); // jika ingin hapus setelah submit
-                    } else {
-                        alert('Gagal menyimpan data.');
+                function kirimData() {
+                    // Ambil semua key dari localStorage
+                    const data = {};
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        data[key] = localStorage.getItem(key);
                     }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert('Terjadi kesalahan saat menyimpan data.');
-                });
-            }
+
+                    fetch('/ckg_sekolah/simpan', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify(data)
+                        })
+                        .then(res => res.json())
+                        .then(res => {
+                            if (res.success) {
+                                alert('Data berhasil disimpan!');
+                                // localStorage.clear(); // jika ingin hapus setelah submit
+                            } else {
+                                alert('Gagal menyimpan data.');
+                            }
+                        })
+                        .catch(err => {
+                            console.error(err);
+                            alert('Terjadi kesalahan saat menyimpan data.');
+                        });
+                }
             </script>
 
         </div>

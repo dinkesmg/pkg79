@@ -20,7 +20,8 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         $this->periodeDari = $periodeDari;
         $this->periodeSampai = $periodeSampai;
         $this->instrumen = $instrumen;
-        $this->sub_instrumen = $sub_instrumen;
+        // $this->sub_instrumen = $sub_instrumen;
+        $this->sub_instrumen = $sub_instrumen !== 'Pilih' ? $sub_instrumen : null;
         $this->jenis = $jenis;
         $this->kecamatan_ktp = $kecamatan_ktp;
         $this->kelurahan_ktp = $kelurahan_ktp;
@@ -72,32 +73,65 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             });
         }
 
+        // if (!empty($instrumen)) {
+        //     $data = $query->get()->filter(function ($item) use ($instrumen, $sub_instrumen) {
+        //         // Pastikan JSON tidak null atau kosong sebelum di-decode
+        //         if (empty($item->hasil_pemeriksaan)) {
+        //             return false;
+        //         }
+
+        //         // Decode JSON dengan error handling
+        //         $hasil_pemeriksaan = json_decode($item->hasil_pemeriksaan, true);
+
+        //         // Jika JSON tidak valid, return false
+        //         if (json_last_error() !== JSON_ERROR_NONE) {
+        //             return false;
+        //         }
+
+        //         // Gunakan foreach untuk mencari instrumen dalam JSON array
+        //         foreach ($hasil_pemeriksaan as $pemeriksaan) {
+        //             // if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
+        //             //     return true;
+        //             // }
+        //             if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
+        //                 if (empty($sub_instrumen) && $pemeriksaan[$instrumen]) {
+        //                     return true;
+        //                 }
+        //                 // Jika sub_instrumen tidak kosong dan nilainya cocok
+        //                 if (!empty($sub_instrumen) && $pemeriksaan[$instrumen] == $sub_instrumen) {
+        //                     return true;
+        //                 }
+        //             }
+        //         }
+
+        //         return false;
+        //     })->values();
+        // }
         if (!empty($instrumen)) {
             $data = $query->get()->filter(function ($item) use ($instrumen, $sub_instrumen) {
-                // Pastikan JSON tidak null atau kosong sebelum di-decode
-                if (empty($item->hasil_pemeriksaan)) {
+                // Pastikan hasil_pemeriksaan ada dan bertipe string JSON
+                if (empty($item->hasil_pemeriksaan) || !is_string($item->hasil_pemeriksaan)) {
                     return false;
                 }
 
-                // Decode JSON dengan error handling
+                // Decode JSON
                 $hasil_pemeriksaan = json_decode($item->hasil_pemeriksaan, true);
 
-                // Jika JSON tidak valid, return false
-                if (json_last_error() !== JSON_ERROR_NONE) {
+                // Validasi hasil decode
+                if (json_last_error() !== JSON_ERROR_NONE || !is_array($hasil_pemeriksaan)) {
                     return false;
                 }
 
-                // Gunakan foreach untuk mencari instrumen dalam JSON array
+                // Periksa isi array hasil_pemeriksaan
                 foreach ($hasil_pemeriksaan as $pemeriksaan) {
-                    // if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
-                    //     return true;
-                    // }
-                    if (is_array($pemeriksaan) && isset($pemeriksaan[$instrumen])) {
-                        if (empty($sub_instrumen) && $pemeriksaan[$instrumen]) {
-                            return true;
+                    if (is_array($pemeriksaan) && array_key_exists($instrumen, $pemeriksaan)) {
+                        // Jika sub_instrumen kosong/null, cukup ada nilainya
+                        if ($sub_instrumen === null || $sub_instrumen === '') {
+                            return !empty($pemeriksaan[$instrumen]);
                         }
-                        // Jika sub_instrumen tidak kosong dan nilainya cocok
-                        if (!empty($sub_instrumen) && $pemeriksaan[$instrumen] == $sub_instrumen) {
+
+                        // Jika sub_instrumen cocok persis
+                        if ($pemeriksaan[$instrumen] == $sub_instrumen) {
                             return true;
                         }
                     }
@@ -144,96 +178,172 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
     /**
      * Kustomisasi data yang diekspor.
      */
+    // public function map($riwayat): array
+    // {
+    //     $hasilPemeriksaan = json_decode($riwayat->hasil_pemeriksaan, true);
+
+    //     // $format_hasil_pemeriksaan = $hasilPemeriksaan
+    //     //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+    //     //     : '-';
+    //     $format_hasil_pemeriksaan = is_array($hasilPemeriksaan)
+    //         ? implode(', ', array_map(
+    //             fn ($item) => is_array($item)
+    //                 ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+    //                 : (string)$item,
+    //             $hasilPemeriksaan
+    //         ))
+    //         : '-';
+
+    //     $hasilPemeriksaanLainnya = json_decode($riwayat->hasil_pemeriksaan_lainnya, true);
+
+    //     // $format_hasil_pemeriksaan_lainnya = $hasilPemeriksaanLainnya
+    //     //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
+    //     //     : '-';
+
+    //     $format_hasil_pemeriksaan_lainnya = is_array($hasilPemeriksaanLainnya)
+    //         ? implode(', ', array_map(
+    //             fn ($item) => is_array($item)
+    //                 ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+    //                 : (string)$item,
+    //             $hasilPemeriksaanLainnya
+    //         ))
+    //         : '-';
+
+
+    //     $program_tindak_lanjut = json_decode($riwayat->program_tindak_lanjut, true);
+
+    //     // $format_program_tindak_lanjut = $program_tindak_lanjut 
+    //     //     ? implode(', ', array_map(fn($item) => implode(', ', array_map(fn($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan)) 
+    //     //     : '-';
+    //     // $format_program_tindak_lanjut = is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)
+    //     //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $program_tindak_lanjut))
+    //     //     : '-';
+
+    //     $format_program_tindak_lanjut = is_array($program_tindak_lanjut)
+    //         ? implode(', ', array_map(
+    //             fn ($item) => is_array($item)
+    //                 ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+    //                 : (string)$item,
+    //             $program_tindak_lanjut
+    //         ))
+    //         : '-';
+
+    //     if (isset($riwayat->pasien) && isset($riwayat->pasien->tgl_lahir) && isset($riwayat->tanggal_pemeriksaan)) {
+    //         $tglLahir = Carbon::parse($riwayat->pasien->tgl_lahir);
+    //         $tglPeriksa = Carbon::parse($riwayat->tanggal_pemeriksaan);
+
+    //         $diff = $tglLahir->diff($tglPeriksa);
+
+    //         $umur = $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
+    //     } else {
+    //         $umur = '';
+    //     }
+
+    //     return [
+    //         ++$this->counter,
+    //         $riwayat->user ? $riwayat->user->nama : "-",
+    //         // $riwayat->tanggal_pemeriksaan,
+    //         Carbon::parse($riwayat->tanggal_pemeriksaan)->format('d-m-Y'),
+    //         $riwayat->tempat_periksa,
+    //         $riwayat->nama_fktp_pj,
+    //         isset($riwayat->pasien) && isset($riwayat->pasien->ref_bpjs) && isset($riwayat->pasien->ref_bpjs->nmprovider) ? $riwayat->pasien->ref_bpjs->nmprovider : "-",
+    //         isset($riwayat->pasien->nama) ? $riwayat->pasien->nama : "-",
+    //         isset($riwayat->pasien->jenis_kelamin) ? $riwayat->pasien->jenis_kelamin : "-",
+    //         // isset($riwayat->pasien->tgl_lahir) ? Carbon::parse($riwayat->pasien->tgl_lahir)->format('d-m-Y'):"-", 
+    //         $umur,
+    //         isset($riwayat->pasien->ref_provinsi_ktp->nama) ? $riwayat->pasien->ref_provinsi_ktp->nama : '-',
+    //         isset($riwayat->pasien->ref_kota_kab_ktp->nama) ? $riwayat->pasien->ref_kota_kab_ktp->nama : '-',
+    //         isset($riwayat->pasien->ref_kecamatan_ktp->nama) ? $riwayat->pasien->ref_kecamatan_ktp->nama : '-',
+    //         isset($riwayat->pasien->ref_kelurahan_ktp->nama) ? $riwayat->pasien->ref_kelurahan_ktp->nama : '-',
+    //         isset($riwayat->pasien->alamat_ktp) ? $riwayat->pasien->alamat_ktp : "-",
+
+    //         isset($riwayat->pasien->ref_kecamatan_dom->nama) ? $riwayat->pasien->ref_kecamatan_dom->nama : '-',
+    //         isset($riwayat->pasien->ref_kelurahan_dom->nama) ? $riwayat->pasien->ref_kelurahan_dom->nama : '-',
+    //         isset($riwayat->pasien->alamat_dom) ? $riwayat->pasien->alamat_dom : "-",
+
+    //         isset($riwayat->pasien->no_hp) ? $riwayat->pasien->no_hp : "-",
+    //         // $riwayat->hasil_pemeriksaan,
+    //         $format_hasil_pemeriksaan,
+    //         // $riwayat->hasil_pemeriksaan_lainnya,
+    //         $format_hasil_pemeriksaan_lainnya,
+    //         $riwayat->kesimpulan_hasil_pemeriksaan,
+    //         // $riwayat->program_tindak_lanjut,
+    //         $format_program_tindak_lanjut,
+    //     ];
+    // }
+
     public function map($riwayat): array
     {
-        $hasilPemeriksaan = json_decode($riwayat->hasil_pemeriksaan, true);
+        $this->counter++;
 
-        // $format_hasil_pemeriksaan = $hasilPemeriksaan
-        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
-        //     : '-';
-        $format_hasil_pemeriksaan = is_array($hasilPemeriksaan)
-            ? implode(', ', array_map(
+        // Hasil Pemeriksaan
+        $hasilPemeriksaan = json_decode($riwayat->hasil_pemeriksaan, true);
+        $format_hasil_pemeriksaan = '-';
+        if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaan) && !empty($hasilPemeriksaan)) {
+            $format_hasil_pemeriksaan = implode(', ', array_map(
                 fn ($item) => is_array($item)
                     ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $hasilPemeriksaan
-            ))
-            : '-';
+            ));
+        }
 
+        // Hasil Pemeriksaan Lainnya
         $hasilPemeriksaanLainnya = json_decode($riwayat->hasil_pemeriksaan_lainnya, true);
-
-        // $format_hasil_pemeriksaan_lainnya = $hasilPemeriksaanLainnya
-        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan))
-        //     : '-';
-        
-        $format_hasil_pemeriksaan_lainnya = is_array($hasilPemeriksaanLainnya)
-            ? implode(', ', array_map(
+        $format_hasil_pemeriksaan_lainnya = '-';
+        if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaanLainnya) && !empty($hasilPemeriksaanLainnya)) {
+            $format_hasil_pemeriksaan_lainnya = implode(', ', array_map(
                 fn ($item) => is_array($item)
                     ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $hasilPemeriksaanLainnya
-            ))
-            : '-';
-        
+            ));
+        }
 
+        // Program Tindak Lanjut
         $program_tindak_lanjut = json_decode($riwayat->program_tindak_lanjut, true);
-
-        // $format_program_tindak_lanjut = $program_tindak_lanjut 
-        //     ? implode(', ', array_map(fn($item) => implode(', ', array_map(fn($key, $value) => "$key: $value", array_keys($item), $item)), $hasilPemeriksaan)) 
-        //     : '-';
-        // $format_program_tindak_lanjut = is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)
-        //     ? implode(', ', array_map(fn ($item) => implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item)), $program_tindak_lanjut))
-        //     : '-';
-        
-        $format_program_tindak_lanjut = is_array($program_tindak_lanjut)
-            ? implode(', ', array_map(
+        $format_program_tindak_lanjut = '-';
+        if (json_last_error() === JSON_ERROR_NONE && is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)) {
+            $format_program_tindak_lanjut = implode(', ', array_map(
                 fn ($item) => is_array($item)
                     ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $program_tindak_lanjut
-            ))
-            : '-';
+            ));
+        }
 
+        // Umur
         if (isset($riwayat->pasien) && isset($riwayat->pasien->tgl_lahir) && isset($riwayat->tanggal_pemeriksaan)) {
             $tglLahir = Carbon::parse($riwayat->pasien->tgl_lahir);
             $tglPeriksa = Carbon::parse($riwayat->tanggal_pemeriksaan);
-
             $diff = $tglLahir->diff($tglPeriksa);
-
             $umur = $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
         } else {
-            $umur = '';
+            $umur = '-';
         }
 
         return [
-            ++$this->counter,
-            $riwayat->user ? $riwayat->user->nama : "-",
-            // $riwayat->tanggal_pemeriksaan,
+            $this->counter,
+            $riwayat->user->nama ?? '-',
             Carbon::parse($riwayat->tanggal_pemeriksaan)->format('d-m-Y'),
-            $riwayat->tempat_periksa,
-            $riwayat->nama_fktp_pj,
-            isset($riwayat->pasien) && isset($riwayat->pasien->ref_bpjs) && isset($riwayat->pasien->ref_bpjs->nmprovider) ? $riwayat->pasien->ref_bpjs->nmprovider : "-",
-            isset($riwayat->pasien->nama) ? $riwayat->pasien->nama : "-",
-            isset($riwayat->pasien->jenis_kelamin) ? $riwayat->pasien->jenis_kelamin : "-",
-            // isset($riwayat->pasien->tgl_lahir) ? Carbon::parse($riwayat->pasien->tgl_lahir)->format('d-m-Y'):"-", 
+            $riwayat->tempat_periksa ?? '-',
+            $riwayat->nama_fktp_pj ?? '-',
+            $riwayat->pasien->ref_bpjs->nmprovider ?? '-',
+            $riwayat->pasien->nama ?? '-',
+            $riwayat->pasien->jenis_kelamin ?? '-',
             $umur,
-            isset($riwayat->pasien->ref_provinsi_ktp->nama) ? $riwayat->pasien->ref_provinsi_ktp->nama : '-',
-            isset($riwayat->pasien->ref_kota_kab_ktp->nama) ? $riwayat->pasien->ref_kota_kab_ktp->nama : '-',
-            isset($riwayat->pasien->ref_kecamatan_ktp->nama) ? $riwayat->pasien->ref_kecamatan_ktp->nama : '-',
-            isset($riwayat->pasien->ref_kelurahan_ktp->nama) ? $riwayat->pasien->ref_kelurahan_ktp->nama : '-',
-            isset($riwayat->pasien->alamat_ktp) ? $riwayat->pasien->alamat_ktp : "-",
-            
-            isset($riwayat->pasien->ref_kecamatan_dom->nama) ? $riwayat->pasien->ref_kecamatan_dom->nama : '-',
-            isset($riwayat->pasien->ref_kelurahan_dom->nama) ? $riwayat->pasien->ref_kelurahan_dom->nama : '-',
-            isset($riwayat->pasien->alamat_dom) ? $riwayat->pasien->alamat_dom : "-",
-            
-            isset($riwayat->pasien->no_hp) ? $riwayat->pasien->no_hp : "-",
-            // $riwayat->hasil_pemeriksaan,
+            $riwayat->pasien->ref_provinsi_ktp->nama ?? '-',
+            $riwayat->pasien->ref_kota_kab_ktp->nama ?? '-',
+            $riwayat->pasien->ref_kecamatan_ktp->nama ?? '-',
+            $riwayat->pasien->ref_kelurahan_ktp->nama ?? '-',
+            $riwayat->pasien->alamat_ktp ?? '-',
+            $riwayat->pasien->ref_kecamatan_dom->nama ?? '-',
+            $riwayat->pasien->ref_kelurahan_dom->nama ?? '-',
+            $riwayat->pasien->alamat_dom ?? '-',
+            $riwayat->pasien->no_hp ?? '-',
             $format_hasil_pemeriksaan,
-            // $riwayat->hasil_pemeriksaan_lainnya,
             $format_hasil_pemeriksaan_lainnya,
-            $riwayat->kesimpulan_hasil_pemeriksaan,
-            // $riwayat->program_tindak_lanjut,
+            $riwayat->kesimpulan_hasil_pemeriksaan ?? '-',
             $format_program_tindak_lanjut,
         ];
     }
