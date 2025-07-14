@@ -235,7 +235,7 @@
                     const hasilList = document.getElementById('hasil-instrumen');
 
                     if (!kelas || !jenisKelamin) {
-                        hasilList.innerHTML = '<li>Parameter tidak lengkap.</li>';
+                        hasilList.innerHTML = '<li class="text-red-600">Parameter tidak lengkap.</li>';
                         return;
                     }
 
@@ -246,13 +246,13 @@
                         const data = await res.json();
 
                         if (data.length === 0 || data.data.length === 0) {
-                            hasilList.innerHTML = '<li>Tidak ada instrumen ditemukan.</li>';
+                            hasilList.innerHTML = '<li class="text-gray-600">Tidak ada instrumen ditemukan.</li>';
                             return;
                         }
 
                         data.data.forEach(item => {
                             const li = document.createElement('li');
-                            li.classList.add('mb-4'); // jarak antar instrumen
+                            li.classList.add('mb-4'); // Jarak antar instrumen
 
                             const inputName = `${item.objek}`;
 
@@ -261,11 +261,13 @@
                             label.classList.add('block', 'font-medium', 'mb-1');
                             li.appendChild(label);
 
-                            // Get saved value from localStorage
                             const savedValue = localStorage.getItem(inputName);
 
                             if (item.tipe_input === 'radio') {
                                 ['YA', 'TIDAK'].forEach(value => {
+                                    const wrapper = document.createElement('label');
+                                    wrapper.classList.add('inline-flex', 'items-center', 'gap-2', 'mr-4'); // spacing radio + label
+
                                     const radio = document.createElement('input');
                                     radio.type = 'radio';
                                     radio.className = 'form-radio text-pink-500';
@@ -280,12 +282,11 @@
                                         localStorage.setItem(inputName, radio.value);
                                     });
 
-                                    const labelRadio = document.createElement('label');
-                                    labelRadio.textContent = ` ${value} `;
-                                    labelRadio.prepend(radio);
-                                    labelRadio.classList.add('mr-4', 'inline-flex', 'items-center');
+                                    const text = document.createTextNode(value);
+                                    wrapper.appendChild(radio);
+                                    wrapper.appendChild(text);
 
-                                    li.appendChild(labelRadio);
+                                    li.appendChild(wrapper);
                                 });
 
                             } else if (item.tipe_input === 'number') {

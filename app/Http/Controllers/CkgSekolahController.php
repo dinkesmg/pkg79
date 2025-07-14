@@ -122,32 +122,36 @@ class CkgSekolahController extends Controller
         DB::beginTransaction();
         try {
             // Simpan data pasien_sekolah
-            $pasien = new PasienSekolah();
-            $pasien->nisn = $data['nisn'] ?? null;
-            $pasien->nik = $data['nik'] ?? null;
-            $pasien->nama = $data['nama_lengkap'] ?? null;
-            $pasien->tempat_lahir = $data['tempat_lahir'] ?? null;
-            $pasien->tanggal_lahir = $this->formatTanggal($data);
-            $pasien->golongan_darah = $data['golongan_darah'] ?? null;
-            $pasien->jenis_kelamin = $data['jenis_kelamin'] ?? null;
+            $pasien = PasienSekolah::where('nik', $data['nik'])->first();
+            if ($pasien != null) {
+                $pasien = new PasienSekolah();
+                $pasien->nisn = $data['nisn'] ?? null;
+                $pasien->nik = $data['nik'] ?? null;
+                $pasien->nama = $data['nama_lengkap'] ?? null;
+                $pasien->tempat_lahir = $data['tempat_lahir'] ?? null;
+                $pasien->tanggal_lahir = $this->formatTanggal($data);
+                $pasien->golongan_darah = $data['golongan_darah'] ?? null;
+                $pasien->jenis_kelamin = $data['jenis_kelamin'] ?? null;
 
-            $pasien->provinsi_ktp = $data['provinsi'] ?? null;
-            $pasien->kota_kab_ktp = $data['kota'] ?? null;
-            $pasien->kecamatan_ktp = $data['kecamatan'] ?? null;
-            $pasien->kelurahan_ktp = $data['kelurahan'] ?? null;
-            $pasien->alamat_ktp = $data['alamat'] ?? null;
+                $pasien->provinsi_ktp = $data['provinsi'] ?? null;
+                $pasien->kota_kab_ktp = $data['kota'] ?? null;
+                $pasien->kecamatan_ktp = $data['kecamatan'] ?? null;
+                $pasien->kelurahan_ktp = $data['kelurahan'] ?? null;
+                $pasien->alamat_ktp = $data['alamat'] ?? null;
 
-            $pasien->provinsi_dom = $data['dom-provinsi'] ?? null;
-            $pasien->kota_kab_dom = $data['dom-kota'] ?? null;
-            $pasien->kecamatan_dom = $data['dom-kecamatan'] ?? null;
-            $pasien->kelurahan_dom = $data['dom-kelurahan'] ?? null;
-            $pasien->alamat_dom = $data['dom-alamat'] ?? null;
+                $pasien->provinsi_dom = $data['dom-provinsi'] ?? null;
+                $pasien->kota_kab_dom = $data['dom-kota'] ?? null;
+                $pasien->kecamatan_dom = $data['dom-kecamatan'] ?? null;
+                $pasien->kelurahan_dom = $data['dom-kelurahan'] ?? null;
+                $pasien->alamat_dom = $data['dom-alamat'] ?? null;
 
-            $pasien->kelas = $data['kelas'] ?? null;
-            $pasien->jenis_disabilitas = (isset($data['disabilitas_tidak_ada']) && $data['disabilitas_tidak_ada'] === 'true') ? 'Tidak Ada' : 'Ada';
-            $pasien->nama_orangtua_wali = $data['nama_ortu_wali'] ?? null;
-            $pasien->telp = $data['no_hp'] ?? null;
-            $pasien->save();
+                $pasien->kelas = $data['kelas'] ?? null;
+                $pasien->jenis_disabilitas = (isset($data['disabilitas_tidak_ada']) && $data['disabilitas_tidak_ada'] === 'true') ? 'Tidak Ada' : 'Ada';
+                $pasien->nama_orangtua_wali = $data['nama_ortu_wali'] ?? null;
+                $pasien->telp = $data['no_hp'] ?? null;
+                $pasien->save();
+            }
+
 
             // Simpan form_persetujuan
             $persetujuan = new FormPersetujuan();
@@ -178,24 +182,31 @@ class CkgSekolahController extends Controller
                 ->except($excludeKeys)
                 ->toArray();
 
-            $riwayat = new RiwayatSekolah();
-            $riwayat->id_pasien_sekolah = $pasien->id;
-            $riwayat->id_puskesmas = $data['puskesmas'] ?? null;
+            $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)
+                ->whereYear('created_at', now()->year)
+                ->first();
 
-            $flattened = [];
+            if ($riwayat != null) {
+                $riwayat = new RiwayatSekolah();
+                $riwayat->id_pasien_sekolah = $pasien->id;
+                $riwayat->id_puskesmas = $data['puskesmas'] ?? null;
 
-            foreach ($jawaban as $key => $value) {
-                // Konversi "YA" menjadi "Ya", "TIDAK" menjadi "Tidak"
-                if (strtoupper($value) === 'YA' || strtoupper($value) === 'TIDAK') {
-                    $value = ucfirst(strtolower($value));
+                $flattened = [];
+
+                foreach ($jawaban as $key => $value) {
+                    // Konversi "YA" menjadi "Ya", "TIDAK" menjadi "Tidak"
+                    if (strtoupper($value) === 'YA' || strtoupper($value) === 'TIDAK') {
+                        $value = ucfirst(strtolower($value));
+                    }
+                    $flattened[] = [$key => $value];
                 }
-                $flattened[] = [$key => $value];
+
+                $riwayat->skrining_mandiri = json_encode($flattened, JSON_UNESCAPED_UNICODE);
+
+
+                $riwayat->save();
             }
 
-            $riwayat->skrining_mandiri = json_encode($flattened, JSON_UNESCAPED_UNICODE);
-
-
-            $riwayat->save();
 
             DB::commit();
             return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
