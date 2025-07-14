@@ -1776,9 +1776,6 @@
                     </div>\
                 </div>'
 
-        console.log(html)
-
-        console.log($('#id_hasil_pemeriksaan').length);
         $('#id_hasil_pemeriksaan').html(html);
 
         if (dt.id != "" && dt.hasil_pemeriksaan != null) {
