@@ -1459,7 +1459,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
             };
 
-            console.log(data);
+            // console.log(data);
 
             const modal = document.getElementById('myModal');
             const content = document.getElementById('modalContent');

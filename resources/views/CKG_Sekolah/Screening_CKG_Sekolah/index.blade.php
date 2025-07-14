@@ -12,8 +12,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    {{-- <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css"> --}}
+    <link rel="stylesheet"
+        href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+
+    {{-- <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css"> --}}
+    <link rel="stylesheet"
+        href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+
     {{-- @include('layouts.header') --}}
 </head>
 
@@ -23,6 +29,29 @@
         font-optical-sizing: auto;
         font-style: normal;
         color: #323232;
+        background: #f8fafc;
+    }
+
+    @keyframes wiggle {
+
+        0%,
+        100% {
+            transform: rotate(-2deg);
+        }
+
+        50% {
+            transform: rotate(2deg);
+        }
+    }
+
+    #image-loader {
+        width: 200px;
+        height: 200px;
+        background-image: url('/logo_semarpkg79.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        animation: wiggle 1s ease-in-out infinite;
     }
 </style>
 
@@ -46,7 +75,8 @@
             </div> -->
 
         <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
-            <div id="lottie-loader" style="width: 200px; height: 200px;"></div>
+            {{-- <div id="lottie-loader" style="width: 200px; height: 200px;"></div> --}}
+            <div id="image-loader"></div>
         </div>
         <div id="mainContent" class="hidden">
 
@@ -92,17 +122,48 @@
                     </button>
                 </div> --}}
 
-                <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
-                    <div>
-                        <div id="steps-container" class="space-y-6 h-[500px]"></div>
+                <div class="w-full lg:w-8/12 p-2 lg:mx-auto mt-6">
+                    <div class="flex justify-between items-center gap-4 mb-2">
+                        <div>
+                            <h1 class="text-lg md:text-2xl font-semibold">Skrining Pemeriksaan Kesehatan Gratis
+                                Sekolah
+                            </h1>
+                            <p class="text-sm md:text-[20px]">Lengkapi soal skrining dibawah ini dengan jawaban yang
+                                sesuai</p>
+                        </div>
+                        <img src="{{ asset('logo_semarpkg79.png') }}" class="w-[80px]" alt="Logo"
+                            class="register-logo">
                     </div>
+                    <div class="border border-gray-200 rounded-lg bg-white px-3 md:px-20 py-6">
+                        <div>
+                            <div id="steps-container" class="space-y-6"></div>
+                        </div>
 
-                    <div class="flex justify-between mt-6">
-                        <button id="prev-btn" onclick="prevStep()" class="bg-gray-300 px-4 py-2 rounded text-gray-700 hidden">Sebelumnya</button>
-                        <button id="next-btn" onclick="nextStep()" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 sm:ml-3 sm:w-auto transition">Selanjutnya</button>
+                        <div class="flex mt-6">
+                            <button id="prev-btn" onclick="prevStep()"
+                                class="bg-gray-300 px-4 py-2 rounded text-gray-700 hover:bg-gray-400 hover:text-gray-900 hidden">Sebelumnya</button>
+                            <button id="next-btn" onclick="nextStep()"
+                                class="ml-auto inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 transition">Selanjutnya</button>
+                        </div>
+                    </div>
+            </section>
+
+            <!-- Modal Alert -->
+            <div id="alertModal"
+                class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/60 transition-opacity duration-300 opacity-0 pointer-events-none">
+                <div id="alertBox"
+                    class="bg-white/80 backdrop-blur-md border border-white/30 rounded-lg shadow-xl max-w-sm w-full p-6 scale-95 transition-transform duration-300">
+                    <h2 id="alertTitle" class="text-lg font-semibold mb-2 text-gray-800">Judul</h2>
+                    <p id="alertMessage" class="text-sm text-gray-600">Pesan</p>
+                    <div class="mt-4 flex justify-end">
+                        <button onclick="closeAlert()"
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                            OK
+                        </button>
                     </div>
                 </div>
-            </section>
+            </div>
+
 
 
             <script>
@@ -218,7 +279,6 @@
             <!-- kirim data -->
             <script>
                 function kirimData() {
-                    // Ambil semua key dari localStorage
                     const data = {};
                     for (let i = 0; i < localStorage.length; i++) {
                         const key = localStorage.key(i);
@@ -237,18 +297,45 @@
                         .then(res => res.json())
                         .then(res => {
                             if (res.success) {
-                                alert('Data berhasil disimpan!');
+                                showAlert('Berhasil', 'Data berhasil disimpan!');
                                 // localStorage.clear(); // jika ingin hapus setelah submit
                             } else {
-                                alert('Gagal menyimpan data.');
+                                // Tampilkan pesan error dari API (fallback jika tidak ada message)
+                                showAlert('Gagal', res.message || 'Gagal menyimpan data.');
                             }
                         })
                         .catch(err => {
                             console.error(err);
-                            alert('Terjadi kesalahan saat menyimpan data.');
+                            showAlert('Kesalahan', 'Terjadi kesalahan saat menyimpan data.');
                         });
                 }
+
+                function showAlert(title, message) {
+                    const modal = document.getElementById('alertModal');
+                    const box = document.getElementById('alertBox');
+
+                    document.getElementById('alertTitle').textContent = title;
+                    document.getElementById('alertMessage').textContent = message;
+
+                    modal.classList.remove('pointer-events-none', 'opacity-0');
+                    modal.classList.add('opacity-100');
+
+                    box.classList.remove('scale-95');
+                    box.classList.add('scale-100');
+                }
+
+                function closeAlert() {
+                    const modal = document.getElementById('alertModal');
+                    const box = document.getElementById('alertBox');
+
+                    modal.classList.remove('opacity-100');
+                    modal.classList.add('opacity-0', 'pointer-events-none');
+
+                    box.classList.remove('scale-100');
+                    box.classList.add('scale-95');
+                }
             </script>
+
 
             {{-- stepper --}}
             <script>
@@ -271,7 +358,8 @@
 
                         group.items.forEach(item => {
                             const li = document.createElement('div');
-                            li.classList.add('mb-4');
+                            li.classList.add('mb-4', 'border-2', 'p-4', 'rounded-lg', 'border-gray-200',
+                                'hover:shadow-lg', 'transition-all', 'hover:border-pink-100', 'hover:border-2');
 
                             const inputName = item.objek;
                             const label = document.createElement('label');

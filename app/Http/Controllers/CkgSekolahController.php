@@ -87,9 +87,10 @@ class CkgSekolahController extends Controller
                 'tanda_tangan.required' => 'Tanda tangan wajib diisi',
             ]);
         } catch (ValidationException $e) {
-            return redirect('/ckg_sekolah')
-                ->withErrors($e->validator)
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => $e->validator->errors()->first() // misal: "NIK wajib diisi"
+            ], 422);
         }
 
 
