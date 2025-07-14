@@ -98,7 +98,7 @@
                         </div>
                         <h3 class="text-base font-semibold">Skrining Perilaku Merokok</h3>
                     </div>
-                    <div>
+                    <!-- <div>
                         <p>Apakah Anda merokok dalam setahun terakhir ini?</p>
                         <label class="inline-flex items-center">
                             <input type="radio" id="jenis_kemain" name="jenis_kelamin" value="laki-laki"
@@ -110,10 +110,13 @@
                                 class="form-radio text-pink-500">
                             <span class="ml-2">Perempuan</span>
                         </label>
-                    </div>
+                    </div> -->
 
                     <ul id="hasil-instrumen"></ul>
                 </div>
+                <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
+                    Kirim Data
+                </button>
             </section>
 
 
@@ -150,7 +153,7 @@
                     }
 
                     try {
-                        const res = await fetch(`/instrumen-sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
+                        const res = await fetch(`/instrumen_sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
                         if (!res.ok) throw new Error('Gagal mengambil data');
 
                         const data = await res.json();
@@ -160,16 +163,100 @@
                             return;
                         }
 
-                        data.forEach(item => {
+                        data.data.forEach(item => {
                             const li = document.createElement('li');
-                            li.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                            const inputName = `${item.objek}`;
+
+                            const label = document.createElement('label');
+                            label.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                            li.appendChild(label);
+                            li.appendChild(document.createElement('br'));
+
+                            // Get saved value from localStorage
+                            const savedValue = localStorage.getItem(inputName);
+
+                            if (item.tipe_input === 'radio') {
+                                ['YA', 'TIDAK'].forEach(value => {
+                                    const radio = document.createElement('input');
+                                    radio.type = 'radio';
+                                    radio.className = 'form-checkbox text-pink-500';
+                                    radio.name = inputName;
+                                    radio.value = value;
+
+                                    if (savedValue === value) {
+                                        radio.checked = true;
+                                    }
+
+                                    radio.addEventListener('change', () => {
+                                        localStorage.setItem(inputName, radio.value);
+                                    });
+
+                                    const labelRadio = document.createElement('label');
+                                    labelRadio.textContent = ` ${value} `;
+                                    labelRadio.prepend(radio);
+
+                                    li.appendChild(labelRadio);
+                                });
+
+                            } else if (item.tipe_input === 'number') {
+                                const input = document.createElement('input');
+                                input.type = 'number';
+                                input.name = inputName;
+
+                                if (savedValue !== null) {
+                                    input.value = savedValue;
+                                }
+
+                                input.addEventListener('input', () => {
+                                    localStorage.setItem(inputName, input.value);
+                                });
+
+                                li.appendChild(input);
+                            }
+
                             hasilList.appendChild(li);
                         });
+
 
                     } catch (err) {
                         hasilList.innerHTML = `<li>Error: ${err.message}</li>`;
                     }
                 });
             </script>
+
+            <!-- kirim data -->
+            <script>
+            function kirimData() {
+                // Ambil semua key dari localStorage
+                const data = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    data[key] = localStorage.getItem(key);
+                }
+
+                fetch('/ckg_sekolah/simpan', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        alert('Data berhasil disimpan!');
+                        // localStorage.clear(); // jika ingin hapus setelah submit
+                    } else {
+                        alert('Gagal menyimpan data.');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Terjadi kesalahan saat menyimpan data.');
+                });
+            }
+            </script>
+
         </div>
 </body>

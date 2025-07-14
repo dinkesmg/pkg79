@@ -592,8 +592,10 @@
                                         <p class="text-sm">Alamat</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm">: SDN 1 SUKOHARJO</p>
-                                        <p class="text-sm">: Jl Veteran No. 5, 34482</p>
+                                        <p class="text-sm">: <span class="uppercase"
+                                        id="output_nama_sekolah"></span></p>
+                                        <p class="text-sm">: <span class="uppercase"
+                                        id="output_alamat_sekolah"></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -604,11 +606,11 @@
                             </div>
                             <div class="mt-2 flex flex-col space-y-3">
                                 <label class="inline-flex items-center w-fit">
-                                    <input type="radio" name="persetujuan" class="form-checkbox text-pink-500">
+                                    <input type="radio" name="persetujuan" value="Setuju" class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Setuju</span>
                                 </label>
                                 <label class="inline-flex items-center w-fit">
-                                    <input type="radio" name="persetujuan" class="form-checkbox text-pink-500">
+                                    <input type="radio" name="persetujuan" value="Tidak setuju" class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Tidak setuju</span>
                                 </label>
                             </div>
@@ -618,7 +620,7 @@
 
                 <!-- Action Buttons -->
                 <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
-                    <button id="btn-kirim" onclick="cekModal()" type="submit" disabled
+                    <button id="btn-kirim" type="submit" disabled
                         class="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold 
 text-white bg-red-600 hover:bg-red-500 
 disabled:bg-gray-400 disabled:text-gray-200 disabled:cursor-not-allowed disabled:opacity-50 
@@ -778,22 +780,48 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener('DOMContentLoaded', function () {
             const radios = document.querySelectorAll('input[name="persetujuan"]');
-            const btnKirim = document.getElementById('btn-kirim');
+            const tombolKirim = document.getElementById('btn-kirim');
 
-            // 1. Disable tombol saat awal load
-            btnKirim.disabled = true;
-
-            // 2. Enable jika radio dipilih
-            radios.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    const selected = document.querySelector('input[name="persetujuan"]:checked');
-                    btnKirim.disabled = !selected;
+            // Cek localStorage dan atur pilihan jika ada
+            const savedValue = localStorage.getItem('persetujuan');
+            if (savedValue) {
+                radios.forEach(radio => {
+                    if (radio.value === savedValue) {
+                        radio.checked = true;
+                        tombolKirim.disabled = false;
+                    }
                 });
+            }
+
+            // Simpan ke localStorage saat user memilih radio
+            radios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    localStorage.setItem('persetujuan', this.value);
+                    tombolKirim.disabled = false;
+                });
+            });
+
+            // Disable tombol jika belum ada yang dipilih
+            const anyChecked = Array.from(radios).some(r => r.checked);
+            tombolKirim.disabled = !anyChecked;
+
+            // ✅ Validasi tanda tangan saat tombol diklik
+            tombolKirim.addEventListener('click', function (e) {
+                const tandaTangan = localStorage.getItem('tanda_tangan');
+                if (!tandaTangan || tandaTangan.trim() === '') {
+                    e.preventDefault();
+                    alert('Silakan untuk memberikan tanda tangan terlebih dahulu.');
+                    return;
+                }
+
+                cekModal();
+                
             });
         });
     </script>
+
 
 
     <script>
@@ -931,19 +959,24 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             //     });
             // };
 
-            const fillSelect = async (el, data, placeholder, selectedKode = '') => {
-                el.innerHTML = `<option value="">-- ${placeholder} --</option>`;
-                data.forEach(item => {
-                    const selected = item.kode === selectedKode ? 'selected' : '';
-                    el.innerHTML +=
-                        `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
-                });
+            const fillSelect = (el, data, placeholder, selectedKode = '') => {
+                return new Promise(resolve => {
+                    el.innerHTML = `<option value="">-- ${placeholder} --</option>`;
+                    data.forEach(item => {
+                        const selected = item.kode === selectedKode ? 'selected' : '';
+                        el.innerHTML += `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
+                    });
 
-                // 🧠 Tambahan perlindungan kalau selectedKode tidak langsung match
-                if (selectedKode && el.querySelector(`option[value="${selectedKode}"]`)) {
-                    el.value = selectedKode;
-                }
+                    // Tunggu sampai opsi benar-benar masuk DOM
+                    setTimeout(() => {
+                        if (selectedKode && el.querySelector(`option[value="${selectedKode}"]`)) {
+                            el.value = selectedKode;
+                        }
+                        resolve();
+                    }, 10); // delay ringan
+                });
             };
+
 
             const fetchData = async (url) => {
                 const res = await fetch(url);
@@ -972,22 +1005,22 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
                 if (savedProv) {
                     const provData = await fetchData('/master_provinsi?search=');
-                    fillSelect(domProvinsi, provData, 'Pilih Provinsi', savedProv);
+                    await fillSelect(domProvinsi, provData, 'Pilih Provinsi', savedProv);
                 }
 
                 if (savedKota && savedProv) {
                     const kotaData = await fetchData(`/master_kota_kab?search=&kode_parent=${savedProv}`);
-                    fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', savedKota);
+                    await fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', savedKota);
                 }
 
                 if (savedKec && savedKota) {
                     const kecData = await fetchData(`/master_kecamatan?search=&kode_parent=${savedKota}`);
-                    fillSelect(domKecamatan, kecData, 'Pilih Kecamatan', savedKec);
+                    await fillSelect(domKecamatan, kecData, 'Pilih Kecamatan', savedKec);
                 }
 
                 if (savedKel && savedKec) {
                     const kelData = await fetchData(`/master_kelurahan?search=&kode_parent=${savedKec}`);
-                    fillSelect(domKelurahan, kelData, 'Pilih Kelurahan', savedKel);
+                    await fillSelect(domKelurahan, kelData, 'Pilih Kelurahan', savedKel);
                 }
 
                 if (savedAlamat) domAlamat.value = savedAlamat;
@@ -998,37 +1031,31 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                 localStorage.setItem('alamat_sesuai_kk', this.checked);
 
                 if (this.checked) {
-                    ['dom-provinsi', 'dom-kota', 'dom-kecamatan', 'dom-kelurahan', 'dom-alamat'].forEach
-                        (key => localStorage.removeItem(key));
-
                     const kodeProv = provinsi.value;
                     const kodeKota = kota.value;
                     const kodeKec = kecamatan.value;
                     const kodeKel = kelurahan.value;
 
                     const provinsiData = await fetchData('/master_provinsi?search=');
-                    fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi', kodeProv);
+                    await fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi', kodeProv);
 
-                    const kotaData = await fetchData(
-                        `/master_kota_kab?search=&kode_parent=${kodeProv}`);
-                    fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
+                    const kotaData = await fetchData(`/master_kota_kab?search=&kode_parent=${kodeProv}`);
+                    await fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
 
-                    await new Promise(r => setTimeout(r, 10));
+                    const kecamatanData = await fetchData(`/master_kecamatan?search=&kode_parent=${kodeKota}`);
+                    await fillSelect(domKecamatan, kecamatanData, 'Pilih Kecamatan', kodeKec);
 
-                    const kecamatanData = await fetchData(
-                        `/master_kecamatan?search=&kode_parent=${kodeKota}`);
-                    fillSelect(domKecamatan, kecamatanData, 'Pilih Kecamatan', kodeKec);
-
-                    await new Promise(r => setTimeout(r, 10));
-
-                    const kelurahanData = await fetchData(
-                        `/master_kelurahan?search=&kode_parent=${kodeKec}`);
-                    fillSelect(domKelurahan, kelurahanData, 'Pilih Kelurahan', kodeKel);
+                    const kelurahanData = await fetchData(`/master_kelurahan?search=&kode_parent=${kodeKec}`);
+                    await fillSelect(domKelurahan, kelurahanData, 'Pilih Kelurahan', kodeKel);
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
 
-                    // ✅ Simpan hasil salinan
-                    storeDomisili();
+                    // ✅ Simpan ke localStorage meskipun dari salinan
+                    localStorage.setItem('dom-provinsi', kodeProv);
+                    localStorage.setItem('dom-kota', kodeKota);
+                    localStorage.setItem('dom-kecamatan', kodeKec);
+                    localStorage.setItem('dom-kelurahan', kodeKel);
+                    localStorage.setItem('dom-alamat', alamat.value || '');
 
                 } else {
                     domProvinsi.selectedIndex = 0;
@@ -1077,6 +1104,9 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
             // Saat load awal
             (async () => {
+
+                await restoreDomisili();
+
                 const fromStorage = localStorage.getItem('alamat_sesuai_kk');
                 checkbox.checked = fromStorage === 'true';
 
@@ -1110,8 +1140,9 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
                 } else {
-                    restoreDomisili();
+                    
                 }
+                
             })();
 
         });
@@ -1184,6 +1215,28 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
         document.addEventListener('DOMContentLoaded', function() {
             const inputElements = document.querySelectorAll(
                 'input[type="text"], input[type="number"], select, textarea');
+
+            const namaInput = document.getElementById('nama_sekolah');
+            const alamatInput = document.getElementById('alamat_sekolah');
+            const outputNama = document.getElementById('output_nama_sekolah');
+            const outputAlamat = document.getElementById('output_alamat_sekolah');
+
+            // Tampilkan nilai awal dari localStorage
+            const namaSekolah = localStorage.getItem('nama_sekolah') || '';
+            const alamatSekolah = localStorage.getItem('alamat_sekolah') || '';
+            namaInput.value = namaSekolah;
+            alamatInput.value = alamatSekolah;
+            outputNama.innerText = namaSekolah;
+            outputAlamat.innerText = alamatSekolah;
+
+            // Update output ketika input berubah
+            namaInput.addEventListener('input', function () {
+                outputNama.innerText = this.value;
+            });
+
+            alamatInput.addEventListener('input', function () {
+                outputAlamat.innerText = this.value;
+            });
 
             // Restore nilai dari localStorage
             inputElements.forEach(input => {
@@ -1369,20 +1422,26 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             // const content = document.getElementById('modalContent');
             // const backdrop = document.getElementById('modalBackdrop');
 
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
+            const tandaTangan = localStorage.getItem('tanda_tangan');
 
-            persetujuanModal.classList.remove('hidden');
+            if (tandaTangan) {
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+                persetujuanModal.classList.remove('hidden');
 
-            // Delay untuk trigger transition
-            setTimeout(() => {
-                persetujuanModalContent.classList.remove('scale-95', 'opacity-0');
-                persetujuanModalContent.classList.add('scale-100', 'opacity-100');
+                // Delay untuk trigger transition
+                setTimeout(() => {
+                    persetujuanModalContent.classList.remove('scale-95', 'opacity-0');
+                    persetujuanModalContent.classList.add('scale-100', 'opacity-100');
 
-                persetujuanModalBackdrop.classList.remove('opacity-0');
-                persetujuanModalBackdrop.classList.add('opacity-100');
-            }, 10);
+                    persetujuanModalBackdrop.classList.remove('opacity-0');
+                    persetujuanModalBackdrop.classList.add('opacity-100');
+                }, 10);
+            } else {
+                modal.classList.remove('hidden');
+                alert('Silakan berikan tanda tangan terlebih dahulu.');
+            }
 
         }
 

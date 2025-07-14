@@ -95,4 +95,6 @@ Route::get('master_instrumen_sekolah', [MasterController::class, 'instrumen_seko
 Route::get('/master_puskesmas/search', [PuskesmasController::class, 'search']);
 Route::get('master_puskesmas', [PuskesmasController::class, 'all'])->name('master_puskesmas.data');
 
-Route::get('/instrumen-sekolah', [CkgSekolahController::class, 'get_instrument_sekolah']);
+Route::get('/instrumen_sekolah', [CkgSekolahController::class, 'get_instrument_sekolah']);
+
+Route::post('/ckg_sekolah/simpan', [CkgSekolahController::class, 'simpan'])->name('simpan_ckg_skolah.data');

@@ -36,6 +36,7 @@
         <canvas id="signature-pad" width="360" height="100"></canvas>
     </div>
     <div class="button-group">
+        <button id="save">Simpan</button>
         <button id="clear">Ulangi</button>
     </div>
 </div>
@@ -69,10 +70,47 @@
         signaturePad.clear();
     }
 
-    window.addEventListener("load", resizeCanvasIfNeeded);
-    window.addEventListener("resize", resizeCanvasIfNeeded);
+    function loadSignatureIfExists() {
+        const savedSignature = localStorage.getItem('tanda_tangan');
+        if (savedSignature) {
+            const img = new Image();
+            img.onload = () => {
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
+            };
+            img.src = savedSignature;
+        }
+    }
 
+    // Jalankan resize + load signature saat halaman selesai dimuat
+    window.addEventListener("load", () => {
+        resizeCanvasIfNeeded();
+        loadSignatureIfExists();
+    });
+
+    // Saat ukuran layar berubah
+    window.addEventListener("resize", () => {
+        resizeCanvasIfNeeded();
+        loadSignatureIfExists();
+    });
+
+    // Tombol hapus
     document.getElementById('clear').addEventListener('click', () => {
         signaturePad.clear();
+        localStorage.removeItem('tanda_tangan');
     });
+
+    // Tombol simpan
+    document.getElementById('save').addEventListener('click', () => {
+        if (signaturePad.isEmpty()) {
+            alert("Silakan tanda tangani terlebih dahulu.");
+            return;
+        }
+
+        const svgDataUrl = signaturePad.toDataURL('image/svg+xml');
+        localStorage.setItem('tanda_tangan', svgDataUrl);
+        alert("Tanda tangan disimpan ke localStorage.");
+    });
+
 </script>
+

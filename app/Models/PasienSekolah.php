@@ -11,6 +11,8 @@ class PasienSekolah extends Model
 
     protected $table = "pasien_sekolah";
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     public function ref_provinsi_ktp()
