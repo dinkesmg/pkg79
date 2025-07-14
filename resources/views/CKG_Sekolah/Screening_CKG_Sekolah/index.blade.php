@@ -13,8 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
-    <link rel="stylesheet"
-        href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     {{-- @include('layouts.header') --}}
 </head>
 
@@ -99,10 +98,8 @@
                     </div>
 
                     <div class="flex justify-between mt-6">
-                        <button id="prev-btn" onclick="prevStep()"
-                            class="bg-gray-300 px-4 py-2 rounded text-gray-700 hidden">Sebelumnya</button>
-                        <button id="next-btn" onclick="nextStep()"
-                            class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 sm:ml-3 sm:w-auto transition">Selanjutnya</button>
+                        <button id="prev-btn" onclick="prevStep()" class="bg-gray-300 px-4 py-2 rounded text-gray-700 hidden">Sebelumnya</button>
+                        <button id="next-btn" onclick="nextStep()" class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 sm:ml-3 sm:w-auto transition">Selanjutnya</button>
                     </div>
                 </div>
             </section>
@@ -228,7 +225,7 @@
                         data[key] = localStorage.getItem(key);
                     }
 
-                    fetch('/ckg_sekolah/simpan', {
+                    fetch('/pkg_sekolah/simpan', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

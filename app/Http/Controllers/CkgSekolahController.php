@@ -9,6 +9,7 @@ use App\Models\PasienSekolah;
 use App\Models\FormPersetujuan;
 use App\Models\FormPersetujuanTandaTangan;
 use App\Models\RiwayatSekolah;
+use Illuminate\Validation\ValidationException;
 
 class CkgSekolahController extends Controller
 {
@@ -47,45 +48,50 @@ class CkgSekolahController extends Controller
     {
         $data = $request->all();
 
+        try {
+            $validated = $request->validate([
+                'nisn' => 'nullable|string|max:20',
+                'nik' => 'required|string|size:16',
+                'nama_lengkap' => 'required|string|max:255',
+                'tempat_lahir' => 'required|string|max:100',
+                'tanggal_lahir' => 'required|numeric|min:1|max:31',
+                'bulan_lahir' => 'required|numeric|min:1|max:12',
+                'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
+                // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
+                'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
+                'provinsi' => 'required|string',
+                'kota' => 'required|string',
+                'kecamatan' => 'required|string',
+                'kelurahan' => 'required|string',
+                'alamat' => 'required|string',
 
+                'dom-provinsi' => 'required|string',
+                'dom-kota' => 'required|string',
+                'dom-kecamatan' => 'required|string',
+                'dom-kelurahan' => 'required|string',
+                'dom-alamat' => 'required|string',
 
-        $validated = $request->validate([
-            'nisn' => 'nullable|string|max:20',
-            'nik' => 'required|string|size:16',
-            'nama_lengkap' => 'required|string|max:255',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|numeric|min:1|max:31',
-            'bulan_lahir' => 'required|numeric|min:1|max:12',
-            'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
-            // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
-            'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
-            'provinsi' => 'required|string',
-            'kota' => 'required|string',
-            'kecamatan' => 'required|string',
-            'kelurahan' => 'required|string',
-            'alamat' => 'required|string',
+                'kelas' => 'required|numeric|min:1|max:12',
+                // 'disabilitas_tidak_ada' => 'required|in:true,false',
+                'nama_ortu_wali' => 'required|string|max:255',
+                'no_hp' => 'required|string|max:20',
 
-            'dom-provinsi' => 'required|string',
-            'dom-kota' => 'required|string',
-            'dom-kecamatan' => 'required|string',
-            'dom-kelurahan' => 'required|string',
-            'dom-alamat' => 'required|string',
+                'persetujuan' => 'required|in:Setuju,Tidak',
+                // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
+                'puskesmas' => 'required|integer',
+                // 'id_sekolah' => 'required|integer',
+            ], [
+                'nik.required' => 'NIK wajib diisi',
+                'nama_lengkap.required' => 'Nama lengkap wajib diisi',
+                'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
+                'tanda_tangan.required' => 'Tanda tangan wajib diisi',
+            ]);
+        } catch (ValidationException $e) {
+            return redirect('/ckg_sekolah')
+                ->withErrors($e->validator)
+                ->withInput();
+        }
 
-            'kelas' => 'required|numeric|min:1|max:12',
-            // 'disabilitas_tidak_ada' => 'required|in:true,false',
-            'nama_ortu_wali' => 'required|string|max:255',
-            'no_hp' => 'required|string|max:20',
-
-            'persetujuan' => 'required|in:Setuju,Tidak',
-            // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
-            'puskesmas' => 'required|integer',
-            // 'id_sekolah' => 'required|integer',
-        ], [
-            'nik.required' => 'NIK wajib diisi',
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi',
-            'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
-            'tanda_tangan.required' => 'Tanda tangan wajib diisi',
-        ]);
 
         $kelas = (int) $request->kelas;
         $jenis_kelamin = $request->jenis_kelamin;
@@ -115,7 +121,11 @@ class CkgSekolahController extends Controller
         })->count();
         // dd($jumlah_instrumen_sekolah_yang_belum_diisi);
         if ($jumlah_instrumen_sekolah_yang_belum_diisi > 0) {
-            return response()->json(['success' => false, 'message' => 'Semua Kuesioner Harus Diisi']);
+            // return response()->json(['success' => false, 'message' => 'Semua Kuesioner Harus Diisi']);
+            return response()->json([
+                'success' => false,
+                'message' => 'Semua Kuesioner Harus Diisi'
+            ], 400);
         }
 
 
@@ -123,7 +133,7 @@ class CkgSekolahController extends Controller
         try {
             // Simpan data pasien_sekolah
             $pasien = PasienSekolah::where('nik', $data['nik'])->first();
-            if ($pasien != null) {
+            if ($pasien == null) {
                 $pasien = new PasienSekolah();
                 $pasien->nisn = $data['nisn'] ?? null;
                 $pasien->nik = $data['nik'] ?? null;
@@ -152,41 +162,41 @@ class CkgSekolahController extends Controller
                 $pasien->save();
             }
 
-
-            // Simpan form_persetujuan
-            $persetujuan = new FormPersetujuan();
-            $persetujuan->id_pasien_sekolah = $pasien->id;
-            $persetujuan->tanggal = now()->toDateString();
-            $persetujuan->id_master_puskesmas = $data['puskesmas'] ?? null;
-            $persetujuan->id_master_sekolah = $data['id_sekolah'] ?? null; // sesuaikan jika perlu mapping dari nama
-            $persetujuan->persetujuan = ($data['persetujuan'] ?? '') === 'Setuju' ? 1 : 0;
-            $persetujuan->save();
-
-
-            $ttd = new FormPersetujuanTandaTangan();
-            $ttd->id_form_persetujuan = $persetujuan->id;
-            $ttd->value = $data['tanda_tangan'] ?? null;
-            $ttd->save();
-
-            $jawaban = [];
-            $excludeKeys = [
-                'alamat', 'alamat_sekolah', 'alamat_sesuai_kk', 'bulan_lahir', 'checkbox-alamat-sesuai',
-                'disabilitas_tidak_ada', 'dom-alamat', 'dom-kecamatan', 'dom-kelurahan', 'dom-kota',
-                'dom-provinsi', 'golongan_darah', 'jenis_kelamin', 'kecamatan', 'kelas', 'kelurahan', 'kota',
-                'nama_lengkap', 'nama_ortu_wali', 'nama_sekolah', 'nik', 'nisn', 'no_hp', 'persetujuan',
-                'provinsi', 'puskesmas', 'tahun_lahir', 'tempat_lahir', 'tanggal_lahir', 'tanda_tangan',
-                'id_sekolah', 'Intelektual', 'umur'
-            ];
-
-            $jawaban = collect($data)
-                ->except($excludeKeys)
-                ->toArray();
-
             $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)
                 ->whereYear('created_at', now()->year)
                 ->first();
 
-            if ($riwayat != null) {
+            if ($riwayat == null) {
+                // Simpan form_persetujuan
+                $persetujuan = new FormPersetujuan();
+                $persetujuan->id_pasien_sekolah = $pasien->id;
+                $persetujuan->tanggal = now()->toDateString();
+                $persetujuan->id_master_puskesmas = $data['puskesmas'] ?? null;
+                $persetujuan->id_master_sekolah = $data['id_sekolah'] ?? null; // sesuaikan jika perlu mapping dari nama
+                $persetujuan->persetujuan = ($data['persetujuan'] ?? '') === 'Setuju' ? 1 : 0;
+                $persetujuan->save();
+
+
+                $ttd = new FormPersetujuanTandaTangan();
+                $ttd->id_form_persetujuan = $persetujuan->id;
+                $ttd->value = $data['tanda_tangan'] ?? null;
+                $ttd->save();
+
+                $jawaban = [];
+                $excludeKeys = [
+                    'alamat', 'alamat_sekolah', 'alamat_sesuai_kk', 'bulan_lahir', 'checkbox-alamat-sesuai',
+                    'disabilitas_tidak_ada', 'dom-alamat', 'dom-kecamatan', 'dom-kelurahan', 'dom-kota',
+                    'dom-provinsi', 'golongan_darah', 'jenis_kelamin', 'kecamatan', 'kelas', 'kelurahan', 'kota',
+                    'nama_lengkap', 'nama_ortu_wali', 'nama_sekolah', 'nik', 'nisn', 'no_hp', 'persetujuan',
+                    'provinsi', 'puskesmas', 'tahun_lahir', 'tempat_lahir', 'tanggal_lahir', 'tanda_tangan',
+                    'id_sekolah', 'Intelektual', 'umur'
+                ];
+
+                $jawaban = collect($data)
+                    ->except($excludeKeys)
+                    ->toArray();
+
+
                 $riwayat = new RiwayatSekolah();
                 $riwayat->id_pasien_sekolah = $pasien->id;
                 $riwayat->id_puskesmas = $data['puskesmas'] ?? null;

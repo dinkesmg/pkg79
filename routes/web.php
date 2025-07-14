@@ -79,7 +79,7 @@ Route::prefix('data_simpus')->group(function () {
     Route::get('/master_provider1', [MasterController::class, 'data_simpus_master_provider1'])->name('data_simpus.provider1');
 });
 
-Route::prefix('ckg_sekolah')->group(function () {
+Route::prefix('pkg_sekolah')->group(function () {
     Route::get('/', [CkgSekolahController::class, 'index'])->name('ckg_sekolah.index');
     Route::get('/screening', [CkgSekolahController::class, 'index_screening'])->name('screening_ckg_sekolah.index');
 });
