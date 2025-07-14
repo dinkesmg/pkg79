@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Semar PKG79</title>
-    <link rel="icon" href="{{ asset('logo_semarpkg79.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('logo_semarpkg79.png')}}" type="image/x-icon">
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('layouts.header')
@@ -21,8 +21,7 @@
                     <div class="row mb-2">
                         <div class="col-sm-12">
                             <div class="card" style="margin-bottom:0">
-                                <div class="card-header"
-                                    style="display:flex; align-items:center; justify-content:center">
+                                <div class="card-header" style="display:flex; align-items:center; justify-content:center">
                                     <!-- <i class="fa-solid fa-chart-area fa-bounce mr-1"></i> -->
                                     <h5 class="m-0">Riwayat</h5>
                                 </div>
@@ -44,14 +43,10 @@
                                         <div class="col-md-2"><input id="periode_sampai" type="date"></input></div>
                                         <div class="col-md-4"><button onclick="tabel()">Cari</button></div>
                                     </div>
-                                    @if (Auth::user()->role != 'FaskesLain')
-                                        <div
-                                            style="display:flex; justify-content:center; margin-bottom:10px; margin-top:10px">
-                                            <button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i
-                                                    class="fa fa-plus"></i> Tambah Pasien</button></a></div>
+                                    @if(Auth::user()->role!="FaskesLain")
+                                    <div style="display:flex; justify-content:center; margin-bottom:10px; margin-top:10px"><button class="btn btn-sm btn-success" onclick="oc_modal('Tambah', '')"><i class="fa fa-plus"></i> Tambah Pasien</button></a></div>
                                     @endif
-                                    <table id="idtabel" class="table table-bordered table-striped example"
-                                        style="width:100%">
+                                    <table id="idtabel" class="table table-bordered table-striped example" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -82,8 +77,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="exampleModal" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -103,7 +97,7 @@
 </body>
 <script>
     var Toast
-    var role_auth = "{{ Auth::user()->role }}";
+    var role_auth = "{{Auth::user()->role}}";
 
     $(document).ready(function() {
         let hari_ini = new Date().toISOString().split('T')[0];
@@ -147,10 +141,8 @@
                             pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",
                             pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
                             pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
-                            pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien
-                                .jenis_kelamin : "",
-                            pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir :
-                                "",
+                            pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
+                            pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
 
                             // pasien_provinsi_ktp: row.pasien && row.pasien.provinsi_ktp ? row.pasien.provinsi_ktp : "",
                             // pasien_provinsi_ktp_nama: row.pasien && row.pasien.provinsi_ktp && row.pasien.ref_provinsi_ktp.nama ? row.pasien.ref_provinsi_ktp.nama : "",
@@ -170,35 +162,23 @@
                             pasien_kecamatan_ktp_nama: row.pasien?.ref_kecamatan_ktp?.nama || "",
                             pasien_kelurahan_ktp: row.pasien?.kelurahan_ktp || "",
                             pasien_kelurahan_ktp_nama: row.pasien?.ref_kelurahan_ktp?.nama || "",
-                            pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp :
-                                "",
+                            pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
 
 
-                            pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien
-                                .provinsi_dom : "",
-                            pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien
-                                .ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
-                            pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien
-                                .kota_kab_dom : "",
-                            pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row.pasien
-                                .ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
-                            pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien
-                                .kecamatan_dom : "",
-                            pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row.pasien
-                                .ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
-                            pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien
-                                .kelurahan_dom : "",
-                            pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row.pasien
-                                .ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
-                            pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien.alamat_dom :
-                                "",
+                            pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
+                            pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
+                            pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien.kota_kab_dom : "",
+                            pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row.pasien.ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
+                            pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien.kecamatan_dom : "",
+                            pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row.pasien.ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
+                            pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien.kelurahan_dom : "",
+                            pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row.pasien.ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
+                            pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien.alamat_dom : "",
 
                             pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                             hasil_pemeriksaan: hasil_pemeriksaan,
-                            hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya ? row
-                                .hasil_pemeriksaan_lainnya : "",
-                            kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row
-                                .kesimpulan_hasil_pemeriksaan : "",
+                            hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya ? row.hasil_pemeriksaan_lainnya : "",
+                            kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                             program_tindak_lanjut: program_tindak_lanjut,
                         };
                     } else {
@@ -209,15 +189,12 @@
                             nama_tempat_periksa: row.nama_tempat_periksa ? row.nama_tempat_periksa : "",
                             nama_fktp_pj: row.nama_fktp_pj ? row.nama_fktp_pj : "",
                             pemeriksa_nik: row.pemeriksa && row.pemeriksa.nik ? row.pemeriksa.nik : "",
-                            pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama :
-                                "",
+                            pemeriksa_nama: row.pemeriksa && row.pemeriksa.nama ? row.pemeriksa.nama : "",
 
                             pasien_nik: row.pasien && row.pasien.nik ? row.pasien.nik : "",
                             pasien_nama: row.pasien && row.pasien.nama ? row.pasien.nama : "",
-                            pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien
-                                .jenis_kelamin : "",
-                            pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien
-                                .tgl_lahir : "",
+                            pasien_jenis_kelamin: row.pasien && row.pasien.jenis_kelamin ? row.pasien.jenis_kelamin : "",
+                            pasien_tgl_lahir: row.pasien && row.pasien.tgl_lahir ? row.pasien.tgl_lahir : "",
 
                             pasien_provinsi_ktp: row.pasien?.provinsi_ktp || "",
                             pasien_provinsi_ktp_nama: row.pasien?.ref_provinsi_ktp?.nama || "",
@@ -227,59 +204,40 @@
                             pasien_kecamatan_ktp_nama: row.pasien?.ref_kecamatan_ktp?.nama || "",
                             pasien_kelurahan_ktp: row.pasien?.kelurahan_ktp || "",
                             pasien_kelurahan_ktp_nama: row.pasien?.ref_kelurahan_ktp?.nama || "",
-                            pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien
-                                .alamat_ktp : "",
+                            pasien_alamat_ktp: row.pasien && row.pasien.alamat_ktp ? row.pasien.alamat_ktp : "",
 
-                            pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien
-                                .provinsi_dom : "",
-                            pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row
-                                .pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
-                            pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien
-                                .kota_kab_dom : "",
-                            pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row
-                                .pasien.ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
-                            pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien
-                                .kecamatan_dom : "",
-                            pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row
-                                .pasien.ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
-                            pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien
-                                .kelurahan_dom : "",
-                            pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row
-                                .pasien.ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
-                            pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien
-                                .alamat_dom : "",
+                            pasien_provinsi_dom: row.pasien && row.pasien.provinsi_dom ? row.pasien.provinsi_dom : "",
+                            pasien_provinsi_dom_nama: row.pasien && row.pasien.provinsi_dom && row.pasien.ref_provinsi_dom.nama ? row.pasien.ref_provinsi_dom.nama : "",
+                            pasien_kota_kab_dom: row.pasien && row.pasien.kota_kab_dom ? row.pasien.kota_kab_dom : "",
+                            pasien_kota_kab_dom_nama: row.pasien && row.pasien.kota_kab_dom && row.pasien.ref_kota_kab_dom.nama ? row.pasien.ref_kota_kab_dom.nama : "",
+                            pasien_kecamatan_dom: row.pasien && row.pasien.kecamatan_dom ? row.pasien.kecamatan_dom : "",
+                            pasien_kecamatan_dom_nama: row.pasien && row.pasien.kecamatan_dom && row.pasien.ref_kecamatan_dom.nama ? row.pasien.ref_kecamatan_dom.nama : "",
+                            pasien_kelurahan_dom: row.pasien && row.pasien.kelurahan_dom ? row.pasien.kelurahan_dom : "",
+                            pasien_kelurahan_dom_nama: row.pasien && row.pasien.kelurahan_dom && row.pasien.ref_kelurahan_dom.nama ? row.pasien.ref_kelurahan_dom.nama : "",
+                            pasien_alamat_dom: row.pasien && row.pasien.alamat_dom ? row.pasien.alamat_dom : "",
 
                             pasien_no_hp: row.pasien && row.pasien.no_hp ? row.pasien.no_hp : "",
                             hasil_pemeriksaan: hasil_pemeriksaan,
-                            hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya ? row
-                                .hasil_pemeriksaan_lainnya : "",
-                            kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row
-                                .kesimpulan_hasil_pemeriksaan : "",
+                            hasil_pemeriksaan_lainnya: row.hasil_pemeriksaan_lainnya ? row.hasil_pemeriksaan_lainnya : "",
+                            kesimpulan_hasil_pemeriksaan: row.kesimpulan_hasil_pemeriksaan ? row.kesimpulan_hasil_pemeriksaan : "",
                             program_tindak_lanjut: program_tindak_lanjut,
                         });
                     }
-                    // var baseurl = "{{ url('pasien/riwayat_skrining/') }}"
+                    // var baseurl = "{{url('pasien/riwayat_skrining/')}}"
                     var actionsHtml = ''
 
                     // if(role_auth=="Admin"||role_auth=="Puskesmas"||role_auth=="Petugas"||role_auth=="Kader"){
                     if (role_auth == "FaskesLain") {
                         if (row.tindak_lanjut_faskes_lain != "1") {
-                            actionsHtml +=
-                                '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Sudah Tindak Lanjut\', \'' +
-                                row.id + '\')" style="width:100%">Belum Tindak Lanjut</button>'
+                            actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Sudah Tindak Lanjut\', \'' + row.id + '\')" style="width:100%">Belum Tindak Lanjut</button>'
                         } else {
-                            actionsHtml +=
-                                '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Belum Tindak Lanjut\', \'' +
-                                row.id + '\')" style="width:100%">Sudah Tindak Lanjut</button>'
+                            actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Belum Tindak Lanjut\', \'' + row.id + '\')" style="width:100%">Sudah Tindak Lanjut</button>'
                         }
                     }
-                    actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \'' +
-                        row.id + '\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
+                    actionsHtml += '<button class="btn btn-sm btn-success" onclick="oc_modal(\'Detail\', \'' + row.id + '\')" style="width:100%"><i class="fa fa-eye"></i> Detail</button>'
                     if (role_auth != "FaskesLain") {
-                        actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Edit\', \'' +
-                            row.id + '\')" style="width:100%"><i class="fa fa-eye"></i> Edit</button>'
-                        actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \'' +
-                            row.id + '\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
+                        actionsHtml += '<button class="btn btn-sm btn-primary" onclick="oc_modal(\'Edit\', \'' + row.id + '\')" style="width:100%"><i class="fa fa-eye"></i> Edit</button>'
+                        actionsHtml += '<button class="btn btn-sm btn-danger" onclick="oc_modal(\'Hapus\', \'' + row.id + '\')" style="width:100%"><i class="fa fa-trash"></i> Hapus</button>'
                         // actionsHtml += '<button class="btn btn-sm btn-secondary" onclick="oc_modal(\'Lihat\', \''+row.id+'\')" style="width:100%"> PDF</button>'
                     }
 
@@ -294,8 +252,7 @@
                     let tgl = row.tanggal_pemeriksaan
                     if (tgl) {
                         let dateParts = tgl.split("-");
-                        let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[
-                        0]; // Rearrange to "DD-MM-YYYY"
+                        let formattedDate = dateParts[2] + "-" + dateParts[1] + "-" + dateParts[0]; // Rearrange to "DD-MM-YYYY"
                         return formattedDate;
                     }
                     return "";
@@ -389,13 +346,13 @@
             destroy: true,
             scrollX: true,
             // ajax :  {
-            //     url: "{{ url('riwayat/data') }}",
+            //     url: "{{url('riwayat/data')}}",
             //     dataSrc: ''
             // },
             processing: true, // Optional: Shows a loading indicator while data is being fetched.
             serverSide: true,
             ajax: {
-                url: "{{ url('riwayat/data') }}",
+                url: "{{url('riwayat/data')}}",
                 data: function(d) {
                     d.periode_dari = $('#periode_dari').val(); // Ambil nilai dari input
                     d.periode_sampai = $('#periode_sampai').val();
@@ -420,7 +377,7 @@
 
     function oc_modal(fitur, id_riwayat) {
         console.log(semua_riwayat)
-        let auth_nama = "{{ Auth::user()->nama }}"
+        let auth_nama = "{{Auth::user()->nama}}"
 
         ar_hasil_pemeriksaan = []
         ar_program_tindak_lanjut = []
@@ -532,8 +489,7 @@
 
             if (Array.isArray(program_tl)) {
                 edukasi = program_tl.find(item => item.edukasi !== undefined && item.edukasi !== null)?.edukasi || "";
-                rujuk_fktrl = program_tl.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)
-                    ?.rujuk_fktrl || "";
+                rujuk_fktrl = program_tl.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)?.rujuk_fktrl || "";
             }
 
             // console.log(JSON.stringify(l_ar_hasil_pemeriksaan))
@@ -699,8 +655,7 @@
 
             if (Array.isArray(program_tl)) {
                 edukasi = program_tl.find(item => item.edukasi !== undefined && item.edukasi !== null)?.edukasi || "";
-                rujuk_fktrl = program_tl.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)
-                    ?.rujuk_fktrl || "";
+                rujuk_fktrl = program_tl.find(item => item.rujuk_fktrl !== undefined && item.rujuk_fktrl !== null)?.rujuk_fktrl || "";
             }
 
             // console.log(JSON.stringify(l_ar_hasil_pemeriksaan))
@@ -787,27 +742,22 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-6"><input id="nik_pasien" type="text" value="' + ((dt.pasien_nik != "") ? dt
-                .pasien_nik : "") + '" style="width:100%"></input></div>\
+                <div class="col-6"><input id="nik_pasien" type="text" value="' + ((dt.pasien_nik != "") ? dt.pasien_nik : "") + '" style="width:100%"></input></div>\
                 <div class="col-2"><button onclick="oc_cari_nik()">Cari</button></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
-                <div class="col-8"><input id="nama_pasien" type="text" value="' + ((dt.pasien_nama != "") ? dt
-                .pasien_nama : "") + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_pasien" type="text" value="' + ((dt.pasien_nama != "") ? dt.pasien_nama : "") + '" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Jenis Kelamin</div>\
                 <div class="col-8"><select id="jenis_kelamin" style="width:100%">\
-                    <option value="Laki-laki" ' + (((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin ===
-                "Laki-laki") ? "selected" : "")) + '>Laki-laki</option>\
-                    <option value="Perempuan" ' + (((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin ===
-                "Perempuan") ? "selected" : "")) + '>Perempuan</option></select></div>\
+                    <option value="Laki-laki" ' + (((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Laki-laki") ? "selected" : "")) + '>Laki-laki</option>\
+                    <option value="Perempuan" ' + (((dt.pasien_jenis_kelamin != "" && dt.pasien_jenis_kelamin === "Perempuan") ? "selected" : "")) + '>Perempuan</option></select></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Tanggal Lahir</div>\
-                <div class="col-8"><input id="tgl_lahir" type="date" value="' + ((dt.pasien_tgl_lahir != "") ? dt
-                .pasien_tgl_lahir : "") + '" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
+                <div class="col-8"><input id="tgl_lahir" type="date" value="' + ((dt.pasien_tgl_lahir != "") ? dt.pasien_tgl_lahir : "") + '" style="width:100%" onchange="oc_tgl_pemeriksaan_dan_lahir()"></input></div>\
             </div>\
             <div class="row mb-3">\
                 <div class="col-12"><b>KTP</b></div>\
@@ -830,8 +780,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Alamat</div>\
-                <div class="col-8"><input id="alamat_ktp" type="text" value="' + ((dt.pasien_alamat_ktp != "") ? dt
-                .pasien_alamat_ktp : "") + '" style="width: 100%;"></input></div>\
+                <div class="col-8"><input id="alamat_ktp" type="text" value="' + ((dt.pasien_alamat_ktp != "") ? dt.pasien_alamat_ktp : "") + '" style="width: 100%;"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-12"><input type="checkbox" id="alamat_sama" name="alamat_sama" value="alamat_sama" onchange="oc_alamat_ktp_sama_domisili()"><label for="l_alamat_sama" style="margin-left:5px"> Alamat domisili sama dengan alamat ktp</label></div>\
@@ -857,8 +806,7 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Alamat</div>\
-                <div class="col-8"><input id="alamat_dom" type="text" value="' + ((dt.pasien_alamat_dom != "") ? dt
-                .pasien_alamat_dom : "") + '" style="width: 100%;"></input></div>\
+                <div class="col-8"><input id="alamat_dom" type="text" value="' + ((dt.pasien_alamat_dom != "") ? dt.pasien_alamat_dom : "") + '" style="width: 100%;"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Usia</div>\
@@ -866,13 +814,11 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">No HP</div>\
-                <div class="col-8"><input id="no_hp" type="text" value="' + ((dt.pasien_no_hp != "") ? dt
-                .pasien_no_hp : "") + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="no_hp" type="text" value="' + ((dt.pasien_no_hp != "") ? dt.pasien_no_hp : "") + '" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Tanggal Pemeriksaan</div>\
-                <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="' + ((dt.tanggal_pemeriksaan !=
-                "") != "" ? dt.tanggal_pemeriksaan : "") + '" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
+                <div class="col-8"><input id="tanggal_pemeriksaan" type="date" value="' + ((dt.tanggal_pemeriksaan != "") != "" ? dt.tanggal_pemeriksaan : "") + '" onchange="oc_tgl_pemeriksaan_dan_lahir()" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama FKTP PJ</div>\
@@ -882,65 +828,51 @@
                 <div class="col-4">Tempat Periksa</div>\
                 <div class="col-8">\
                     <select id="tempat_periksa" style="width:100%">\
-                        <option value="Puskesmas" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa ===
-                "Puskesmas") ? "selected" : "")) + '>Puskesmas</option>\
-                        <option value="Klinik" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Klinik") ?
-                "selected" : "")) + '>Klinik</option>\
-                        <option value="Praktek Dokter Mandiri" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa ===
-                "Praktek Dokter Mandiri") ? "selected" : "")) + '>Praktek Dokter Mandiri</option>\
-                        <option value="Pustu" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Pustu") ?
-                "selected" : "")) + '>Pustu</option>\
-                        <option value="Sekolah" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Sekolah") ?
-                "selected" : "")) + '>Sekolah</option>\
-                        <option value="Lainnya" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Lainnya") ?
-                "selected" : "")) + '>Lainnya</option>\
+                        <option value="Puskesmas" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Puskesmas") ? "selected" : "")) + '>Puskesmas</option>\
+                        <option value="Klinik" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Klinik") ? "selected" : "")) + '>Klinik</option>\
+                        <option value="Praktek Dokter Mandiri" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Praktek Dokter Mandiri") ? "selected" : "")) + '>Praktek Dokter Mandiri</option>\
+                        <option value="Pustu" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Pustu") ? "selected" : "")) + '>Pustu</option>\
+                        <option value="Sekolah" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Sekolah") ? "selected" : "")) + '>Sekolah</option>\
+                        <option value="Lainnya" ' + (((dt.tempat_periksa != "" && dt.tempat_periksa === "Lainnya") ? "selected" : "")) + '>Lainnya</option>\
                     </select>\
                 </div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama Tempat Periksa</div>\
-                <div class="col-8"><input id="nama_tempat_periksa" type="text" value="' + (dt.nama_tempat_periksa !=
-                "" ? dt.nama_tempat_periksa : 'Puskesmas ' + auth_nama) + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_tempat_periksa" type="text" value="' + (dt.nama_tempat_periksa != "" ? dt.nama_tempat_periksa : 'Puskesmas ' + auth_nama) + '" style="width:100%"></input></div>\
             </div>'
             html +=
                 '<div id="pasien_sekolah" style="display:none">\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Tempat Lahir</div>\
-                    <div class="col-8"><input id="tempat_lahir" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="tempat_lahir" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Golongan Darah</div>\
-                    <div class="col-8"><input id="golongan_darah" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="golongan_darah" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Jenis Disabilitas</div>\
-                    <div class="col-8"><input id="jenis_disabilitas" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="jenis_disabilitas" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Nama Orang Tua / Wali</div>\
-                    <div class="col-8"><input id="nama_orangtua_wali" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="nama_orangtua_wali" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Kelas</div>\
-                    <div class="col-8"><input id="kelas" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="kelas" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-12"><b>Sekolah</b></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Nama Sekolah</div>\
-                    <div class="col-8"><input id="nama_sekolah" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .nama_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="nama_sekolah" type="text" value="' + (dt.id_sekolah != "" ? dt.nama_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
                 <div class="row mb-3" style="display:flex">\
                     <div class="col-4">Alamat Sekolah</div>\
-                    <div class="col-8"><input id="alamat_sekolah" type="text" value="' + (dt.id_sekolah != "" ? dt
-                    .id_sekolah : "") + '" style="width:100%"></input></div>\
+                    <div class="col-8"><input id="alamat_sekolah" type="text" value="' + (dt.id_sekolah != "" ? dt.id_sekolah : "") + '" style="width:100%"></input></div>\
                 </div>\
             </div>'
             html += '<div class="row mb-3" style="display:flex">\
@@ -948,13 +880,11 @@
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">NIK</div>\
-                <div class="col-8"><input id="nik_pemeriksa" type="text" value="' + ((dt.pemeriksa_nik != "") ? dt
-                .pemeriksa_nik : "") + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nik_pemeriksa" type="text" value="' + ((dt.pemeriksa_nik != "") ? dt.pemeriksa_nik : "") + '" style="width:100%"></input></div>\
             </div>\
             <div class="row mb-3" style="display:flex">\
                 <div class="col-4">Nama</div>\
-                <div class="col-8"><input id="nama_pemeriksa" type="text" value="' + ((dt.pemeriksa_nama != "") ? dt
-                .pemeriksa_nama : "") + '" style="width:100%"></input></div>\
+                <div class="col-8"><input id="nama_pemeriksa" type="text" value="' + ((dt.pemeriksa_nama != "") ? dt.pemeriksa_nama : "") + '" style="width:100%"></input></div>\
             </div>'
             html +=
                 '<div id="pasien_sekolah_hasil_skrining_mandiri" style="display:none">\
@@ -978,8 +908,7 @@
                             <div class="col-12"><b>Hasil Pemeriksaan Kesehatan Lainnya (ASIK)</b></div>\
                         </div>\
                         <div class="row mb-3" style="display:flex">\
-                            <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>' +
-                    dt.hasil_pemeriksaan_lainnya + '</textarea></div>\
+                            <div class="col-12" style="width:100%"><textarea style="width:100%; height:100px" id="hasil_pemeriksaan_lainnya" readonly>' + dt.hasil_pemeriksaan_lainnya + '</textarea></div>\
                         </div>\
                     </div>'
             }
@@ -991,16 +920,10 @@
                 <div class="col-8">\
                     <select id="kesimpulan_hasil_pemeriksaan" style="width:100%">\
                         <option value="">Pilih</option>\
-                        <option value="Normal dan faktor resiko tidak terdeteksi" ' + (((dt
-                .kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan ===
-                "Normal dan faktor resiko tidak terdeteksi") ? "selected" : "")) + '>Normal dan faktor resiko tidak terdeteksi</option>\
-                        <option value="Normal dengan faktor resiko" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt
-                .kesimpulan_hasil_pemeriksaan === "Normal dengan faktor resiko") ? "selected" : "")) + '>Normal dengan faktor resiko</option>\
-                        <option value="Menunjukkan kondisi pra penyakit" ' + (((dt.kesimpulan_hasil_pemeriksaan !=
-                    "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi pra penyakit") ? "selected" :
-                "")) + '>Menunjukkan kondisi pra penyakit</option>\
-                        <option value="Menunjukkan kondisi penyakit" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt
-                .kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi penyakit") ? "selected" : "")) + '>Menunjukkan kondisi penyakit</option>\
+                        <option value="Normal dan faktor resiko tidak terdeteksi" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dan faktor resiko tidak terdeteksi") ? "selected" : "")) + '>Normal dan faktor resiko tidak terdeteksi</option>\
+                        <option value="Normal dengan faktor resiko" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Normal dengan faktor resiko") ? "selected" : "")) + '>Normal dengan faktor resiko</option>\
+                        <option value="Menunjukkan kondisi pra penyakit" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi pra penyakit") ? "selected" : "")) + '>Menunjukkan kondisi pra penyakit</option>\
+                        <option value="Menunjukkan kondisi penyakit" ' + (((dt.kesimpulan_hasil_pemeriksaan != "" && dt.kesimpulan_hasil_pemeriksaan === "Menunjukkan kondisi penyakit") ? "selected" : "")) + '>Menunjukkan kondisi penyakit</option>\
                     </select>\
                 </div>\
             </div>\
@@ -1018,8 +941,7 @@
         }
 
         $('#exampleModal .modal-body').html(html);
-        $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\'' +
-            fitur + '\', \'' + id_riwayat + '\')">' + fitur + '</button>');
+        $('#exampleModal .modal-footer').html('<button type="button" class="btn btn-success" onclick="oc_fitur(\'' + fitur + '\', \'' + id_riwayat + '\')">' + fitur + '</button>');
 
         const hari_ini = new Date().toISOString().split('T')[0];
         $('#tanggal_pemeriksaan').val(hari_ini);
@@ -1517,7 +1439,7 @@
         console.log(vurl)
         if (vurl == "hapus") {
             $.ajax({
-                url: `{{ url('riwayat') }}/${vurl}`,
+                url: `{{url('riwayat')}}/${vurl}`,
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1585,7 +1507,7 @@
             console.log(program_tindak_lanjut)
 
             $.ajax({
-                url: `{{ url('riwayat') }}/${vurl}`,
+                url: `{{url('riwayat')}}/${vurl}`,
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1651,7 +1573,7 @@
             }
 
             $.ajax({
-                url: `{{ url('riwayat/tindak_lanjut_faskes_lain') }}`,
+                url: `{{url('riwayat/tindak_lanjut_faskes_lain')}}`,
                 type: "POST",
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1786,9 +1708,7 @@
         console.log("bbl")
         console.log(dt)
 
-        let variabel = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid',
-            'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu'
-        ]
+        let variabel = ['pertumbuhan_bb', 'penyakit_jantung_bawaan', 'kekurangan_hormon_tiroid', 'kekurangan_enzim_d6pd', 'kekurangan_hormon_adrenal', 'kelainan_saluran_empedu']
 
         let html = ''
 
@@ -1856,9 +1776,6 @@
                     </div>\
                 </div>'
 
-        console.log(html)
-
-        console.log($('#id_hasil_pemeriksaan').length);
         $('#id_hasil_pemeriksaan').html(html);
 
         if (dt.id != "" && dt.hasil_pemeriksaan != null) {
@@ -1879,10 +1796,7 @@
 
     function balita_dan_pra_sekolah(tahun) {
         console.log(dt)
-        let variabel = ['indeks_pbu_tbu', 'indeks_bbpb_bbtb', 'indeks_bbu', 'indeks_imtu', 'lingkar_kepala',
-            'perkembangan', 'tuberkulosis', 'telinga', 'pupil_putih', 'tes_e_tumbling', 'gigi', 'talasemia',
-            'gula_darah'
-        ]
+        let variabel = ['indeks_pbu_tbu', 'indeks_bbpb_bbtb', 'indeks_bbu', 'indeks_imtu', 'lingkar_kepala', 'perkembangan', 'tuberkulosis', 'telinga', 'pupil_putih', 'tes_e_tumbling', 'gigi', 'talasemia', 'gula_darah']
 
         let html = ''
 
@@ -2058,11 +1972,7 @@
     function dewasa_18_29_tahun() {
         console.log("18")
         console.log(dt)
-        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran',
-            'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko',
-            'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'anemia', 'hiv', 'sifilis', 'napza',
-            'status_imunisasi_tt'
-        ]
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
 
         let html = ''
 
@@ -2289,11 +2199,7 @@
 
     function dewasa_30_39_tahun() {
         console.log(dt)
-        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran',
-            'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko',
-            'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'anemia',
-            'hiv', 'sifilis', 'napza', 'status_imunisasi_tt'
-        ]
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
 
         let html = ''
 
@@ -2545,12 +2451,7 @@
 
     function dewasa_40_59_tahun() {
         console.log(dt)
-        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran',
-            'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko',
-            'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim',
-            'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'anemia',
-            'hiv', 'sifilis', 'napza', 'status_imunisasi_tt'
-        ]
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'anemia', 'hiv', 'sifilis', 'napza', 'status_imunisasi_tt']
 
         let html = ''
 
@@ -2868,13 +2769,7 @@
 
     function lansia() {
         console.log(dt)
-        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran',
-            'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko',
-            'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim',
-            'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'ppok',
-            'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living',
-            'frailty_syndrome', 'sarc_caif'
-        ]
+        let variabel = ['status_gizi', 'tuberkulosis', 'tekanan_darah', 'gula_darah', 'tes_pendengaran', 'tes_penglihatan', 'gigi', 'kesehatan_jiwa', 'merokok', 'aktivitas_fisik', 'faktor_resiko', 'hepatitis_b', 'hepatitis_c', 'fibrosis_sirosis', 'kanker_payudara', 'kanker_leher_rahim', 'risiko_jantung', 'risiko_stroke', 'fungsi_ginjal', 'kanker_paru', 'kanker_usus', 'ppok', 'ppok', 'gangguan_penglihatan', 'gangguan_pendengaran', 'gejala_depresi', 'activity_daily_living', 'frailty_syndrome', 'sarc_caif']
 
         let html = ''
 
@@ -3272,7 +3167,7 @@
 
         console.log(nik)
         $.ajax({
-            url: "{{ url('riwayat/cari_nik_pasien') }}",
+            url: "{{url('riwayat/cari_nik_pasien')}}",
             type: 'GET',
             data: {
                 'nik': nik,
@@ -3285,7 +3180,7 @@
                     $('#nik_pasien').val(data.nik)
                     $('#nama_pasien').val(data.nama)
                     $('#jenis_kelamin').val(data.jenis_kelamin)
-                    $('#tgl_lahir').val(data.tgl_lahir)
+                    $('#tgl_lahir').val(data.tanggal_lahir)
                     if (data.ref_provinsi_ktp) {
                         get_provinsi_ktp(data.ref_provinsi_ktp.kode_provinsi, data.ref_provinsi_ktp.nama)
                     }
@@ -3293,12 +3188,10 @@
                         get_kota_kab_ktp(data.ref_kota_kab_ktp.kode_kota_kab, data.ref_kota_kab_ktp.nama);
                     }
                     if (data.ref_kecamatan_ktp) {
-                        get_kecamatan_ktp(data.ref_kecamatan_ktp.kode_kecamatan, data.ref_kecamatan_ktp
-                            .nama);
+                        get_kecamatan_ktp(data.ref_kecamatan_ktp.kode_kecamatan, data.ref_kecamatan_ktp.nama);
                     }
                     if (data.ref_kelurahan_ktp) {
-                        get_kelurahan_ktp(data.ref_kelurahan_ktp.kode_kelurahan, data.ref_kelurahan_ktp
-                            .nama);
+                        get_kelurahan_ktp(data.ref_kelurahan_ktp.kode_kelurahan, data.ref_kelurahan_ktp.nama);
                     }
 
                     // Cek dan set data Domisili
@@ -3309,12 +3202,10 @@
                         get_kota_kab_dom(data.ref_kota_kab_dom.kode_kota_kab, data.ref_kota_kab_dom.nama);
                     }
                     if (data.ref_kecamatan_dom) {
-                        get_kecamatan_dom(data.ref_kecamatan_dom.kode_kecamatan, data.ref_kecamatan_dom
-                            .nama);
+                        get_kecamatan_dom(data.ref_kecamatan_dom.kode_kecamatan, data.ref_kecamatan_dom.nama);
                     }
                     if (data.ref_kelurahan_dom) {
-                        get_kelurahan_dom(data.ref_kelurahan_dom.kode_kelurahan, data.ref_kelurahan_dom
-                            .nama);
+                        get_kelurahan_dom(data.ref_kelurahan_dom.kode_kelurahan, data.ref_kelurahan_dom.nama);
                     }
 
                     $('#alamat_ktp').val(data.alamat_ktp)
@@ -3332,6 +3223,7 @@
 
                 if (typeof data.kelas !== 'undefined' && data.kelas !== '') {
                     console.log("hide")
+                    $('#no_hp').val(data.telp)
                     $('#id_hasil_pemeriksaan_kesehatan_lainnya_asik').hide()
                     console.log($("#id_hasil_pemeriksaan_kesehatan_lainnya_asik").length)
                     cek_pasien_sekolah(data, fitur)
@@ -3408,7 +3300,7 @@
         }
 
         $.ajax({
-            url: "{{ url('master_instrumen_sekolah') }}",
+            url: "{{url('master_instrumen_sekolah')}}",
             type: 'GET',
             data: {
                 'jenis': 'nakes',
@@ -3471,8 +3363,7 @@
                                 }
 
                                 input.addEventListener("change", (e) => {
-                                    oc_hasil_pemeriksaan_kesehatan_sekolah(item
-                                        .objek, e.target.value);
+                                    oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
                                 });
 
                                 const lbl = document.createElement("label");
@@ -3507,8 +3398,7 @@
                             sanitizedValue = sanitizedValue.replace(',', '.');
 
                             const parts = sanitizedValue.split('.');
-                            const integerPart = parts[0].replace(/\D/g, '').slice(0,
-                            3); // max 3 digit angka
+                            const integerPart = parts[0].replace(/\D/g, '').slice(0, 3); // max 3 digit angka
 
                             const decimalPart = (parts.length > 1) ?
                                 '.' + parts[1].replace(/\D/g, '').slice(0, 2) :
@@ -3559,8 +3449,7 @@
                         if (existingValue) input.value = existingValue;
 
                         input.addEventListener("input", (e) => {
-                            oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target
-                                .value);
+                            oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
                         });
                         colInput.appendChild(input);
 
@@ -3597,8 +3486,7 @@
                         valueOptions.forEach((val) => {
                             const option = document.createElement("option");
                             option.value = val;
-                            option.text = val.length > 100 ? val.slice(0, 97) + "..." :
-                            val; // tampilkan singkat jika terlalu panjang
+                            option.text = val.length > 100 ? val.slice(0, 97) + "..." : val; // tampilkan singkat jika terlalu panjang
                             option.title = val; // tampilkan isi lengkap saat hover
                             select.add(option);
                         });
@@ -3606,8 +3494,7 @@
                         select.value = existingValue;
 
                         select.addEventListener("change", (e) => {
-                            oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target
-                                .value);
+                            oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, e.target.value);
                         });
 
                         colInput.appendChild(select);
