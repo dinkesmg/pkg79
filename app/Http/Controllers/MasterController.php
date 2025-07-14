@@ -287,15 +287,19 @@ class MasterController extends Controller
     public function instrumen_sekolah(Request $request)
     {
         $validated = $request->validate([
+            'jenis' => 'required|string',
             'kelas' => 'required|integer',
             'jenis_kelamin' => 'required|string|in:L,P',
         ]);
 
+        $jenis = $validated['jenis'];
         $kelas = (int) $validated['kelas'];
         $jenis_kelamin = $validated['jenis_kelamin'];
 
 
-        $data = MasterInstrumenSekolah::select('id', 'judul', 'pertanyaan', 'kelas', 'jenis_kelamin', 'objek', 'tipe_input', 'value_tipe_input')->whereJsonContains('kelas', $kelas)
+        $data = MasterInstrumenSekolah::select('id', 'judul', 'pertanyaan', 'kelas', 'jenis_kelamin', 'objek', 'tipe_input', 'value_tipe_input')
+            ->where('jenis', $jenis)
+            ->whereJsonContains('kelas', $kelas)
             ->whereJsonContains('jenis_kelamin', $jenis_kelamin)
             ->get();
 
