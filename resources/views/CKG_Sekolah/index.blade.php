@@ -762,7 +762,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
         <div id="invalid-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
-                <h2 class="text-lg font-semibold mb-4 text-red-600">Gagal Selanjutnya</h2>
+                <h2 id="judul-modal-message" class="text-lg font-semibold mb-4 text-red-600"></h2>
                 <p id="invalid-modal-message" class="mb-4 text-gray-700"></p>
                 <button onclick="document.getElementById('invalid-modal').classList.add('hidden')" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
                     Tutup
@@ -805,6 +805,8 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                         e.preventDefault();
                         // alert('Silahkan untuk memberikan tanda tangan terlebih dahulu.');
                         // Isi pesan modal
+                        document.getElementById('judul-modal-message').textContent = `Gagal Selanjutnya`;
+
                         document.getElementById('invalid-modal-message').textContent = `Silahkan tanda tangan terlebih dahulu dan Klik simpan`;
 
                         // Tampilkan modal
@@ -1482,6 +1484,8 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     .map(field => field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()))
                     .join(', ');
 
+
+                document.getElementById('judul-modal-message').textContent = `Gagal Selanjutnya`;
                 // Isi pesan modal
                 document.getElementById('invalid-modal-message').textContent = `Data ${invalidFieldsFormatted} wajib diisi!`;
 

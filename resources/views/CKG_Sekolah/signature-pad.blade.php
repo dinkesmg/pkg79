@@ -129,7 +129,13 @@
         }
         const svgDataUrl = signaturePad.toDataURL('image/svg+xml');
         localStorage.setItem('tanda_tangan', svgDataUrl);
-        alert("Tanda tangan disimpan ke localStorage.");
+        // alert("Tanda tangan disimpan ke localStorage.");
+
+        document.getElementById('judul-modal-message').textContent = `Berhasil Simpan`;
+        document.getElementById('invalid-modal-message').textContent = `Tanda tangan berhasil disimpan`;
+        // Tampilkan modal
+        document.getElementById('invalid-modal').classList.remove('hidden');
+
         disableCanvasInteraction();
     });
 
