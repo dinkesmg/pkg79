@@ -15,6 +15,7 @@ use App\Models\MasterKecamatan;
 use App\Models\MasterInstrumen;
 use App\Models\MasterInstrumenSekolah;
 use App\Models\MasterProvider;
+use App\Models\MasterSekolah;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
@@ -304,5 +305,16 @@ class MasterController extends Controller
             ->get();
 
         return response()->json($data);
+    }
+
+    public function cari_sekolah(Request $request)
+    {
+        $term = $request->get('term');
+
+        $results = MasterSekolah::where('nama', 'like', "%{$term}%")
+            ->limit(10)
+            ->get(['id', 'nama', 'alamat', 'id_puskesmas']);
+
+        return response()->json($results);
     }
 }

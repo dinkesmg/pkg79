@@ -16,6 +16,22 @@
         text-align: right;
     }
 
+    /* Gaya saat canvas dinonaktifkan */
+    canvas.disabled {
+        pointer-events: none;
+        opacity: 0.5;
+        border: 2px dashed #ccc;
+        background-color: #f9f9f9;
+    }
+
+    /* Gaya saat tombol dinonaktifkan */
+    button:disabled {
+        background-color: #ccc !important;
+        color: #888;
+        cursor: not-allowed;
+        border: 1px solid #aaa;
+    }
+
     button {
         padding: 8px 16px;
         margin-left: 5px;
@@ -32,18 +48,22 @@
 
 <div style="padding: 16px;">
     <p><strong>Tanda Tangan</strong></p>
+    <p class="text-sm">Tulis tanda tangan pada kotak dibawah ini!</p>
     <div class="signature-container">
         <canvas id="signature-pad" width="360" height="100"></canvas>
     </div>
     <div class="button-group">
         <button id="save">Simpan</button>
-        <button id="clear">Ulangi</button>
+        <button id="clear" style="display: none;">Ulangi</button>
     </div>
+    <p class="italic text-sm text-right mt-2">*Klik simpan jika tanda tangan sudah benar</p>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script>
     const canvas = document.getElementById('signature-pad');
+    const saveBtn = document.getElementById('save');
+    const clearBtn = document.getElementById('clear');
     const signaturePad = new SignaturePad(canvas);
 
     function resizeCanvasIfNeeded() {
@@ -52,22 +72,25 @@
         const defaultHeight = 200;
         const ratio = Math.max(window.devicePixelRatio || 1, 1);
 
-        let newWidth = defaultWidth;
-
-        if (screenWidth < 520) {
-            newWidth = screenWidth - 40;
-        }
-
+        let newWidth = screenWidth < 520 ? screenWidth - 40 : defaultWidth;
         let newHeight = Math.floor((newWidth / defaultWidth) * defaultHeight);
 
         canvas.style.width = newWidth + "px";
         canvas.style.height = newHeight + "px";
-
         canvas.width = newWidth * ratio;
         canvas.height = newHeight * ratio;
         canvas.getContext("2d").scale(ratio, ratio);
-
         signaturePad.clear();
+    }
+
+    function disableCanvasInteraction() {
+        canvas.classList.add('disabled');
+        saveBtn.disabled = true;
+    }
+
+    function enableCanvasInteraction() {
+        canvas.classList.remove('disabled');
+        saveBtn.disabled = false;
     }
 
     function loadSignatureIfExists() {
@@ -76,41 +99,66 @@
             const img = new Image();
             img.onload = () => {
                 const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
+                ctx.drawImage(img, 0, 0, canvas.width / window.devicePixelRatio, canvas.height / window
+                    .devicePixelRatio);
+                updateClearButtonVisibility(); // ✅ tampilkan tombol ulangi jika ada gambar
             };
             img.src = savedSignature;
+            disableCanvasInteraction();
+        } else {
+            enableCanvasInteraction();
+            updateClearButtonVisibility(); // ✅ pastikan tombol ulangi disembunyikan jika kosong
         }
     }
 
-    // Jalankan resize + load signature saat halaman selesai dimuat
+    function updateClearButtonVisibility() {
+        const savedSignature = localStorage.getItem('tanda_tangan');
+        if (savedSignature || !signaturePad.isEmpty()) {
+            clearBtn.style.display = 'inline-block';
+        } else {
+            clearBtn.style.display = 'none';
+        }
+    }
+
+    // Saat halaman dimuat
     window.addEventListener("load", () => {
         resizeCanvasIfNeeded();
         loadSignatureIfExists();
+        updateClearButtonVisibility();
     });
 
-    // Saat ukuran layar berubah
+    // Saat layar di-resize
     window.addEventListener("resize", () => {
         resizeCanvasIfNeeded();
         loadSignatureIfExists();
     });
 
-    // Tombol hapus
-    document.getElementById('clear').addEventListener('click', () => {
-        signaturePad.clear();
-        localStorage.removeItem('tanda_tangan');
-    });
-
     // Tombol simpan
-    document.getElementById('save').addEventListener('click', () => {
+    saveBtn.addEventListener('click', () => {
         if (signaturePad.isEmpty()) {
             alert("Silakan tanda tangani terlebih dahulu.");
             return;
         }
-
         const svgDataUrl = signaturePad.toDataURL('image/svg+xml');
         localStorage.setItem('tanda_tangan', svgDataUrl);
-        alert("Tanda tangan disimpan ke localStorage.");
+        alert("Tanda tangan disimpan.");
+        disableCanvasInteraction();
+        updateClearButtonVisibility(); // ✅ tampilkan ulangi setelah simpan
     });
 
-</script>
+    // Tombol ulangi
+    clearBtn.addEventListener('click', () => {
+        signaturePad.clear();
+        localStorage.removeItem('tanda_tangan');
+        enableCanvasInteraction();
+        updateClearButtonVisibility();
+    });
 
+    // Aktifkan tombol simpan kembali saat mulai menggambar lagi
+    signaturePad.onBegin = () => {
+        if (!signaturePad.isEmpty()) {
+            saveBtn.disabled = false;
+        }
+        updateClearButtonVisibility();
+    };
+</script>

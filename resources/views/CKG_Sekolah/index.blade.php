@@ -230,6 +230,7 @@
             </label>
             <input type="text" id="nama_sekolah" name="nama_sekolah"
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+            <input type="hidden" id="id_sekolah" name="id_sekolah">
         </div>
     </div>
     <div class="w-full lg:w-6/12 px-4">
@@ -592,10 +593,10 @@
                                         <p class="text-sm">Alamat</p>
                                     </div>
                                     <div>
+                                        <p class="text-sm">: <span class="uppercase" id="output_nama_sekolah"></span>
+                                        </p>
                                         <p class="text-sm">: <span class="uppercase"
-                                        id="output_nama_sekolah"></span></p>
-                                        <p class="text-sm">: <span class="uppercase"
-                                        id="output_alamat_sekolah"></span></p>
+                                                id="output_alamat_sekolah"></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -606,11 +607,13 @@
                             </div>
                             <div class="mt-2 flex flex-col space-y-3">
                                 <label class="inline-flex items-center w-fit">
-                                    <input type="radio" name="persetujuan" value="Setuju" class="form-checkbox text-pink-500">
+                                    <input type="radio" name="persetujuan" value="Setuju"
+                                        class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Setuju</span>
                                 </label>
                                 <label class="inline-flex items-center w-fit">
-                                    <input type="radio" name="persetujuan" value="Tidak setuju" class="form-checkbox text-pink-500">
+                                    <input type="radio" name="persetujuan" value="Tidak setuju"
+                                        class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Tidak setuju</span>
                                 </label>
                             </div>
@@ -780,7 +783,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const radios = document.querySelectorAll('input[name="persetujuan"]');
             const tombolKirim = document.getElementById('btn-kirim');
 
@@ -797,7 +800,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
             // Simpan ke localStorage saat user memilih radio
             radios.forEach(radio => {
-                radio.addEventListener('change', function () {
+                radio.addEventListener('change', function() {
                     localStorage.setItem('persetujuan', this.value);
                     tombolKirim.disabled = false;
                 });
@@ -808,7 +811,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             tombolKirim.disabled = !anyChecked;
 
             // ✅ Validasi tanda tangan saat tombol diklik
-            tombolKirim.addEventListener('click', function (e) {
+            tombolKirim.addEventListener('click', function(e) {
                 const tandaTangan = localStorage.getItem('tanda_tangan');
                 if (!tandaTangan || tandaTangan.trim() === '') {
                     e.preventDefault();
@@ -817,7 +820,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                 }
 
                 cekModal();
-                
+
             });
         });
     </script>
@@ -964,12 +967,14 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     el.innerHTML = `<option value="">-- ${placeholder} --</option>`;
                     data.forEach(item => {
                         const selected = item.kode === selectedKode ? 'selected' : '';
-                        el.innerHTML += `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
+                        el.innerHTML +=
+                            `<option value="${item.kode}" ${selected}>${item.nama}</option>`;
                     });
 
                     // Tunggu sampai opsi benar-benar masuk DOM
                     setTimeout(() => {
-                        if (selectedKode && el.querySelector(`option[value="${selectedKode}"]`)) {
+                        if (selectedKode && el.querySelector(
+                                `option[value="${selectedKode}"]`)) {
                             el.value = selectedKode;
                         }
                         resolve();
@@ -1039,13 +1044,16 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     const provinsiData = await fetchData('/master_provinsi?search=');
                     await fillSelect(domProvinsi, provinsiData, 'Pilih Provinsi', kodeProv);
 
-                    const kotaData = await fetchData(`/master_kota_kab?search=&kode_parent=${kodeProv}`);
+                    const kotaData = await fetchData(
+                        `/master_kota_kab?search=&kode_parent=${kodeProv}`);
                     await fillSelect(domKota, kotaData, 'Pilih Kota/Kabupaten', kodeKota);
 
-                    const kecamatanData = await fetchData(`/master_kecamatan?search=&kode_parent=${kodeKota}`);
+                    const kecamatanData = await fetchData(
+                        `/master_kecamatan?search=&kode_parent=${kodeKota}`);
                     await fillSelect(domKecamatan, kecamatanData, 'Pilih Kecamatan', kodeKec);
 
-                    const kelurahanData = await fetchData(`/master_kelurahan?search=&kode_parent=${kodeKec}`);
+                    const kelurahanData = await fetchData(
+                        `/master_kelurahan?search=&kode_parent=${kodeKec}`);
                     await fillSelect(domKelurahan, kelurahanData, 'Pilih Kelurahan', kodeKel);
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
@@ -1140,9 +1148,9 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
                     if (alamat && domAlamat) domAlamat.value = alamat.value;
                 } else {
-                    
+
                 }
-                
+
             })();
 
         });
@@ -1174,6 +1182,71 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+    <script>
+        $(document).ready(function() {
+            $("#nama_sekolah").autocomplete({
+                minLength: 2, // minimal karakter sebelum muncul saran
+                source: function(request, response) {
+                    $.ajax({
+                        url: "/master_sekolah/cari", // pastikan route ini sesuai
+                        type: "GET",
+                        data: {
+                            term: request.term
+                        },
+                        success: function(data) {
+                            response(data.map(function(item) {
+                                return {
+                                    label: item.nama,
+                                    value: item.nama,
+                                    alamat: item.alamat,
+                                    id: item.id,
+                                    id_puskesmas: item.id_puskesmas
+                                };
+                            }));
+                        },
+                        error: function() {
+                            response([]);
+                        }
+                    });
+                },
+                select: function(event, ui) {
+                    const namaSekolah = ui.item.value;
+                    const alamatSekolah = ui.item.alamat && ui.item.alamat.trim() !== '' ? ui.item
+                        .alamat : '-';
+                    const idSekolah = ui.item.id;
+                    const idPuskesmas = ui.item.id_puskesmas;
+
+                    $("#nama_sekolah").val(namaSekolah);
+                    $("#alamat_sekolah").val(alamatSekolah);
+                    $("#id_sekolah").val(idSekolah);
+
+                    localStorage.setItem('nama_sekolah', namaSekolah);
+                    localStorage.setItem('alamat_sekolah', alamatSekolah);
+                    localStorage.setItem('id_sekolah', idSekolah);
+
+                    $("#output_nama_sekolah").text(namaSekolah);
+                    $("#output_alamat_sekolah").text(alamatSekolah);
+
+                    // Cek apakah option puskesmas dengan ID tersebut ada
+                    const optionExists = $(`#puskesmas option[value="${idPuskesmas}"]`).length > 0;
+
+                    if (optionExists) {
+                        $("#puskesmas").val(idPuskesmas).trigger('change');
+                        localStorage.setItem('puskesmas', idPuskesmas);
+                    } else {
+                        // Simpan nilai sementara, isi nanti jika belum tersedia
+                        localStorage.setItem('pending_puskesmas', idPuskesmas);
+                    }
+
+                    return false;
+                }
+            });
+        });
+    </script>
+
     <script>
         $(document).ready(function() {
             $.ajax({
@@ -1181,15 +1254,27 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                 type: 'GET',
                 success: function(data) {
                     const select = $('#puskesmas');
+                    select.empty().append(`<option value="">-- Pilih Puskesmas --</option>`);
+
                     data.forEach(function(item) {
                         select.append(`<option value="${item.id}">${item.nama}</option>`);
                     });
 
+                    // Ambil nilai dari localStorage (restore puskesmas terakhir)
                     const savedValue = localStorage.getItem('puskesmas');
                     if (savedValue) {
                         select.val(savedValue);
                     }
 
+                    // Jika ada pending puskesmas dari autocomplete
+                    const pendingValue = localStorage.getItem('pending_puskesmas');
+                    if (pendingValue && $(`#puskesmas option[value="${pendingValue}"]`).length > 0) {
+                        select.val(pendingValue).trigger('change');
+                        localStorage.setItem('puskesmas', pendingValue);
+                        localStorage.removeItem('pending_puskesmas');
+                    }
+
+                    // Set output tampilan
                     const selectedText = $('#puskesmas option:selected').text();
                     $('#output_puskesmas').text(selectedText);
                     $('#output_puskesmas_result').text(selectedText);
@@ -1198,6 +1283,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     alert('Gagal mengambil data puskesmas.');
                 }
             });
+
 
             $('#puskesmas').on('change', function() {
                 const selectedText = $('#puskesmas option:selected').text();
@@ -1230,11 +1316,11 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             outputAlamat.innerText = alamatSekolah;
 
             // Update output ketika input berubah
-            namaInput.addEventListener('input', function () {
+            namaInput.addEventListener('input', function() {
                 outputNama.innerText = this.value;
             });
 
-            alamatInput.addEventListener('input', function () {
+            alamatInput.addEventListener('input', function() {
                 outputAlamat.innerText = this.value;
             });
 
@@ -1331,9 +1417,61 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
         }
 
         function openModal() {
+            const data = {
+                nama_lengkap: document.getElementById("nama_lengkap")?.value || "",
+                nik: document.getElementById("nik")?.value || "",
+                no_hp: document.getElementById("no_hp")?.value || "",
+                tempat_lahir: document.getElementById("tempat_lahir")?.value || "",
+                tanggal_lahir: document.getElementById("tanggal_lahir")?.value || "",
+                bulan_lahir: document.getElementById("bulan_lahir")?.value || "",
+                tahun_lahir: document.getElementById("tahun_lahir")?.value || "",
+                nama_ortu_wali: document.getElementById("nama_ortu_wali")?.value || "",
+                umur: document.getElementById("umur")?.value || "",
+                nama_sekolah: document.getElementById("nama_sekolah")?.value || "",
+                alamat_sekolah: document.getElementById("alamat_sekolah")?.value || "",
+                kelas: document.getElementById("kelas")?.value || "",
+                puskesmas: document.getElementById("puskesmas")?.value || "",
+                jenis_kelamin: document.querySelector('input[name="jenis_kelamin"]:checked')?.value || '',
+                golongan_darah: document.querySelector('input[name="golongan_darah"]:checked')?.value || "",
+                provinsi: document.getElementById("provinsi")?.selectedOptions[0]?.text || "",
+                kota: document.getElementById("kota")?.selectedOptions[0]?.text || "",
+                kecamatan: document.getElementById("kecamatan")?.selectedOptions[0]?.text || "",
+                kelurahan: document.getElementById("kelurahan")?.selectedOptions[0]?.text || "",
+                alamat: document.getElementById("alamat")?.value || "",
+                disabilitas: Array.from(document.querySelectorAll('input[name="jenis_disabilitas[]"]:checked')).map(
+                    cb => cb.value),
+                provinsi_dom: document.getElementById("dom-provinsi")?.selectedOptions[0]?.text || "",
+                kota_dom: document.getElementById("dom-kota")?.selectedOptions[0]?.text || "",
+                kecamatan_dom: document.getElementById("dom-kecamatan")?.selectedOptions[0]?.text || "",
+                kelurahan_dom: document.getElementById("dom-kelurahan")?.selectedOptions[0]?.text || "",
+                alamat_dom: document.getElementById("dom-alamat")?.value || ""
+
+            };
+
+            console.log(data);
+
             const modal = document.getElementById('myModal');
             const content = document.getElementById('modalContent');
             const backdrop = document.getElementById('modalBackdrop');
+
+            const isDataValid = Object.entries(data).every(([key, value]) => {
+                if (key === 'disabilitas') return Array.isArray(value) && value.length > 0; // validasi khusus
+                return value !== '';
+            });
+
+            if (!isDataValid) {
+                const invalidFields = Object.entries(data).filter(([key, value]) => {
+                    if (key === 'disabilitas') return !Array.isArray(value) || value.length === 0;
+                    return value === '';
+                }).map(([key]) => key);
+
+                const invalidFieldsFormatted = invalidFields
+                    .map(field => field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase()))
+                    .join(', ');
+
+                alert(`Data ${invalidFieldsFormatted} wajib diisi!`);
+                return;
+            }
 
             modal.classList.remove('hidden');
 

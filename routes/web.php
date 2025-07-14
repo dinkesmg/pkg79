@@ -92,6 +92,7 @@ Route::get('master_kelurahan', [MasterController::class, 'kelurahan'])->name('ma
 Route::get('master_instrumen', [MasterController::class, 'instrumen'])->name('master_instrumen.data');
 Route::get('master_instrumen/detail', [MasterController::class, 'instrumen_detail'])->name('master_instrumen.detail');
 Route::get('master_instrumen_sekolah', [MasterController::class, 'instrumen_sekolah'])->name('master_instrumen_sekolah.data');
+Route::get('/master_sekolah/cari', [MasterController::class, 'cari_sekolah'])->name('cari_sekolah.data');
 Route::get('/master_puskesmas/search', [PuskesmasController::class, 'search']);
 Route::get('master_puskesmas', [PuskesmasController::class, 'all'])->name('master_puskesmas.data');
 
