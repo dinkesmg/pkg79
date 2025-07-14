@@ -1,0 +1,138 @@
+[{
+  "version": "1.0",
+  "image": {
+    "name": "/var/www/new-toc/public/uploads/logo_semarpkg79_1752478839.png",
+    "format": "json",
+    "formatDescription": "The image format and characteristics",
+    "mimeType": "application/json",
+    "class": "DirectClass",
+    "geometry": {
+      "width": 535,
+      "height": 466,
+      "x": 0,
+      "y": 0
+    },
+    "units": "Undefined",
+    "type": "TrueColorAlpha",
+    "endianness": "Undefined",
+    "colorspace": "sRGB",
+    "depth": 8,
+    "baseDepth": 8,
+    "channelDepth": {
+      "alpha": 8,
+      "red": 8,
+      "green": 8,
+      "blue": 8
+    },
+    "pixels": 249310,
+    "imageStatistics": {
+      "all": {
+        "min": 0,
+        "max": 255,
+        "mean": 58.9541,
+        "standardDeviation": 82.8672,
+        "kurtosis": -0.158156,
+        "skewness": 1.22932,
+        "entropy": 0.334683
+      }
+    },
+    "channelStatistics": {
+      "alpha": {
+        "min": 255,
+        "max": 0,
+        "mean": 164.888,
+        "standardDeviation": 120.432,
+        "kurtosis": -1.6053,
+        "skewness": 0.612909,
+        "entropy": 0.19151
+      },
+      "red": {
+        "min": 0,
+        "max": 255,
+        "mean": 72.9133,
+        "standardDeviation": 96.3567,
+        "kurtosis": -1.43159,
+        "skewness": 0.646728,
+        "entropy": 0.385513
+      },
+      "green": {
+        "min": 0,
+        "max": 255,
+        "mean": 46.4724,
+        "standardDeviation": 75.2578,
+        "kurtosis": 0.546884,
+        "skewness": 1.45933,
+        "entropy": 0.390113
+      },
+      "blue": {
+        "min": 0,
+        "max": 255,
+        "mean": 26.3183,
+        "standardDeviation": 39.4224,
+        "kurtosis": 3.58347,
+        "skewness": 1.68016,
+        "entropy": 0.371593
+      }
+    },
+    "alpha": "#00000000",
+    "renderingIntent": "Perceptual",
+    "gamma": 0.45455,
+    "chromaticity": {
+      "redPrimary": {
+        "x": 0.64,
+        "y": 0.33
+      },
+      "greenPrimary": {
+        "x": 0.3,
+        "y": 0.6
+      },
+      "bluePrimary": {
+        "x": 0.15,
+        "y": 0.06
+      },
+      "whitePrimary": {
+        "x": 0.3127,
+        "y": 0.329
+      }
+    },
+    "backgroundColor": "#FFFFFFFF",
+    "borderColor": "#DFDFDFFF",
+    "matteColor": "#BDBDBDFF",
+    "transparentColor": "#00000000",
+    "interlace": "None",
+    "intensity": "Undefined",
+    "compose": "Over",
+    "pageGeometry": {
+      "width": 535,
+      "height": 466,
+      "x": 0,
+      "y": 0
+    },
+    "dispose": "Undefined",
+    "iterations": 0,
+    "compression": "Zip",
+    "orientation": "Undefined",
+    "properties": {
+      "date:create": "2025-07-14T07:40:39+00:00",
+      "date:modify": "2025-07-14T07:40:39+00:00",
+      "png:cHRM": "chunk was found (see Chromaticity, above)",
+      "png:gAMA": "gamma=0.45455 (See Gamma, above)",
+      "png:IHDR.bit-depth-orig": "8",
+      "png:IHDR.bit_depth": "8",
+      "png:IHDR.color-type-orig": "6",
+      "png:IHDR.color_type": "6 (RGBA)",
+      "png:IHDR.interlace_method": "0 (Not interlaced)",
+      "png:IHDR.width,height": "535, 466",
+      "png:sRGB": "intent=0 (Perceptual Intent)",
+      "signature": "a12eba41a5e5dd3d287ed4f414ade2816758833744d1458bc5bf0f9109726a93"
+    },
+    "tainted": false,
+    "filesize": "172377B",
+    "numberPixels": "249310",
+    "pixelsPerSecond": "1.63707GB",
+    "userTime": "0.000u",
+    "elapsedTime": "0:01.000",
+    "version": "ImageMagick 6.9.11-60 Q16 x86_64 2021-01-25 https://imagemagick.org"
+  }
+}
+]

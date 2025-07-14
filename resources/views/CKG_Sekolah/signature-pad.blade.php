@@ -48,13 +48,13 @@
 
 <div style="padding: 16px;">
     <p><strong>Tanda Tangan</strong></p>
-    <p class="text-sm">Tulis tanda tangan pada kotak dibawah ini!</p>
+    <p class="text-sm">Tulis atau gambar tanda tangan pada kotak dibawah ini!</p>
     <div class="signature-container">
         <canvas id="signature-pad" width="360" height="100"></canvas>
     </div>
     <div class="button-group">
         <button id="save">Simpan</button>
-        <button id="clear" style="display: none;">Ulangi</button>
+        <button id="clear">Ulangi</button>
     </div>
     <p class="italic text-sm text-right mt-2">*Klik simpan jika tanda tangan sudah benar</p>
 </div>
@@ -101,22 +101,11 @@
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width / window.devicePixelRatio, canvas.height / window
                     .devicePixelRatio);
-                updateClearButtonVisibility(); // ✅ tampilkan tombol ulangi jika ada gambar
             };
             img.src = savedSignature;
             disableCanvasInteraction();
         } else {
             enableCanvasInteraction();
-            updateClearButtonVisibility(); // ✅ pastikan tombol ulangi disembunyikan jika kosong
-        }
-    }
-
-    function updateClearButtonVisibility() {
-        const savedSignature = localStorage.getItem('tanda_tangan');
-        if (savedSignature || !signaturePad.isEmpty()) {
-            clearBtn.style.display = 'inline-block';
-        } else {
-            clearBtn.style.display = 'none';
         }
     }
 
@@ -124,7 +113,6 @@
     window.addEventListener("load", () => {
         resizeCanvasIfNeeded();
         loadSignatureIfExists();
-        updateClearButtonVisibility();
     });
 
     // Saat layar di-resize
@@ -141,9 +129,8 @@
         }
         const svgDataUrl = signaturePad.toDataURL('image/svg+xml');
         localStorage.setItem('tanda_tangan', svgDataUrl);
-        alert("Tanda tangan disimpan.");
+        alert("Tanda tangan disimpan ke localStorage.");
         disableCanvasInteraction();
-        updateClearButtonVisibility(); // ✅ tampilkan ulangi setelah simpan
     });
 
     // Tombol ulangi
@@ -151,7 +138,6 @@
         signaturePad.clear();
         localStorage.removeItem('tanda_tangan');
         enableCanvasInteraction();
-        updateClearButtonVisibility();
     });
 
     // Aktifkan tombol simpan kembali saat mulai menggambar lagi
@@ -159,6 +145,5 @@
         if (!signaturePad.isEmpty()) {
             saveBtn.disabled = false;
         }
-        updateClearButtonVisibility();
     };
 </script>

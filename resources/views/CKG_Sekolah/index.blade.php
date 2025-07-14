@@ -54,6 +54,26 @@
     button:hover {
         background-color: #ccc;
     }
+
+    .ui-autocomplete {
+        max-height: 40vh;             /* Batas tinggi agar tidak keluar layar */
+        overflow-y: auto;
+        overflow-x: hidden;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        z-index: 9999 !important;     /* pastikan muncul di atas elemen lain */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Buat lebih kecil untuk layar mobile */
+    @media (max-width: 600px) {
+        .ui-autocomplete {
+            font-size: 13px;
+            max-height: 50vh;
+        }
+    }
+
 </style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -228,8 +248,9 @@
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlfor="grid-password">
                 Nama Sekolah
             </label>
-            <input type="text" id="nama_sekolah" name="nama_sekolah"
+            <input type="text" id="nama_sekolah" name="nama_sekolah" placeholder="Cari nama sekolah..."
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+            <p class="text-sm italic text-[#94a3b8]">Ketik dan pilih nama sekolah</p>
             <input type="hidden" id="id_sekolah" name="id_sekolah">
         </div>
     </div>
@@ -238,8 +259,9 @@
             <label class="block uppercase text-blueGray-600 text-xs font-bold mb-2" htmlfor="grid-password">
                 Alamat Sekolah
             </label>
-            <input type="text" id="alamat_sekolah" name="alamat_sekolah"
+            <input type="text" id="alamat_sekolah" name="alamat_sekolah" readonly
                 class="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+            <p class="text-sm italic text-[#94a3b8]">Otomatis bedasrakan Nama Sekolah</p>
         </div>
     </div>
     <div class="w-full lg:w-6/12 px-4">
@@ -256,10 +278,11 @@
             <label for="puskesmas" class="block uppercase text-gray-600 text-xs font-bold mb-2">
                 Puskesmas
             </label>
-            <select id="puskesmas"
+            <select id="puskesmas" disabled
                 class="border-0 px-3 py-3 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                 <option value="">-- Pilih Puskesmas --</option>
             </select>
+            <p class="text-sm italic text-[#94a3b8]">Otomatis berdasarkan Nama Sekolah</p>
         </div>
     </div>
     <div class="w-full lg:w-6/12 px-4">
@@ -612,7 +635,7 @@
                                     <span class="ml-2 text-sm font-semibold">Setuju</span>
                                 </label>
                                 <label class="inline-flex items-center w-fit">
-                                    <input type="radio" name="persetujuan" value="Tidak setuju"
+                                    <input type="radio" name="persetujuan" value="Tidak"
                                         class="form-checkbox text-pink-500">
                                     <span class="ml-2 text-sm font-semibold">Tidak setuju</span>
                                 </label>
@@ -1166,6 +1189,7 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
             renderer: 'svg',
             loop: true,
             autoplay: true,
+            // path: '/logo_semarpkg79.json'
             path: 'https://lottie.host/cb201212-1750-42ba-bf36-c1246e6f8494/a2wZUiTkxo.json'
         });
 
@@ -1188,16 +1212,22 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
     <script>
         $(document).ready(function() {
             $("#nama_sekolah").autocomplete({
-                minLength: 2, // minimal karakter sebelum muncul saran
+                minLength: 2,
                 source: function(request, response) {
+                    // Tampilkan sementara keterangan "Mencari data..."
+                    response([{
+                        label: "Mencari data...",
+                        value: ""
+                    }]);
+
                     $.ajax({
-                        url: "/master_sekolah/cari", // pastikan route ini sesuai
+                        url: "/master_sekolah/cari",
                         type: "GET",
                         data: {
                             term: request.term
                         },
                         success: function(data) {
-                            response(data.map(function(item) {
+                            const result = data.map(function(item) {
                                 return {
                                     label: item.nama,
                                     value: item.nama,
@@ -1205,17 +1235,28 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                                     id: item.id,
                                     id_puskesmas: item.id_puskesmas
                                 };
-                            }));
+                            });
+
+                            // Hapus "Mencari data..." dan tampilkan hasil asli
+                            response(result.length > 0 ? result : [{
+                                label: "Tidak ditemukan",
+                                value: ""
+                            }]);
                         },
                         error: function() {
-                            response([]);
+                            response([{
+                                label: "Gagal memuat data",
+                                value: ""
+                            }]);
                         }
                     });
                 },
                 select: function(event, ui) {
+                    if (!ui.item || !ui.item.id)
+                        return false; // abaikan klik pada "Mencari data" atau "Tidak ditemukan"
+
                     const namaSekolah = ui.item.value;
-                    const alamatSekolah = ui.item.alamat && ui.item.alamat.trim() !== '' ? ui.item
-                        .alamat : '-';
+                    const alamatSekolah = ui.item.alamat?.trim() !== '' ? ui.item.alamat : '-';
                     const idSekolah = ui.item.id;
                     const idPuskesmas = ui.item.id_puskesmas;
 
@@ -1230,14 +1271,11 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                     $("#output_nama_sekolah").text(namaSekolah);
                     $("#output_alamat_sekolah").text(alamatSekolah);
 
-                    // Cek apakah option puskesmas dengan ID tersebut ada
                     const optionExists = $(`#puskesmas option[value="${idPuskesmas}"]`).length > 0;
-
                     if (optionExists) {
                         $("#puskesmas").val(idPuskesmas).trigger('change');
                         localStorage.setItem('puskesmas', idPuskesmas);
                     } else {
-                        // Simpan nilai sementara, isi nanti jika belum tersedia
                         localStorage.setItem('pending_puskesmas', idPuskesmas);
                     }
 

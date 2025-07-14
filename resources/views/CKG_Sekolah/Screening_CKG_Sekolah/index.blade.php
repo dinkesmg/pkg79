@@ -13,7 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     {{-- @include('layouts.header') --}}
 </head>
 
@@ -23,36 +24,6 @@
         font-optical-sizing: auto;
         font-style: normal;
         color: #323232;
-    }
-
-    .signature-container {
-        border: 1px solid #000;
-        border-radius: 4px;
-        overflow: hidden;
-        display: inline-block;
-        max-width: 100%;
-    }
-
-    canvas {
-        display: block;
-    }
-
-    .button-group {
-        margin-top: 10px;
-        text-align: right;
-    }
-
-    button {
-        padding: 8px 16px;
-        margin-left: 5px;
-        border: none;
-        border-radius: 4px;
-        background-color: #eee;
-        cursor: pointer;
-    }
-
-    button:hover {
-        background-color: #ccc;
     }
 </style>
 
@@ -81,7 +52,7 @@
         <div id="mainContent" class="hidden">
 
             <section>
-                <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
+                {{-- <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
                     <div class="p-6 space-y-2 bg-gray-100 text-gray-800">
 
                         <div class="flex gap-3">
@@ -120,6 +91,19 @@
                     <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
                         Kirim Data
                     </button>
+                </div> --}}
+
+                <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
+                    <div>
+                        <div id="steps-container" class="space-y-6 h-[500px]"></div>
+                    </div>
+
+                    <div class="flex justify-between mt-6">
+                        <button id="prev-btn" onclick="prevStep()"
+                            class="bg-gray-300 px-4 py-2 rounded text-gray-700 hidden">Sebelumnya</button>
+                        <button id="next-btn" onclick="nextStep()"
+                            class="inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 sm:ml-3 sm:w-auto transition">Selanjutnya</button>
+                    </div>
                 </div>
             </section>
 
@@ -143,90 +127,8 @@
                 });
             </script>
 
+            {{-- get screening --}}
             <script>
-                // document.addEventListener('DOMContentLoaded', async () => {
-                //     const urlParams = new URLSearchParams(window.location.search);
-                //     const kelas = urlParams.get('kelas');
-                //     const jkText = urlParams.get('jk');
-                //     const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
-                //     const hasilList = document.getElementById('hasil-instrumen');
-
-                //     if (!kelas || !jenisKelamin) {
-                //         hasilList.innerHTML = '<li>Parameter tidak lengkap.</li>';
-                //         return;
-                //     }
-
-                //     try {
-                //         const res = await fetch(`/instrumen_sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
-                //         if (!res.ok) throw new Error('Gagal mengambil data');
-
-                //         const data = await res.json();
-
-                //         if (data.length === 0) {
-                //             hasilList.innerHTML = '<li>Tidak ada instrumen ditemukan.</li>';
-                //             return;
-                //         }
-
-                //         data.data.forEach(item => {
-                //             const li = document.createElement('li');
-                //             const inputName = `${item.objek}`;
-
-                //             const label = document.createElement('label');
-                //             label.textContent = item.pertanyaan ?? '[Tanpa Nama]';
-                //             li.appendChild(label);
-                //             li.appendChild(document.createElement('br'));
-
-                //             // Get saved value from localStorage
-                //             const savedValue = localStorage.getItem(inputName);
-
-                //             if (item.tipe_input === 'radio') {
-                //                 ['YA', 'TIDAK'].forEach(value => {
-                //                     const radio = document.createElement('input');
-                //                     radio.type = 'radio';
-                //                     radio.className = 'form-checkbox text-pink-500';
-                //                     radio.name = inputName;
-                //                     radio.value = value;
-
-                //                     if (savedValue === value) {
-                //                         radio.checked = true;
-                //                     }
-
-                //                     radio.addEventListener('change', () => {
-                //                         localStorage.setItem(inputName, radio.value);
-                //                     });
-
-                //                     const labelRadio = document.createElement('label');
-                //                     labelRadio.textContent = ` ${value} `;
-                //                     labelRadio.prepend(radio);
-
-                //                     li.appendChild(labelRadio);
-                //                 });
-
-                //             } else if (item.tipe_input === 'number') {
-                //                 const input = document.createElement('input');
-                //                 input.type = 'number';
-                //                 input.name = inputName;
-
-                //                 if (savedValue !== null) {
-                //                     input.value = savedValue;
-                //                 }
-
-                //                 input.addEventListener('input', () => {
-                //                     localStorage.setItem(inputName, input.value);
-                //                 });
-
-                //                 li.appendChild(input);
-                //             }
-
-                //             hasilList.appendChild(li);
-                //         });
-
-
-                //     } catch (err) {
-                //         hasilList.innerHTML = `<li>Error: ${err.message}</li>`;
-                //     }
-                // });
-
                 document.addEventListener('DOMContentLoaded', async () => {
                     const urlParams = new URLSearchParams(window.location.search);
                     const kelas = urlParams.get('kelas');
@@ -266,7 +168,8 @@
                             if (item.tipe_input === 'radio') {
                                 ['YA', 'TIDAK'].forEach(value => {
                                     const wrapper = document.createElement('label');
-                                    wrapper.classList.add('inline-flex', 'items-center', 'gap-2', 'mr-4'); // spacing radio + label
+                                    wrapper.classList.add('inline-flex', 'items-center', 'gap-2',
+                                        'mr-4'); // spacing radio + label
 
                                     const radio = document.createElement('input');
                                     radio.type = 'radio';
@@ -349,6 +252,148 @@
                         });
                 }
             </script>
+
+            {{-- stepper --}}
+            <script>
+                let currentStepIndex = 0;
+                let groupedData = [];
+
+                function renderSteps() {
+                    const container = document.getElementById('steps-container');
+                    container.innerHTML = '';
+
+                    groupedData.forEach((group, index) => {
+                        const stepDiv = document.createElement('div');
+                        stepDiv.classList.add('step');
+                        if (index !== currentStepIndex) stepDiv.classList.add('hidden');
+
+                        const title = document.createElement('h3');
+                        title.classList.add('text-xl', 'font-bold', 'mb-4');
+                        title.textContent = group.judul;
+                        stepDiv.appendChild(title);
+
+                        group.items.forEach(item => {
+                            const li = document.createElement('div');
+                            li.classList.add('mb-4');
+
+                            const inputName = item.objek;
+                            const label = document.createElement('label');
+                            label.textContent = item.pertanyaan ?? '[Tanpa Nama]';
+                            label.classList.add('block', 'font-medium', 'mb-1');
+                            li.appendChild(label);
+
+                            const savedValue = localStorage.getItem(inputName);
+
+                            if (item.tipe_input === 'radio') {
+                                JSON.parse(item.value_tipe_input).forEach((value, i) => {
+                                    const wrapper = document.createElement('label');
+                                    wrapper.classList.add('inline-flex', 'items-center', 'gap-2', 'mr-4');
+
+                                    const radio = document.createElement('input');
+                                    radio.type = 'radio';
+                                    radio.name = inputName;
+                                    radio.value = value;
+                                    radio.className = 'form-radio text-pink-500';
+                                    if (savedValue === value) radio.checked = true;
+
+                                    radio.addEventListener('change', () => {
+                                        localStorage.setItem(inputName, value);
+                                    });
+
+                                    const text = document.createTextNode(value);
+                                    wrapper.appendChild(radio);
+                                    wrapper.appendChild(text);
+
+                                    li.appendChild(wrapper);
+                                });
+                            }
+
+                            if (item.tipe_input === 'number') {
+                                const input = document.createElement('input');
+                                input.type = 'number';
+                                input.name = inputName;
+                                input.classList.add('border', 'rounded', 'px-2', 'py-1', 'mt-1', 'w-32');
+                                if (savedValue !== null) input.value = savedValue;
+
+                                input.addEventListener('input', () => {
+                                    localStorage.setItem(inputName, input.value);
+                                });
+
+                                li.appendChild(input);
+                            }
+
+                            stepDiv.appendChild(li);
+                        });
+
+                        container.appendChild(stepDiv);
+                    });
+
+                    updateNavigationButtons();
+                }
+
+                function updateNavigationButtons() {
+                    document.getElementById('prev-btn').classList.toggle('hidden', currentStepIndex === 0);
+                    document.getElementById('next-btn').textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
+                        'Selanjutnya';
+                }
+
+                function nextStep() {
+                    if (currentStepIndex < groupedData.length - 1) {
+                        currentStepIndex++;
+                        renderSteps();
+                    } else {
+                        kirimData();
+                    }
+                }
+
+                function prevStep() {
+                    if (currentStepIndex > 0) {
+                        currentStepIndex--;
+                        renderSteps();
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', async () => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const kelas = urlParams.get('kelas');
+                    const jkText = urlParams.get('jk');
+                    const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
+
+                    if (!kelas || !jenisKelamin) {
+                        document.getElementById('steps-container').innerHTML =
+                            '<div class="text-red-600">Parameter tidak lengkap.</div>';
+                        return;
+                    }
+
+                    try {
+                        const res = await fetch(`/instrumen_sekolah?kelas=${kelas}&jenis_kelamin=${jenisKelamin}`);
+                        if (!res.ok) throw new Error('Gagal mengambil data');
+
+                        const response = await res.json();
+                        const items = response.data;
+
+                        // Grouping berdasarkan judul
+                        const grouped = {};
+                        items.forEach(item => {
+                            if (!grouped[item.judul]) {
+                                grouped[item.judul] = [];
+                            }
+                            grouped[item.judul].push(item);
+                        });
+
+                        groupedData = Object.entries(grouped).map(([judul, items]) => ({
+                            judul,
+                            items
+                        }));
+                        renderSteps();
+
+                    } catch (err) {
+                        document.getElementById('steps-container').innerHTML =
+                            `<div class="text-red-600">Error: ${err.message}</div>`;
+                    }
+                });
+            </script>
+
 
         </div>
 </body>

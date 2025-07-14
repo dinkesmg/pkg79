@@ -312,7 +312,6 @@ class MasterController extends Controller
         $term = $request->get('term');
 
         $results = MasterSekolah::where('nama', 'like', "%{$term}%")
-            ->limit(10)
             ->get(['id', 'nama', 'alamat', 'id_puskesmas']);
 
         return response()->json($results);
