@@ -24,6 +24,11 @@ class CkgSekolahController extends Controller
         return view('CKG_Sekolah.Screening_CKG_Sekolah.index');
     }
 
+    public function index_success()
+    {
+        return view('CKG_Sekolah.Screening_CKG_Sekolah.Success_Page.index');
+    }
+
     public function get_instrument_sekolah(Request $request)
     {
         $validated = $request->validate([
