@@ -280,9 +280,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         $hasilPemeriksaan = json_decode($riwayat->hasil_pemeriksaan, true);
         $format_hasil_pemeriksaan = '-';
         if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaan) && !empty($hasilPemeriksaan)) {
-            $format_hasil_pemeriksaan = implode(', ', array_map(
+            $format_hasil_pemeriksaan = implode('; ', array_map(
                 fn ($item) => is_array($item)
-                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    ? implode('; ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $hasilPemeriksaan
             ));
@@ -292,9 +292,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         $hasilPemeriksaanLainnya = json_decode($riwayat->hasil_pemeriksaan_lainnya, true);
         $format_hasil_pemeriksaan_lainnya = '-';
         if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaanLainnya) && !empty($hasilPemeriksaanLainnya)) {
-            $format_hasil_pemeriksaan_lainnya = implode(', ', array_map(
+            $format_hasil_pemeriksaan_lainnya = implode('; ', array_map(
                 fn ($item) => is_array($item)
-                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    ? implode('; ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $hasilPemeriksaanLainnya
             ));
@@ -304,9 +304,9 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
         $program_tindak_lanjut = json_decode($riwayat->program_tindak_lanjut, true);
         $format_program_tindak_lanjut = '-';
         if (json_last_error() === JSON_ERROR_NONE && is_array($program_tindak_lanjut) && !empty($program_tindak_lanjut)) {
-            $format_program_tindak_lanjut = implode(', ', array_map(
+            $format_program_tindak_lanjut = implode('; ', array_map(
                 fn ($item) => is_array($item)
-                    ? implode(', ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    ? implode('; ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
                     : (string)$item,
                 $program_tindak_lanjut
             ));
