@@ -124,17 +124,24 @@
     // Tombol simpan
     saveBtn.addEventListener('click', () => {
         if (signaturePad.isEmpty()) {
-            alert("Silakan tanda tangani terlebih dahulu.");
+            document.getElementById('judul-modal-message').textContent = `Gagal Simpan`;
+
+            document.getElementById('invalid-modal-message').textContent =
+                `Silahkan tanda tangan terlebih dahulu dan Klik simpan`;
+
+            // Tampilkan modal
+            document.getElementById('invalid-modal').classList.remove('hidden');
+
             return;
         }
         const svgDataUrl = signaturePad.toDataURL('image/svg+xml');
         localStorage.setItem('tanda_tangan', svgDataUrl);
         // alert("Tanda tangan disimpan ke localStorage.");
 
-        document.getElementById('judul-modal-message').textContent = `Berhasil Simpan`;
-        document.getElementById('invalid-modal-message').textContent = `Tanda tangan berhasil disimpan`;
+        // document.getElementById('judul-modal-message').textContent = `Berhasil Simpan`;
+        // document.getElementById('invalid-modal-message').textContent = `Tanda tangan berhasil disimpan`;
         // Tampilkan modal
-        document.getElementById('invalid-modal').classList.remove('hidden');
+        // document.getElementById('invalid-modal').classList.remove('hidden');
 
         disableCanvasInteraction();
     });

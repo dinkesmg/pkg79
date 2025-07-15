@@ -10,6 +10,7 @@ use App\Models\FormPersetujuan;
 use App\Models\FormPersetujuanTandaTangan;
 use App\Models\RiwayatSekolah;
 use Illuminate\Validation\ValidationException;
+use App\Http\Requests\SimpanSkriningRequest;
 
 class CkgSekolahController extends Controller
 {
@@ -44,55 +45,9 @@ class CkgSekolahController extends Controller
         ]);
     }
 
-    public function simpan(Request $request)
+    public function simpan(SimpanSkriningRequest $request)
     {
         $data = $request->all();
-
-        try {
-            $validated = $request->validate([
-                'nisn' => 'nullable|string|max:20',
-                'nik' => 'required|string|size:16',
-                'nama_lengkap' => 'required|string|max:255',
-                'tempat_lahir' => 'required|string|max:100',
-                'tanggal_lahir' => 'required|numeric|min:1|max:31',
-                'bulan_lahir' => 'required|numeric|min:1|max:12',
-                'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
-                // 'golongan_darah' => 'nullable|string|in:A,B,AB,O',
-                'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
-                'provinsi' => 'required|string',
-                'kota' => 'required|string',
-                'kecamatan' => 'required|string',
-                'kelurahan' => 'required|string',
-                'alamat' => 'required|string',
-
-                'dom-provinsi' => 'required|string',
-                'dom-kota' => 'required|string',
-                'dom-kecamatan' => 'required|string',
-                'dom-kelurahan' => 'required|string',
-                'dom-alamat' => 'required|string',
-
-                'kelas' => 'required|numeric|min:1|max:12',
-                // 'disabilitas_tidak_ada' => 'required|in:true,false',
-                'nama_ortu_wali' => 'required|string|max:255',
-                'no_hp' => 'required|string|max:20',
-
-                'persetujuan' => 'required|in:Setuju,Tidak',
-                // 'tanda_tangan' => 'required|string|min:10', // pastikan base64 atau svg string minimal
-                'puskesmas' => 'required|integer',
-                // 'id_sekolah' => 'required|integer',
-            ], [
-                'nik.required' => 'NIK wajib diisi',
-                'nama_lengkap.required' => 'Nama lengkap wajib diisi',
-                'persetujuan.in' => 'Persetujuan harus Setuju atau Tidak',
-                'tanda_tangan.required' => 'Tanda tangan wajib diisi',
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->validator->errors()->first() // misal: "NIK wajib diisi"
-            ], 422);
-        }
-
 
         $kelas = (int) $request->kelas;
         $jenis_kelamin = $request->jenis_kelamin;
@@ -129,11 +84,26 @@ class CkgSekolahController extends Controller
             ], 400);
         }
 
+        $pasien = PasienSekolah::where('nik', $data['nik'])->first();
+
+            if ($pasien) {
+            $sudahAda = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)
+                ->whereYear('created_at', now()->year)
+                ->exists();
+
+            if ($sudahAda) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Data dengan NIK {$data['nik']} sudah pernah disubmit pada tahun ini."
+                ], 409);
+            }
+        }
+
 
         DB::beginTransaction();
         try {
             // Simpan data pasien_sekolah
-            $pasien = PasienSekolah::where('nik', $data['nik'])->first();
+            
             if ($pasien == null) {
                 $pasien = new PasienSekolah();
                 $pasien->nisn = $data['nisn'] ?? null;
@@ -157,7 +127,22 @@ class CkgSekolahController extends Controller
                 $pasien->alamat_dom = $data['dom-alamat'] ?? null;
 
                 $pasien->kelas = $data['kelas'] ?? null;
-                $pasien->jenis_disabilitas = (isset($data['disabilitas_tidak_ada']) && $data['disabilitas_tidak_ada'] === 'true') ? 'Tidak Ada' : 'Ada';
+                
+                $jenisDisabilitasList = ['Fisik', 'Intelektual', 'Mental', 'Sensorik'];
+                $disabilitas = [];
+
+                if (isset($data['disabilitas_tidak_ada']) && $data['disabilitas_tidak_ada'] === 'true') {
+                    $disabilitas = ['Tidak ada'];
+                } else {
+                    foreach ($jenisDisabilitasList as $jenis) {
+                        if (!empty($data[$jenis]) && $data[$jenis] === 'true') {
+                            $disabilitas[] = $jenis;
+                        }
+                    }
+                }
+
+                $pasien->jenis_disabilitas = json_encode($disabilitas);
+
                 $pasien->nama_orangtua_wali = $data['nama_ortu_wali'] ?? null;
                 $pasien->telp = $data['no_hp'] ?? null;
                 $pasien->save();
