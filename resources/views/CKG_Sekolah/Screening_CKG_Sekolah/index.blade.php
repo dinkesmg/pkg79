@@ -44,6 +44,10 @@
         }
     }
 
+    input[type=radio] {
+        transform: scale(1.5);
+    }
+
     #image-loader {
         width: 200px;
         height: 200px;
@@ -89,11 +93,13 @@
                                     <p>Nama Lengkap</p>
                                     <p>Nama Sekolah</p>
                                     <p>Puskesmas</p>
+                                    <p>Kelas</p>
                                 </div>
                                 <div>
                                     <p id="nama_lengkap"></p>
                                     <p id="nama_sekolah"></p>
                                     <p id="puskesmas"></p>
+                                    <p id="kelas"></p>
                                 </div>
                             </div>
                             <div>
@@ -175,10 +181,12 @@
                     const namaLengkap = localStorage.getItem('nama_lengkap');
                     const namaSekolah = localStorage.getItem('nama_sekolah');
                     const puskesmas = localStorage.getItem('nama_puskesmas');
+                    // const kelas = localStorage.getItem('kelas');
 
                     document.getElementById('nama_lengkap').textContent = `: ${namaLengkap}`;
                     document.getElementById('nama_sekolah').textContent = `: ${namaSekolah}`;
                     document.getElementById('puskesmas').textContent = `: Puskesmas ${puskesmas}`;
+                    document.getElementById('kelas').textContent = `: ${kelas}`;
 
                     // console.log(kelas);
                     // console.log(jkText);
@@ -284,6 +292,8 @@
                         data[key] = localStorage.getItem(key);
                     }
 
+                    // console.log(data.nik);
+
                     fetch('/pkg_sekolah/simpan', {
                             method: 'POST',
                             headers: {
@@ -296,11 +306,12 @@
                         .then(res => res.json())
                         .then(res => {
                             if (res.success) {
-                                showAlert('Berhasil', 'Data berhasil disimpan!');
-                                // localStorage.clear(); // jika ingin hapus setelah submit
+                                showAlert('Berhasil', 'Data berhasil disimpan!', false, true, data.nik);
+                                localStorage.clear(); // hapus setelah submit
+                                // window.location.href = "{{ url('/pkg_sekolah/screening/success') }}";
                             } else {
                                 const redirect = res.error_data_diri === true;
-                                showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect);
+                                showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect, false, data.nik);
                             }
                         })
                         .catch(err => {
@@ -315,27 +326,35 @@
                         });
                 }
 
-                function showAlert(title, message, redirect = false) {
+                function showAlert(title, message, redirect = false, successRedirect = false, nik = null) {
                     const modal = document.getElementById('alertModal');
                     const box = document.getElementById('alertBox');
+                    // const nik = localStorage.getItem('nik');
+
+                    console.log(nik)
 
                     document.getElementById('alertTitle').textContent = title;
                     document.getElementById('alertMessage').textContent = message;
 
                     // Ganti tombol OK
                     const buttonContainer = modal.querySelector('.mt-4.flex');
-                    buttonContainer.innerHTML = ''; // kosongkan dulu
+                    buttonContainer.innerHTML = '';
 
                     const button = document.createElement('button');
                     button.textContent = 'OK';
                     button.className = 'text-sm bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition-all';
 
-                    if (redirect) {
+                    // Tambahan logika kondisi redirect
+                    if (successRedirect) {
+                        button.addEventListener('click', () => {
+                            window.location.href = `/pkg_sekolah/screening/success?nik=${nik}`;
+                        });
+                    } else if (redirect) {
                         button.addEventListener('click', () => {
                             window.location.href = '/pkg_sekolah';
                         });
                     } else {
-                        button.addEventListener('click', closeAlert);
+                        button.addEventListener('click', closeAlert); // hanya menutup modal
                     }
 
                     buttonContainer.appendChild(button);
@@ -346,6 +365,7 @@
                     box.classList.remove('scale-95');
                     box.classList.add('scale-100');
                 }
+
 
 
                 function closeAlert() {

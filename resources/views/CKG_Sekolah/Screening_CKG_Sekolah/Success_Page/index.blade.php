@@ -35,8 +35,13 @@
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
+
+    @php
+        $nik = request()->query('nik');
+    @endphp
+
     <div class="min-h-screen bg-success-page flex flex-col justify-center">
-        <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="w-[80%] mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
             <div class="px-6 py-4">
                 <div class="flex items-center justify-center">
                     <svg class="w-12 h-12 text-success-page" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -45,16 +50,68 @@
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
+
                 <div class="mt-4 text-center">
                     <h3 class="text-2xl font-bold">Terima Kasih!</h3>
-                    <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah.</p>
+                    <p class="text-gray-600">NIK Anda: {{ $nik }}</p>
+                    <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah. Berikut adalah
+                        informasi pendaftaran Anda:</p>
                 </div>
-                <div class="mt-6">
-                    <a href="{{ url('/pkg_sekolah') }}"
-                        class="block w-full px-4 py-2 text-white bg-[#dc2626] border border-transparent rounded-md shadow-sm hover:bg-[#c82020] focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 transition-all">
-                        Kembali ke Halaman Utama
-                    </a>
+                <div>
+                    Data Peserta Didik
+                    <div id="data-peserta" class="mt-4 space-y-4"></div>
                 </div>
+
+
+                <script>
+                    fetch("{{ url('/get_data_peserta') }}?nik=" + "{{ $nik }}")
+                        .then(response => response.json())
+                        .then(data => {
+                            const container = document.getElementById('data-peserta');
+
+                            const pairs = [
+                                ['nik', 'nisn'],
+                                ['nama', 'tempat_tanggal_lahir'],
+                                ['umur', 'golongan_darah'],
+                                ['jenis_kelamin', 'telp'],
+                                ['alamat_ktp', 'alamat_dom'],
+                                ['kelas', 'jenis_disabilitas'],
+                                ['nama_orangtua_wali', 'nama_sekolah']
+                            ];
+
+                            pairs.forEach(([kiri, kanan]) => {
+                                const row = document.createElement('div');
+                                row.classList.add('grid', 'grid-cols-2', 'gap-4', 'text-sm');
+
+                                const left = document.createElement('div');
+                                left.innerHTML = `<div class="font-medium text-gray-500">${labelize(kiri)}</div>
+                                  <div class="text-gray-900">${formatValue(data[kiri])}</div>`;
+
+                                const right = document.createElement('div');
+                                right.innerHTML = `<div class="font-medium text-gray-500">${labelize(kanan)}</div>
+                                   <div class="text-gray-900">${formatValue(data[kanan])}</div>`;
+
+                                row.appendChild(left);
+                                row.appendChild(right);
+                                container.appendChild(row);
+                            });
+
+                            function labelize(str) {
+                                return str.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                            }
+
+                            function formatValue(val) {
+                                if (Array.isArray(val)) return val.join(', ');
+                                if (val === null || val === undefined || val === '') return '-';
+                                return val;
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+                </script>
+
+
+
+
             </div>
         </div>
     </div>

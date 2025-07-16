@@ -50,6 +50,57 @@ class CkgSekolahController extends Controller
         ]);
     }
 
+    public function get_peserta_didik(Request $request)
+    {
+        $nik = $request->nik;
+        $pasien = PasienSekolah::where('nik', $nik)->first();
+        if (!$pasien) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nik tidak ditemukan',
+            ], 404);
+        }
+
+        $data = $pasien->toArray();
+        // $data['tempat_lahir'] = $pasien->tempat_lahir . ', ' . date('d-m-Y', strtotime($pasien->tanggal_lahir));
+        // $data = $pasien->toArray();
+        $data['tempat_tanggal_lahir'] = $pasien->tempat_lahir . ', ' . date('d-m-Y', strtotime($pasien->tanggal_lahir));
+        $data['jenis_kelamin'] = $pasien->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan';
+
+        $lahir = new \DateTime($pasien->tanggal_lahir);
+        $today = new \DateTime();
+        $umur = $today->diff($lahir)->y;
+        $data['umur'] = $umur . ' tahun';
+
+        $nama_sekolah = $pasien->ref_sekolah?->nama ?? '-';
+        $data['nama_sekolah'] = $nama_sekolah;
+
+        $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
+
+        // if ($form_persetujuan) {
+            
+        // }
+
+        $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
+
+        if ($riwayat) {
+            $screening = json_decode($riwayat->skrining_mandiri, true);
+            $data['screening'] = $screening ?? [];
+        } else {
+            $data['screening'] = null;
+        }
+
+        return response()->json($data);
+    }
+
+    public function get_screening_peserta(Request $request)
+    {
+        $id_pasien = $request->id_pasien;
+        $data_screening = RiwayatSekolah::where('id_pasien_sekolah', $id_pasien)->first();
+
+        return response()->json($data_screening);
+    }
+
     public function simpan(SimpanSkriningRequest $request)
     {
         $data = $request->all();
@@ -131,6 +182,7 @@ class CkgSekolahController extends Controller
                 $pasien->kelurahan_dom = $data['dom-kelurahan'] ?? null;
                 $pasien->alamat_dom = $data['dom-alamat'] ?? null;
 
+                $pasien->id_sekolah = $data['id_sekolah'] ?? null;
                 $pasien->kelas = $data['kelas'] ?? null;
                 
                 $jenisDisabilitasList = ['Fisik', 'Intelektual', 'Mental', 'Sensorik'];

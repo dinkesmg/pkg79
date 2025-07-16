@@ -11,6 +11,10 @@ class RiwayatSekolah extends Model
 
     protected $table = "riwayat_sekolah";
 
+    protected $casts = [
+        'hasil_pemeriksaan' => 'array',
+    ];
+
     public function puskesmas()
     {
         return $this->belongsTo(Puskesmas::class, 'id_puskesmas', 'id');
