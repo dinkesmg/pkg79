@@ -1253,6 +1253,11 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
 
     <script>
         $(document).ready(function() {
+            $.ui.autocomplete.prototype._renderItem = function(ul, item) {
+                return $("<li class='p-2'>")
+                    .append(item.html ?? item.label)
+                    .appendTo(ul);
+            };
             $("#nama_sekolah").autocomplete({
                 minLength: 2,
                 source: function(request, response) {
@@ -1270,9 +1275,20 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
                         },
                         success: function(data) {
                             const result = data.map(function(item) {
+                                const alamatPendek = (item.alamat?.trim() || '-')
+                                    .substring(0, 60) + '...';
+
                                 return {
                                     label: item.nama,
+                                    // label: item.nama + " - " + (item.alamat
+                                    // ?.trim() || "-"),
                                     value: item.nama,
+                                    html: `
+                                          <div style="white-space: normal; overflow-wrap: break-word; max-width: 100%;">
+                                            <div class="text-sm font-medium text-gray-900">${item.nama}</div>
+                                            <div class="text-xs text-black truncate">${alamatPendek}</div>
+                                        </div>
+                                    `,
                                     alamat: item.alamat,
                                     id: item.id,
                                     id_puskesmas: item.id_puskesmas,
@@ -1749,11 +1765,65 @@ disabled:pointer-events-none sm:ml-3 sm:w-auto transition">
         function submitData() {
             const kelas = localStorage.getItem('kelas') || '';
             const jenis_kelamin = localStorage.getItem('jenis_kelamin') || '';
+            const nik = localStorage.getItem('nik') || '';
+
+            const persetujuan = localStorage.getItem('persetujuan') || '';
+
+            // console.log(persetujuan);
+
+            if (persetujuan === "Setuju") {
+                window.location.href =
+                    `/pkg_sekolah/screening`;
+            } else {
+                const data = {};
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    data[key] = localStorage.getItem(key);
+                }
+
+                // console.log(data.nik);
+
+                fetch('/simpan_data_diri', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(res => res.json())
+                    .then(res => {
+                        if (res.success) {
+                            // showAlert('Berhasil', 'Data berhasil disimpan!', false, true, data.nik);
+                            alert("data berhasil terkirim")
+                            localStorage.clear(); // hapus setelah submit
+                            window.location.href = `/pkg_sekolah/tidak_setuju`;
+                            // window.location.href = "{{ url('/pkg_sekolah/screening/success') }}";
+                        } else {
+                            // const redirect = res.error_data_diri === true;
+                            alert(res.message);
+                            // showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect, false, data.nik);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("error")
+                        // showAlert('Kesalahan', 'Terjadi kesalahan saat menyimpan data.');
+                    })
+                // .finally(() => {
+                //     // Kembalikan tampilan tombol
+                //     nextBtn.disabled = false;
+                //     nextBtnText.textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
+                //         'Selanjutnya';
+                //     spinner.classList.add('hidden');
+                // });
+
+            }
 
             // clearFormStorage();
 
-            window.location.href =
-                `/pkg_sekolah/screening`;
+
         }
     </script>
 

@@ -26,7 +26,7 @@ class SimpanSkriningRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nisn' => 'nullable|string|max:20',
+            'nisn' => 'nullable|string|max:25',
             'nik' => 'required|string|size:16',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:100',
@@ -60,7 +60,7 @@ class SimpanSkriningRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'nisn.max' => 'NISN maksimal 20 karakter.',
+            // 'nisn.max' => 'NISN maksimal 20 karakter.',
             'nik.required' => 'NIK wajib diisi.',
             'nik.size' => 'NIK harus terdiri dari 16 digit.',
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',

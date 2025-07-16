@@ -9,6 +9,7 @@ use App\Models\PasienSekolah;
 use App\Models\FormPersetujuan;
 use App\Models\FormPersetujuanTandaTangan;
 use App\Models\RiwayatSekolah;
+use App\Models\Puskesmas;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\SimpanSkriningRequest;
 
@@ -27,6 +28,11 @@ class CkgSekolahController extends Controller
     public function index_success()
     {
         return view('CKG_Sekolah.Screening_CKG_Sekolah.Success_Page.index');
+    }
+
+    public function index_failed()
+    {
+        return view('CKG_Sekolah.Failed_Page.index');
     }
 
     public function get_instrument_sekolah(Request $request)
@@ -73,7 +79,10 @@ class CkgSekolahController extends Controller
         $data['umur'] = $umur . ' tahun';
 
         $nama_sekolah = $pasien->ref_sekolah?->nama ?? '-';
+        $alamat_sekolah = $pasien->ref_sekolah?->alamat ?? '-';
+
         $data['nama_sekolah'] = $nama_sekolah;
+        $data['alamat_sekolah'] = $alamat_sekolah;
 
         $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
 
@@ -88,6 +97,9 @@ class CkgSekolahController extends Controller
         $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
 
         if ($riwayat) {
+            $puskesmas = Puskesmas::where('id', $riwayat->id_puskesmas)->first();
+            $data['puskesmas'] = $puskesmas ? $puskesmas->nama : null;
+
             $screening = json_decode($riwayat->skrining_mandiri, true);
             $data['screening'] = $screening ?? [];
         } else {
@@ -97,13 +109,13 @@ class CkgSekolahController extends Controller
         return response()->json($data);
     }
 
-    public function get_screening_peserta(Request $request)
-    {
-        $id_pasien = $request->id_pasien;
-        $data_screening = RiwayatSekolah::where('id_pasien_sekolah', $id_pasien)->first();
+    // public function get_screening_peserta(Request $request)
+    // {
+    //     $id_pasien = $request->id_pasien;
+    //     $data_screening = RiwayatSekolah::where('id_pasien_sekolah', $id_pasien)->first();
 
-        return response()->json($data_screening);
-    }
+    //     return response()->json($data_screening);
+    // }
 
     public function simpan(SimpanSkriningRequest $request)
     {
@@ -272,6 +284,89 @@ class CkgSekolahController extends Controller
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
+
+    public function simpan_data_diri(SimpanSkriningRequest $request)
+    {
+        $data = $request->all();
+
+        // Validasi jika NIK sudah pernah didaftarkan tahun ini
+        $sudahAda = PasienSekolah::where('nik', $data['nik'])
+            ->exists();
+
+        if ($sudahAda) {
+            return response()->json([
+                'success' => false,
+                'message' => "Data dengan NIK {$data['nik']} sudah pernah didaftarkan pada tahun ini.",
+                'error_data_diri' => true
+            ], 422);
+        }
+
+        DB::beginTransaction();
+        try {
+            $pasien = new PasienSekolah();
+            $pasien->nisn = $data['nisn'] ?? null;
+            $pasien->nik = $data['nik'] ?? null;
+            $pasien->nama = $data['nama_lengkap'] ?? null;
+            $pasien->tempat_lahir = $data['tempat_lahir'] ?? null;
+            $pasien->tanggal_lahir = $this->formatTanggal($data);
+            $pasien->golongan_darah = $data['golongan_darah'] ?? null;
+            $pasien->jenis_kelamin = $data['jenis_kelamin'] ?? null;
+
+            $pasien->provinsi_ktp = $data['provinsi'] ?? null;
+            $pasien->kota_kab_ktp = $data['kota'] ?? null;
+            $pasien->kecamatan_ktp = $data['kecamatan'] ?? null;
+            $pasien->kelurahan_ktp = $data['kelurahan'] ?? null;
+            $pasien->alamat_ktp = $data['alamat'] ?? null;
+
+            $pasien->provinsi_dom = $data['dom-provinsi'] ?? null;
+            $pasien->kota_kab_dom = $data['dom-kota'] ?? null;
+            $pasien->kecamatan_dom = $data['dom-kecamatan'] ?? null;
+            $pasien->kelurahan_dom = $data['dom-kelurahan'] ?? null;
+            $pasien->alamat_dom = $data['dom-alamat'] ?? null;
+
+            $pasien->id_sekolah = $data['id_sekolah'] ?? null;
+            $pasien->kelas = $data['kelas'] ?? null;
+
+            $jenisDisabilitasList = ['Fisik', 'Intelektual', 'Mental', 'Sensorik'];
+            $disabilitas = [];
+
+            if (isset($data['disabilitas_tidak_ada']) && $data['disabilitas_tidak_ada'] === 'true') {
+                $disabilitas = ['Tidak ada'];
+            } else {
+                foreach ($jenisDisabilitasList as $jenis) {
+                    if (!empty($data[$jenis]) && $data[$jenis] === 'true') {
+                        $disabilitas[] = $jenis;
+                    }
+                }
+            }
+
+            $pasien->jenis_disabilitas = json_encode($disabilitas);
+            $pasien->nama_orangtua_wali = $data['nama_ortu_wali'] ?? null;
+            $pasien->telp = $data['no_hp'] ?? null;
+            $pasien->save();
+
+            // Simpan persetujuan
+            $persetujuan = new FormPersetujuan();
+            $persetujuan->id_pasien_sekolah = $pasien->id;
+            $persetujuan->tanggal = now()->toDateString();
+            $persetujuan->id_master_puskesmas = $data['puskesmas'] ?? null;
+            $persetujuan->id_master_sekolah = $data['id_sekolah'] ?? null;
+            $persetujuan->persetujuan = ($data['persetujuan'] ?? '') === 'Setuju' ? 1 : 0;
+            $persetujuan->save();
+
+            $ttd = new FormPersetujuanTandaTangan();
+            $ttd->id_form_persetujuan = $persetujuan->id;
+            $ttd->value = $data['tanda_tangan'] ?? null;
+            $ttd->save();
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Data berhasil disimpan']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
 
     private function formatTanggal($data)
     {

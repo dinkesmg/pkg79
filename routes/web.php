@@ -85,6 +85,7 @@ Route::prefix('pkg_sekolah')->group(function () {
     Route::get('/', [CkgSekolahController::class, 'index'])->name('ckg_sekolah.index');
     Route::get('/screening', [CkgSekolahController::class, 'index_screening'])->name('screening_ckg_sekolah.index');
     Route::get('/screening/success', [CkgSekolahController::class, 'index_success'])->name('screening_ckg_sekolah.success');
+    Route::get('/tidak_setuju', [CkgSekolahController::class, 'index_failed'])->name('screening_ckg_sekolah.tidak_setuju');
 });
 
 Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
@@ -104,5 +105,6 @@ Route::get('/instrumen_sekolah', [CkgSekolahController::class, 'get_instrument_s
 Route::get('/get_data_peserta', [CkgSekolahController::class, 'get_peserta_didik'])->name('get_peserta_didik.data');
 // Route::get('/get_screening_peserta', [CkgSekolahController::class, 'get_screening_peserta'])->name('get_screening_peserta.data');
 Route::post('/pkg_sekolah/simpan', [CkgSekolahController::class, 'simpan'])->name('simpan_ckg_skolah.data');
+Route::post('/simpan_data_diri', [CkgSekolahController::class, 'simpan_data_diri'])->name('simpan_data_diri.data');
 
 
