@@ -77,9 +77,13 @@ class CkgSekolahController extends Controller
 
         $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
 
-        // if ($form_persetujuan) {
-            
-        // }
+        if ($form_persetujuan) {
+            $form_persetujuan_array = $form_persetujuan->toArray();
+            unset($form_persetujuan_array['id_form_persetujuan_tanda_tangan'], $form_persetujuan_array['created_at'], $form_persetujuan_array['updated_at']);
+            $data['persetujuan'] = $form_persetujuan_array;
+        } else {
+            $data['persetujuan'] = null;
+        }
 
         $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
 
@@ -231,8 +235,8 @@ class CkgSekolahController extends Controller
                     'disabilitas_tidak_ada', 'dom-alamat', 'dom-kecamatan', 'dom-kelurahan', 'dom-kota',
                     'dom-provinsi', 'golongan_darah', 'jenis_kelamin', 'kecamatan', 'kelas', 'kelurahan', 'kota',
                     'nama_lengkap', 'nama_ortu_wali', 'nama_sekolah', 'nik', 'nisn', 'no_hp', 'persetujuan',
-                    'provinsi', 'puskesmas', 'tahun_lahir', 'tempat_lahir', 'tanggal_lahir', 'tanda_tangan',
-                    'id_sekolah', 'Intelektual', 'umur'
+                    'provinsi', 'puskesmas', 'tahun_lahir', 'tempat_lahir', 'tanggal_lahir', 'tanda_tangan', 'nama_puskesmas',
+                    'id_sekolah', 'Intelektual', 'umur', 'Fisik', 'Sensorik', 'Mental',
                 ];
 
                 $jawaban = collect($data)
