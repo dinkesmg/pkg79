@@ -3304,7 +3304,7 @@
         console.log("hasil pemeriksaan")
         console.log(ar_hasil_pemeriksaan)
         console.log(dt)
-        if (dt != null && dt.hasil_pemeriksaan != null) {
+        if (dt != null && dt.hasil_pemeriksaan != null && dt.hasil_pemeriksaan != "") {
             ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
             // data_hasil_pemeriksaan_nakes_sekolah(dt.hasil_pemeriksaan)
         }
