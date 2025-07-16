@@ -17,4 +17,4 @@ use App\Http\Controllers\Api\RiwayatController;
 */
 
 Route::get('/puskesmas_ckg', [PuskesmasController::class, 'data'])->name('puskesmas_ckg');
-Route::post('/riwayat/tambah', [RiwayatController::class, 'tambah'])->name('riwayat.tambah');
+Route::post('/riwayat/tambah', [RiwayatController::class, 'tambah'])->name('riwayat_api.tambah');

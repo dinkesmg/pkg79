@@ -11,9 +11,11 @@ use App\Models\User;
 use App\Models\Puskesmas;
 use App\Models\Riwayat;
 use App\Models\MasterProvider;
+use App\Models\Dashboard_Total_Jenis_Pemeriksaan;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 
 class DashboardController extends Controller
 {
@@ -658,7 +660,7 @@ class DashboardController extends Controller
 
             Riwayat::with('pasien')
                 ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
-                ->when($role == 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+                ->when($role == 'Puskesmas', fn ($q) => $q->where('id_user', $id_user))
                 ->chunk(1000, function ($riwayats) use (&$data) {
                     foreach ($riwayats as $r) {
                         if (!$r->pasien || !$r->pasien->tgl_lahir) continue;
@@ -808,7 +810,7 @@ class DashboardController extends Controller
             DB::raw('COUNT(*) as total')
         )
             ->whereBetween('tanggal_pemeriksaan', [$request->tgl_dari, $request->tgl_sampai])
-            ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+            ->when($role === 'Puskesmas', fn ($q) => $q->where('id_user', $id_user))
             ->groupBy('status')
             ->get()
             ->pluck('total', 'status');
@@ -1027,11 +1029,13 @@ class DashboardController extends Controller
         $length = (int) $request->input('length', 10);
         $draw = (int) $request->input('draw', 1);
 
+        // $dashboard = Dashboard_Total_Jenis_Pemeriksaan::whereBetween('tanggal', [$tgl_dari, $tgl_sampai])->get();
         // Ambil semua data
         $dt_bbl = $this->dt_per_jenis_pemeriksaan_bbl($role, $id_user, $ar_tgl, $tgl_dari, $tgl_sampai);
+        // dd($dt_bbl, $dashboard);
         $data = Riwayat::with('pasien')
             ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
-            ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+            ->when($role === 'Puskesmas', fn ($q) => $q->where('id_user', $id_user))
             ->get();
         $dt_balita = $this->dt_per_jenis_pemeriksaan_balita_dan_pra_sekolah($ar_tgl, $tgl_dari, $tgl_sampai, $data);
         $dt_dewasa = $this->dt_per_jenis_pemeriksaan_dewasa($ar_tgl, $tgl_dari, $tgl_sampai, $data);
@@ -1195,18 +1199,34 @@ class DashboardController extends Controller
             ];
         })->keyBy('jenis_pemeriksaan')->toArray();
 
+        // dd($jp_bbl[0]);
+        // $tgl_sampai_h_1 = date('Y-m-d', strtotime($tgl_sampai . ' -1 day'));
+        // $dashboard = Dashboard_Total_Jenis_Pemeriksaan::when($role === 'Puskesmas', fn ($q) => $q->where('id_puskemas', ($id_user + 1)))
+        //     ->where('sasaran', 'bbl')
+        //     // ->where('jenis_pemeriksaan', $jp_bbl[0])
+        //     // ->
+        //     ->whereBetween('tanggal', [$tgl_dari, $tgl_sampai_h_1])
+        //     ->get();
+        // dd($dashboard);
+
+        // foreach ($dashboard as $d) {
+        //     $total_jenis_pemeriksaan_bbl[$d['jenis_pemeriksaan']]['per_tgl'][$d['tanggal']] = $d['jumlah_sasaran'];
+        // }
+
+        // dd($total_jenis_pemeriksaan_bbl);
         // Ambil data bertahap
         Riwayat::with('pasien')
-            ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
-            ->when($role === 'Puskesmas', fn($q) => $q->where('id_user', $id_user))
+            // ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
+            ->whereBetween('tanggal_pemeriksaan', [$tgl_sampai, $tgl_sampai])
+            ->when($role === 'Puskesmas', fn ($q) => $q->where('id_user', $id_user))
             ->chunk(1000, function ($rows) use (&$total_jenis_pemeriksaan_bbl, $jp_bbl, $ar_tgl) {
                 foreach ($rows as $riwayat) {
                     $pasien = $riwayat->pasien;
 
                     if (!$pasien || !$pasien->tgl_lahir) continue;
 
-                    $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($riwayat->tanggal_pemeriksaan));
-                    if ($usia_hari > 28) continue;
+                    // $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($riwayat->tanggal_pemeriksaan));
+                    // if ($usia_hari > 28) continue;
 
                     $tgl = $riwayat->tanggal_pemeriksaan;
 
@@ -1790,5 +1810,102 @@ class DashboardController extends Controller
             'recordsFiltered' => $totalFiltered,
             'data' => $data,
         ]);
+    }
+
+    public function cron_data_per_jenis_pemeriksaan(Request $request)
+    {
+        // $tgl_mulai = "2025-01-01";
+        // $tgl_sampai = "2025-07-14";
+        $tgl_mulai = "2025-07-01";
+        $tgl_sampai = "2025-07-07";
+
+        $period = CarbonPeriod::create($tgl_mulai, $tgl_sampai);
+
+        $ar_tanggal = [];
+        foreach ($period as $date) {
+            $ar_tanggal[] = $date->format('Y-m-d');
+        }
+
+        // dd($ar_tanggal);
+
+        $jp_bbl = [
+            'kekurangan_hormon_tiroid',
+            'kekurangan_enzim_d6pd',
+            'kekurangan_hormon_adrenal',
+            'penyakit_jantung_bawaan',
+            'kelainan_saluran_empedu',
+            'pertumbuhan_bb'
+        ];
+        $rekap_per_tanggal = [];
+        $puskesmas = Puskesmas::get();
+
+        foreach ($puskesmas as $p) {
+            foreach ($ar_tanggal as $tgl) {
+                $total_jenis_pemeriksaan_bbl = [];
+
+                foreach ($jp_bbl as $jp) {
+                    $total_jenis_pemeriksaan_bbl[$jp] = 0;
+                }
+
+                Riwayat::with('pasien')
+                    ->where('tanggal_pemeriksaan', $tgl)
+                    ->where('id_user', $p->id + 1) // jika memang ada penyesuaian offset id
+                    ->chunk(1000, function ($rows) use (&$total_jenis_pemeriksaan_bbl, $jp_bbl) {
+                        foreach ($rows as $riwayat) {
+                            $pasien = $riwayat->pasien;
+
+                            if (!$pasien || !$pasien->tgl_lahir) continue;
+
+                            // $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($riwayat->tanggal_pemeriksaan));
+                            // if ($usia_hari > 28) continue;
+
+                            $hasil = json_decode($riwayat->hasil_pemeriksaan, true);
+                            if (!is_array($hasil)) continue;
+
+                            foreach ($hasil as $item) {
+                                foreach ($jp_bbl as $jp) {
+                                    if (isset($item[$jp]) && $item[$jp] !== null) {
+                                        $total_jenis_pemeriksaan_bbl[$jp]++;
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                // ✅ simpan rekap berdasarkan id_puskesmas dan tanggal
+                $rekap_per_tanggal[$p->id][$tgl] = $total_jenis_pemeriksaan_bbl;
+            }
+        }
+
+        // ✅ Simpan ke tabel dashboard
+        foreach ($rekap_per_tanggal as $id_puskesmas => $rekap_tanggal) {
+            foreach ($rekap_tanggal as $tgl => $rk) {
+                $no = 1;
+                foreach ($jp_bbl as $jp) {
+                    // $dashboard = new Dashboard_Total_Jenis_Pemeriksaan();
+                    // $dashboard->id_puskesmas = $id_puskesmas;
+                    // $dashboard->sasaran = "bbl";
+                    // $dashboard->sasaran_no = $no++;
+                    // $dashboard->jenis_pemeriksaan = $jp;
+                    // $dashboard->jumlah_sasaran = $rk[$jp];
+                    // $dashboard->tanggal = $tgl;
+                    // $dashboard->save();
+                    Dashboard_Total_Jenis_Pemeriksaan::updateOrCreate(
+                        [
+                            // 👉 kriteria pencarian
+                            'id_puskesmas' => $id_puskesmas,
+                            'tanggal' => $tgl,
+                            'jenis_pemeriksaan' => $jp,
+                            'sasaran' => 'bbl',
+                        ],
+                        [
+                            // 👉 kolom yang diupdate
+                            'sasaran_no' => $no++,
+                            'jumlah_sasaran' => $rk[$jp],
+                        ]
+                    );
+                }
+            }
+        }
     }
 }

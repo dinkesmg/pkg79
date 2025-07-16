@@ -66,6 +66,8 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/data_hasil_pemeriksaan', [DashboardController::class, 'data_hasil_pemeriksaan'])->name('dashboard.data_hasil_pemeriksaan');
     Route::get('/data_pasien_hasil_pemeriksaan', [DashboardController::class, 'data_pasien_hasil_pemeriksaan'])->name('dashboard.data_pasien_hasil_pemeriksaan');
     Route::get('/data_pasien_faskes_bpjs', [DashboardController::class, 'data_pasien_faskes_bpjs'])->name('dashboard.data_pasien_faskes_bpjs');
+
+    Route::get('/cron_data_per_jenis_pemeriksaan', [DashboardController::class, 'cron_data_per_jenis_pemeriksaan'])->name('dashboard.cron_data_per_jenis_pemeriksaan');
 });
 
 Route::prefix('pasien_bpjs')->group(function () {
