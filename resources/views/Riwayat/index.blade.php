@@ -3304,9 +3304,10 @@
         console.log("hasil pemeriksaan")
         console.log(ar_hasil_pemeriksaan)
         console.log(dt)
-        // if (dt != null && dt.hasil_pemeriksaan != null) {
-        //     data_hasil_pemeriksaan_nakes_sekolah(dt.hasil_pemeriksaan)
-        // }
+        if (dt != null && dt.hasil_pemeriksaan != null) {
+            ar_hasil_pemeriksaan = dt.hasil_pemeriksaan
+            // data_hasil_pemeriksaan_nakes_sekolah(dt.hasil_pemeriksaan)
+        }
 
     }
 
