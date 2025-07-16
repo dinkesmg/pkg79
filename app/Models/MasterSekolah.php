@@ -10,4 +10,9 @@ class MasterSekolah extends Model
     use HasFactory;
 
     protected $table = "master_sekolah";
+
+    public function puskesmas()
+    {
+        return $this->belongsTo(Puskesmas::class, 'id_puskesmas');
+    }
 }

@@ -59,20 +59,6 @@
     <script src="https://unpkg.com/lottie-web@5.12.0/build/player/lottie.min.js"></script>
 
     <div class="wrapper">
-        {{-- @include('layouts.navbar') --}}
-        {{-- @include('layouts.sidebar') --}}
-
-        <!-- <div class="content-wrapper">
-            <div class="container-fluid"> -->
-
-        <!-- <div class="w-[800px] mx-auto border">
-                <h1 class="text-3xl font-semibold underline">
-                    Cek Kesehatan Gratis
-                </h1>
-                <div>
-
-                </div>
-            </div> -->
 
         <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
             {{-- <div id="lottie-loader" style="width: 200px; height: 200px;"></div> --}}
@@ -81,46 +67,6 @@
         <div id="mainContent" class="hidden">
 
             <section>
-                {{-- <div class="w-full lg:w-8/12 px-4 mx-auto mt-6">
-                    <div class="p-6 space-y-2 bg-gray-100 text-gray-800">
-
-                        <div class="flex gap-3">
-                            <span class="w-12 h-2 rounded-sm bg-teal-600"></span>
-                            <span class="w-12 h-2 rounded-sm bg-teal-600"></span>
-                            <span class="w-12 h-2 rounded-sm bg-slate-800"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                            <span class="w-12 h-2 rounded-sm bg-gray-300"></span>
-                        </div>
-                        <h3 class="text-base font-semibold">Skrining Perilaku Merokok</h3>
-                    </div>
-                    <!-- <div>
-                        <p>Apakah Anda merokok dalam setahun terakhir ini?</p>
-                        <label class="inline-flex items-center">
-                            <input type="radio" id="jenis_kemain" name="jenis_kelamin" value="laki-laki"
-                                class="form-radio text-pink-500">
-                            <span class="ml-2">Laki - laki</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" id="jenis_kemain" name="jenis_kelamin" value="perempuan"
-                                class="form-radio text-pink-500">
-                            <span class="ml-2">Perempuan</span>
-                        </label>
-                    </div> -->
-
-                    <ul id="hasil-instrumen"></ul>
-                </div>
-                <!-- <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
-                    Kirim Data
-                </button> -->
-                <div class="flex justify-center mt-6 mb-7">
-                    <button onclick="kirimData()" class="bg-blue-600 hover:bg-blue-800 text-white px-4 py-2 rounded">
-                        Kirim Data
-                    </button>
-                </div> --}}
 
                 <div class="w-full lg:w-8/12 p-2 lg:mx-auto mt-6">
                     <div class="flex justify-between items-center gap-4 mb-2">
@@ -135,29 +81,61 @@
                             class="register-logo">
                     </div>
                     <div class="border border-gray-200 rounded-lg bg-white px-3 md:px-20 py-6">
+                        <h2 class="text-xl font-bold mb-4">Data Diri Siswa</h2>
+                        <div
+                            class="md:flex md:justify-between items-end mb-3 border border-gray-200 rounded-lg bg-white px-4 py-6">
+                            <div class="flex justify-start gap-5 items-center">
+                                <div>
+                                    <p>Nama Lengkap</p>
+                                    <p>Nama Sekolah</p>
+                                    <p>Puskesmas</p>
+                                </div>
+                                <div>
+                                    <p id="nama_lengkap"></p>
+                                    <p id="nama_sekolah"></p>
+                                    <p id="puskesmas"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <button
+                                    class="bg-pink-500 text-white py-2 px-4 rounded hover:bg-pink-600 transition duration-300 ease-in-out text-sm font-semibold">
+                                    <a href="{{ route('ckg_sekolah.index') }}">Ubah Data Diri</a>
+                                </button>
+                            </div>
+                        </div>
                         <div>
                             <div id="steps-container" class="space-y-6"></div>
+                            <div id="step-pagination" class="flex justify-center gap-2 mb-2"></div>
                         </div>
 
-                        <div class="flex mt-6">
+                        <div class="flex">
                             <button id="prev-btn" onclick="prevStep()"
                                 class="bg-gray-300 px-4 py-2 rounded text-gray-700 hover:bg-gray-400 hover:text-gray-900 hidden">Sebelumnya</button>
                             <button id="next-btn" onclick="nextStep()"
-                                class="ml-auto inline-flex justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 transition">Selanjutnya</button>
+                                class="ml-auto inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-semibold text-white bg-red-600 hover:bg-red-500 transition">
+                                <span id="next-btn-text">Selanjutnya</span>
+                                <svg id="spinner" class="ml-2 h-4 w-4 animate-spin hidden"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10"
+                                        stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
             </section>
 
             <!-- Modal Alert -->
             <div id="alertModal"
-                class="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/60 transition-opacity duration-300 opacity-0 pointer-events-none">
+                class="fixed inset-0 z-50 flex items-center justify-center inset-0 bg-black/30 transition-opacity duration-300 opacity-0 pointer-events-none">
                 <div id="alertBox"
                     class="bg-white/80 backdrop-blur-md border border-white/30 rounded-lg shadow-xl max-w-sm w-full p-6 scale-95 transition-transform duration-300">
                     <h2 id="alertTitle" class="text-lg font-semibold mb-2 text-gray-800">Judul</h2>
                     <p id="alertMessage" class="text-sm text-gray-600">Pesan</p>
                     <div class="mt-4 flex justify-end">
                         <button onclick="closeAlert()"
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                            class="text-sm bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition-all">
                             OK
                         </button>
                     </div>
@@ -189,10 +167,22 @@
             <script>
                 document.addEventListener('DOMContentLoaded', async () => {
                     const urlParams = new URLSearchParams(window.location.search);
-                    const kelas = urlParams.get('kelas');
-                    const jkText = urlParams.get('jk');
+                    const kelas = localStorage.getItem('kelas');
+                    const jkText = localStorage.getItem('jenis_kelamin');
                     const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
                     const hasilList = document.getElementById('hasil-instrumen');
+
+                    const namaLengkap = localStorage.getItem('nama_lengkap');
+                    const namaSekolah = localStorage.getItem('nama_sekolah');
+                    const puskesmas = localStorage.getItem('nama_puskesmas');
+
+                    document.getElementById('nama_lengkap').textContent = `: ${namaLengkap}`;
+                    document.getElementById('nama_sekolah').textContent = `: ${namaSekolah}`;
+                    document.getElementById('puskesmas').textContent = `: Puskesmas ${puskesmas}`;
+
+                    // console.log(kelas);
+                    // console.log(jkText);
+                    // console.log(jenisKelamin);
 
                     if (!kelas || !jenisKelamin) {
                         hasilList.innerHTML = '<li class="text-red-600">Parameter tidak lengkap.</li>';
@@ -279,6 +269,15 @@
             <!-- kirim data -->
             <script>
                 function kirimData() {
+                    const nextBtn = document.getElementById('next-btn');
+                    const nextBtnText = document.getElementById('next-btn-text');
+                    const spinner = document.getElementById('spinner');
+
+                    // Aktifkan spinner & nonaktifkan tombol
+                    nextBtn.disabled = true;
+                    nextBtnText.textContent = 'Mengirim...';
+                    spinner.classList.remove('hidden');
+
                     const data = {};
                     for (let i = 0; i < localStorage.length; i++) {
                         const key = localStorage.key(i);
@@ -300,29 +299,54 @@
                                 showAlert('Berhasil', 'Data berhasil disimpan!');
                                 // localStorage.clear(); // jika ingin hapus setelah submit
                             } else {
-                                // Tampilkan pesan error dari API (fallback jika tidak ada message)
-                                showAlert('Gagal', res.message || 'Gagal menyimpan data.');
+                                const redirect = res.error_data_diri === true;
+                                showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect);
                             }
                         })
                         .catch(err => {
                             console.error(err);
                             showAlert('Kesalahan', 'Terjadi kesalahan saat menyimpan data.');
+                        }).finally(() => {
+                            // Kembalikan tampilan tombol
+                            nextBtn.disabled = false;
+                            nextBtnText.textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
+                                'Selanjutnya';
+                            spinner.classList.add('hidden');
                         });
                 }
 
-                function showAlert(title, message) {
+                function showAlert(title, message, redirect = false) {
                     const modal = document.getElementById('alertModal');
                     const box = document.getElementById('alertBox');
 
                     document.getElementById('alertTitle').textContent = title;
                     document.getElementById('alertMessage').textContent = message;
 
+                    // Ganti tombol OK
+                    const buttonContainer = modal.querySelector('.mt-4.flex');
+                    buttonContainer.innerHTML = ''; // kosongkan dulu
+
+                    const button = document.createElement('button');
+                    button.textContent = 'OK';
+                    button.className = 'text-sm bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded transition-all';
+
+                    if (redirect) {
+                        button.addEventListener('click', () => {
+                            window.location.href = '/pkg_sekolah';
+                        });
+                    } else {
+                        button.addEventListener('click', closeAlert);
+                    }
+
+                    buttonContainer.appendChild(button);
+
+                    // Tampilkan modal
                     modal.classList.remove('pointer-events-none', 'opacity-0');
                     modal.classList.add('opacity-100');
-
                     box.classList.remove('scale-95');
                     box.classList.add('scale-100');
                 }
+
 
                 function closeAlert() {
                     const modal = document.getElementById('alertModal');
@@ -341,6 +365,8 @@
             <script>
                 let currentStepIndex = 0;
                 let groupedData = [];
+
+
 
                 function renderSteps() {
                     const container = document.getElementById('steps-container');
@@ -414,12 +440,35 @@
                     });
 
                     updateNavigationButtons();
+                    renderPagination();
+                }
+
+                function renderPagination() {
+                    const paginationContainer = document.getElementById('step-pagination');
+                    paginationContainer.innerHTML = '';
+
+                    groupedData.forEach((group, index) => {
+                        const circle = document.createElement('div');
+                        circle.classList.add(
+                            'w-8', 'h-8', 'flex', 'items-center', 'justify-center',
+                            'rounded-full', 'border', 'text-sm'
+                        );
+
+                        if (index === currentStepIndex) {
+                            circle.classList.add('bg-pink-500', 'text-white', 'border-pink-500');
+                        } else {
+                            circle.classList.add('bg-white', 'text-gray-700', 'border-gray-300');
+                        }
+                        circle.textContent = index + 1;
+                        paginationContainer.appendChild(circle);
+                    });
                 }
 
                 function updateNavigationButtons() {
                     document.getElementById('prev-btn').classList.toggle('hidden', currentStepIndex === 0);
-                    document.getElementById('next-btn').textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
-                        'Selanjutnya';
+                    document.getElementById('next-btn-text').textContent = currentStepIndex === groupedData.length - 1 ?
+                        'Kirim Data' : 'Selanjutnya';
+
                 }
 
                 function nextStep() {
@@ -440,8 +489,8 @@
 
                 document.addEventListener('DOMContentLoaded', async () => {
                     const urlParams = new URLSearchParams(window.location.search);
-                    const kelas = urlParams.get('kelas');
-                    const jkText = urlParams.get('jk');
+                    const kelas = localStorage.getItem('kelas');
+                    const jkText = localStorage.getItem('jenis_kelamin');
                     const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
 
                     if (!kelas || !jenisKelamin) {

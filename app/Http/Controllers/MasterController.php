@@ -311,9 +311,21 @@ class MasterController extends Controller
     {
         $term = $request->get('term');
 
-        $results = MasterSekolah::where('nama', 'like', "%{$term}%")
-            ->get(['id', 'nama', 'alamat', 'id_puskesmas']);
+        $results = MasterSekolah::with('puskesmas')
+        ->where('nama', 'like', "%{$term}%")
+        ->get(['id', 'nama', 'alamat', 'id_puskesmas']);
 
-        return response()->json($results);
+        // Ubah hasil agar menyertakan nama_puskesmas
+        $formatted = $results->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'nama' => $item->nama,
+                'alamat' => $item->alamat,
+                'id_puskesmas' => $item->id_puskesmas,
+                'nama_puskesmas' => optional($item->puskesmas)->nama, // hindari null error
+            ];
+        });
+
+        return response()->json($formatted);
     }
 }

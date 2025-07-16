@@ -84,6 +84,7 @@ Route::prefix('data_simpus')->group(function () {
 Route::prefix('pkg_sekolah')->group(function () {
     Route::get('/', [CkgSekolahController::class, 'index'])->name('ckg_sekolah.index');
     Route::get('/screening', [CkgSekolahController::class, 'index_screening'])->name('screening_ckg_sekolah.index');
+    Route::get('/screening/success', [CkgSekolahController::class, 'index_success'])->name('screening_ckg_sekolah.success');
 });
 
 Route::get('daftar_provider', [AuthController::class, 'daftar_provider'])->name('daftar_provider');
@@ -101,3 +102,4 @@ Route::get('master_puskesmas', [PuskesmasController::class, 'all'])->name('maste
 Route::get('/instrumen_sekolah', [CkgSekolahController::class, 'get_instrument_sekolah']);
 
 Route::post('/pkg_sekolah/simpan', [CkgSekolahController::class, 'simpan'])->name('simpan_ckg_skolah.data');
+
