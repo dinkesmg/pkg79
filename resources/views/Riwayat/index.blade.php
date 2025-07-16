@@ -3266,13 +3266,33 @@
 
         if (typeof data.ref_riwayat_sekolah !== 'undefined' && data.ref_riwayat_sekolah !== '') {
             let riwayat_sekolah = JSON.parse(data.ref_riwayat_sekolah.skrining_mandiri);
-            // console.log(riwayat_sekolah)
-            let html = '';
+            let html = `
+                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd; font-size: 14px;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid #ddd; padding: 8px; background-color: #f8f8f8; text-align: left;">Pertanyaan</th>
+                            <th style="border: 1px solid #ddd; padding: 8px; background-color: #f8f8f8; text-align: left;">Isi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                `;
+
             riwayat_sekolah.forEach(obj => {
                 for (const key in obj) {
-                    html += `${key}: ${obj[key]}<br>`;
+                    html += `
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 6px; vertical-align: top; word-break: break-word; width: 80%;">${key}</td>
+                            <td style="border: 1px solid #ddd; padding: 6px; vertical-align: top; word-break: break-word; width: 20%;">${obj[key]}</td>
+                        </tr>
+                        `;
                 }
             });
+
+            html += `
+                    </tbody>
+                </table>
+                `;
+
             $('#hasil_skrining_mandiri').html(html)
 
         }
@@ -3333,10 +3353,6 @@
 
                     const hasilPemeriksaanObj = Object.assign({}, ...dt.hasil_pemeriksaan);
                     const existingValue = hasilPemeriksaanObj?.[item.objek] || "";
-                    console.log("existing")
-                    console.log(item.objek)
-                    console.log(existingValue)
-                    console.log(dt.hasil_pemeriksaan)
 
                     // RADIO
                     if (item.tipe_input === "radio") {
@@ -3410,6 +3426,52 @@
                             const finalValue = result.replace(".", ",");
                             e.target.value = finalValue;
                             oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, finalValue);
+
+                            //hitung imt
+                            if (item.objek === 'berat_badan' || item.objek === 'tinggi_badan') {
+                                const beratStr = document.getElementById('berat_badan')?.value?.replace(',', '.') || '';
+                                const tinggiStr = document.getElementById('tinggi_badan')?.value?.replace(',', '.') || '';
+                                const berat = parseFloat(beratStr);
+                                const tinggi = parseFloat(tinggiStr);
+
+                                if (!isNaN(berat) && berat > 0 && !isNaN(tinggi) && tinggi > 0) {
+                                    const imt = berat / ((tinggi / 100) * (tinggi / 100));
+                                    const imtRounded = imt.toFixed(2).replace('.', ',');
+
+                                    // Set nilai imt jika field tersedia
+                                    const imtInput = document.getElementById('imt');
+                                    if (imtInput) {
+                                        imtInput.value = imtRounded;
+                                        imtInput.readOnly = true;
+                                        oc_hasil_pemeriksaan_kesehatan_sekolah('imt', imtRounded);
+                                    }
+                                }
+                            }
+
+                            //hitung klasifikasi anemia
+                            if (item.objek === 'hb') {
+                                const hbStr = document.getElementById('hb')?.value?.replace(',', '.') || '';
+                                const hb = parseFloat(hbStr);
+
+                                if (!isNaN(hb) && hb > 0) {
+                                    let klasifikasi_anemia;
+                                    if (hb >= 12) {
+                                        klasifikasi_anemia = "Tidak Anemia"
+                                    } else if (hb >= 11 && hb < 12) {
+                                        klasifikasi_anemia = "Anemia Ringan"
+                                    } else if (hb >= 8 && hb < 11) {
+                                        klasifikasi_anemia = "Anemia Sedang"
+                                    } else if (hb < 8) {
+                                        klasifikasi_anemia = "Anemia Berat"
+                                    }
+                                    // Set nilai imt jika field tersedia
+                                    const hbInput = document.getElementById('klasifikasi_anemia');
+                                    if (hbInput) {
+                                        hbInput.value = klasifikasi_anemia;
+                                        oc_hasil_pemeriksaan_kesehatan_sekolah('klasifikasi_anemia', klasifikasi_anemia);
+                                    }
+                                }
+                            }
                         });
 
                         colInput.appendChild(input);
@@ -3433,6 +3495,48 @@
                             e.target.value = inputValue;
 
                             oc_hasil_pemeriksaan_kesehatan_sekolah(item.objek, inputValue);
+
+                            //hitung klasifikasi tekanan darah
+                            if (item.objek === 'sistole' || item.objek === 'diastole') {
+                                const sistoleStr = document.getElementById('sistole')?.value?.replace(',', '.') || '';
+                                const diastoleStr = document.getElementById('diastole')?.value?.replace(',', '.') || '';
+                                const sistole = parseFloat(sistoleStr);
+                                const diastole = parseFloat(diastoleStr);
+
+                                // if (!isNaN(sistole) && sistole > 0 && !isNaN(diastole) && diastole > 0) {
+                                //     const tekanan_darah = berat / ((tinggi / 100) * (tinggi / 100));
+                                //     const imtRounded = imt.toFixed(2).replace('.', ',');
+
+                                //     // Set nilai imt jika field tersedia
+                                //     const imtInput = document.getElementById('imt');
+                                //     if (imtInput) {
+                                //         imtInput.value = imtRounded;
+                                //         oc_hasil_pemeriksaan_kesehatan_sekolah('imt', imtRounded);
+                                //     }
+                                // }
+                            }
+
+                            //hitung klasifikasi diabetes melitus
+                            if (item.objek === 'gula_darah_sewaktu') {
+                                const gula_darah_sewaktu = document.getElementById('gula_darah_sewaktu')?.value || '';
+
+                                if (!isNaN(gula_darah_sewaktu) && gula_darah_sewaktu > 0) {
+                                    let klasifikasi_gula_darah_sewaktu;
+                                    if (gula_darah_sewaktu < 140) {
+                                        klasifikasi_gula_darah_sewaktu = "Normal"
+                                    } else if (gula_darah_sewaktu >= 140 && gula_darah_sewaktu <= 199) {
+                                        klasifikasi_gula_darah_sewaktu = "Pre Diabetes"
+                                    } else if (gula_darah_sewaktu >= 200) {
+                                        klasifikasi_gula_darah_sewaktu = "Hiperglikemia"
+                                    }
+                                    // Set nilai imt jika field tersedia
+                                    const gula_darah_sewaktuInput = document.getElementById('klasifikasi_diabetes_melitus');
+                                    if (gula_darah_sewaktuInput) {
+                                        gula_darah_sewaktuInput.value = klasifikasi_gula_darah_sewaktu;
+                                        oc_hasil_pemeriksaan_kesehatan_sekolah('klasifikasi_diabetes_melitus', klasifikasi_gula_darah_sewaktu);
+                                    }
+                                }
+                            }
                         });
 
                         colInput.appendChild(input);
