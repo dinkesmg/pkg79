@@ -1199,15 +1199,13 @@ class DashboardController extends Controller
             ];
         })->keyBy('jenis_pemeriksaan')->toArray();
 
-        // dd($jp_bbl[0]);
         // $tgl_sampai_h_1 = date('Y-m-d', strtotime($tgl_sampai . ' -1 day'));
-        // $dashboard = Dashboard_Total_Jenis_Pemeriksaan::when($role === 'Puskesmas', fn ($q) => $q->where('id_puskemas', ($id_user + 1)))
+        // $dashboard = Dashboard_Total_Jenis_Pemeriksaan::query()
+        //     ->when($role === 'Puskesmas', fn ($q) => $q->where('id_puskesmas', $id_user + 1))
+        //     ->when(in_array($role, ['Admin', 'Bidang']), fn ($q) => $q->whereNull('id_puskesmas'))
         //     ->where('sasaran', 'bbl')
-        //     // ->where('jenis_pemeriksaan', $jp_bbl[0])
-        //     // ->
         //     ->whereBetween('tanggal', [$tgl_dari, $tgl_sampai_h_1])
         //     ->get();
-        // // dd($dashboard);
 
         // foreach ($dashboard as $d) {
         //     $jenis = $d['jenis_pemeriksaan'];
@@ -1860,15 +1858,12 @@ class DashboardController extends Controller
 
                 Riwayat::with('pasien')
                     ->where('tanggal_pemeriksaan', $tgl)
-                    ->where('id_user', $p->id + 1) // jika memang ada penyesuaian offset id
+                    ->where('id_user', $p->id + 1) // Jika offset id_user memang +1
                     ->chunk(1000, function ($rows) use (&$total_jenis_pemeriksaan_bbl, $jp_bbl) {
                         foreach ($rows as $riwayat) {
                             $pasien = $riwayat->pasien;
 
                             if (!$pasien || !$pasien->tgl_lahir) continue;
-
-                            // $usia_hari = \Carbon\Carbon::parse($pasien->tgl_lahir)->diffInDays(\Carbon\Carbon::parse($riwayat->tanggal_pemeriksaan));
-                            // if ($usia_hari > 28) continue;
 
                             $hasil = json_decode($riwayat->hasil_pemeriksaan, true);
                             if (!is_array($hasil)) continue;
@@ -1883,39 +1878,58 @@ class DashboardController extends Controller
                         }
                     });
 
-                // ✅ simpan rekap berdasarkan id_puskesmas dan tanggal
                 $rekap_per_tanggal[$p->id][$tgl] = $total_jenis_pemeriksaan_bbl;
             }
         }
 
-        // ✅ Simpan ke tabel dashboard
+        // Simpan ke tabel dashboard per Puskesmas
         foreach ($rekap_per_tanggal as $id_puskesmas => $rekap_tanggal) {
             foreach ($rekap_tanggal as $tgl => $rk) {
                 $no = 1;
                 foreach ($jp_bbl as $jp) {
-                    // $dashboard = new Dashboard_Total_Jenis_Pemeriksaan();
-                    // $dashboard->id_puskesmas = $id_puskesmas;
-                    // $dashboard->sasaran = "bbl";
-                    // $dashboard->sasaran_no = $no++;
-                    // $dashboard->jenis_pemeriksaan = $jp;
-                    // $dashboard->jumlah_sasaran = $rk[$jp];
-                    // $dashboard->tanggal = $tgl;
-                    // $dashboard->save();
                     Dashboard_Total_Jenis_Pemeriksaan::updateOrCreate(
                         [
-                            // 👉 kriteria pencarian
                             'id_puskesmas' => $id_puskesmas,
                             'tanggal' => $tgl,
                             'jenis_pemeriksaan' => $jp,
                             'sasaran' => 'bbl',
                         ],
                         [
-                            // 👉 kolom yang diupdate
                             'sasaran_no' => $no++,
                             'jumlah_sasaran' => $rk[$jp],
                         ]
                     );
                 }
+            }
+        }
+
+        // Tambah baris total semua puskesmas per tanggal (id_puskesmas = null)
+        foreach ($ar_tanggal as $tgl) {
+            $total_semua_puskesmas = [];
+            foreach ($jp_bbl as $jp) {
+                $total_semua_puskesmas[$jp] = 0;
+            }
+
+            foreach ($rekap_per_tanggal as $id_puskesmas => $rekap_tanggal) {
+                foreach ($jp_bbl as $jp) {
+                    $total_semua_puskesmas[$jp] += $rekap_tanggal[$tgl][$jp] ?? 0;
+                }
+            }
+
+            $no = 1;
+            foreach ($jp_bbl as $jp) {
+                Dashboard_Total_Jenis_Pemeriksaan::updateOrCreate(
+                    [
+                        'id_puskesmas' => null,
+                        'tanggal' => $tgl,
+                        'jenis_pemeriksaan' => $jp,
+                        'sasaran' => 'bbl',
+                    ],
+                    [
+                        'sasaran_no' => $no++,
+                        'jumlah_sasaran' => $total_semua_puskesmas[$jp],
+                    ]
+                );
             }
         }
     }

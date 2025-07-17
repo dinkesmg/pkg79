@@ -2061,7 +2061,7 @@
                 text: 'Export Excel',
                 title: null, // Kosongkan agar tidak pakai <title> tag dari dokumen
                 filename: function() {
-                    const tglDari = $('#dari').val().split('-').reverse().join('-');     // dd-mm-yyyy
+                    const tglDari = $('#dari').val().split('-').reverse().join('-'); // dd-mm-yyyy
                     const tglSampai = $('#sampai').val().split('-').reverse().join('-'); // dd-mm-yyyy
 
                     const now = new Date();
@@ -2731,6 +2731,7 @@
         $('#idtabel_kesimpulan_hasil').dataTable({
             destroy: true,
             scrollX: true,
+            lengthChange: false,
             ajax: {
                 url: "{{url('dashboard/data_kesimpulan_hasil')}}",
                 type: "GET",
@@ -2776,6 +2777,7 @@
             processing: true,
             serverSide: true,
             pageLength: 10,
+            lengthChange: false,
             ajax: {
                 url: "{{url('dashboard/data_pasien_faskes_bpjs')}}",
                 type: "GET",
@@ -2791,7 +2793,7 @@
                     return json.data; // Return data for DataTable
                 },
             },
-            columns: col, 
+            columns: col,
         });
 
     }
