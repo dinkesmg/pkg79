@@ -1207,17 +1207,28 @@ class DashboardController extends Controller
         //     // ->
         //     ->whereBetween('tanggal', [$tgl_dari, $tgl_sampai_h_1])
         //     ->get();
-        // dd($dashboard);
+        // // dd($dashboard);
 
         // foreach ($dashboard as $d) {
-        //     $total_jenis_pemeriksaan_bbl[$d['jenis_pemeriksaan']]['per_tgl'][$d['tanggal']] = $d['jumlah_sasaran'];
+        //     $jenis = $d['jenis_pemeriksaan'];
+        //     $tanggal = $d['tanggal'];
+        //     $jumlah = $d['jumlah_sasaran'];
+        //     $jumlah_2 = $d['jumlah_sasaran'];
+
+        //     // if (isset($total_jenis_pemeriksaan_bbl[$jenis]['per_tgl'][$tanggal])) {
+        //     //     dd($jenis, $tanggal, $jumlah);
+        //     //     continue;
+        //     // }
+
+        //     $total_jenis_pemeriksaan_bbl[$jenis]['per_tgl'][$tanggal] += $jumlah_2;
+        //     $total_jenis_pemeriksaan_bbl[$jenis]['total'] += $jumlah;
         // }
 
         // dd($total_jenis_pemeriksaan_bbl);
         // Ambil data bertahap
         Riwayat::with('pasien')
-            // ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
-            ->whereBetween('tanggal_pemeriksaan', [$tgl_sampai, $tgl_sampai])
+            ->whereBetween('tanggal_pemeriksaan', [$tgl_dari, $tgl_sampai])
+            // ->whereBetween('tanggal_pemeriksaan', [$tgl_sampai, $tgl_sampai])
             ->when($role === 'Puskesmas', fn ($q) => $q->where('id_user', $id_user))
             ->chunk(1000, function ($rows) use (&$total_jenis_pemeriksaan_bbl, $jp_bbl, $ar_tgl) {
                 foreach ($rows as $riwayat) {

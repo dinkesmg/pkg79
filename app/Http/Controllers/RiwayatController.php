@@ -469,6 +469,11 @@ class RiwayatController extends Controller
     public function hapus(Request $request)
     {
         $data = Riwayat::find($request->id);
+        $data_sekolah = RiwayatSekolah::where('id_riwayat', $data->id)->first();
+        if ($data_sekolah != null) {
+            $data_sekolah->id_riwayat = null;
+            $data_sekolah->save();
+        }
         $data->delete();
 
         return response()->json(['status' => "Berhasil", 'data' => $data]);
