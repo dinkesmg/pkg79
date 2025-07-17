@@ -55,10 +55,10 @@
                     <h3 class="text-2xl font-bold">Terima Kasih!</h3>
                     <p class="text-gray-600">NIK Anda: {{ $nik }}</p>
                     <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah.</p>
-                    <button class="bg-blue-600 py-2 text-white px-4 hover:bg-blue-400 transition-all rounded-lg"
+                    {{-- <button class="bg-blue-600 py-2 text-white px-4 hover:bg-blue-400 transition-all rounded-lg"
                         onclick="window.open('{{ url('/pendaftaran/download?nik=' . $nik) }}', '_blank')">
                         Download Bukti Pendaftaran
-                    </button>
+                    </button> --}}
                 </div>
                 <div>
                     <div class="flex justify-between items-center">

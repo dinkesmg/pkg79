@@ -433,6 +433,9 @@ class CkgSekolahController extends Controller
         $nama_sekolah = isset($pasien->ref_sekolah) ? $pasien->ref_sekolah->nama : '-';
         $alamat_sekolah = isset($pasien->ref_sekolah) ? $pasien->ref_sekolah->alamat : '-';
 
+        $data['nama_sekolah'] = $nama_sekolah;
+        $data['alamat_sekolah'] = $alamat_sekolah;
+
         // $data['nama_sekolah'] = $pasien->ref_sekolah?->nama ?? '-';
         // $data['alamat_sekolah'] = $pasien->ref_sekolah?->alamat ?? '-';
 
