@@ -106,5 +106,3 @@ Route::get('/get_data_peserta', [CkgSekolahController::class, 'get_peserta_didik
 // Route::get('/get_screening_peserta', [CkgSekolahController::class, 'get_screening_peserta'])->name('get_screening_peserta.data');
 Route::post('/pkg_sekolah/simpan', [CkgSekolahController::class, 'simpan'])->name('simpan_ckg_skolah.data');
 Route::post('/simpan_data_diri', [CkgSekolahController::class, 'simpan_data_diri'])->name('simpan_data_diri.data');
-
-

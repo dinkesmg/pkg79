@@ -52,12 +52,11 @@
                 </div>
 
                 <div class="mt-4 text-center">
-                    <h3 class="text-2xl font-bold">You fail madafaka</h3>
+                    <h3 class="text-2xl font-bold">Terimakasih telah mendaftar</h3>
                     {{-- <p class="text-gray-600">NIK Anda: {{ $nik }}</p> --}}
-                    <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah. Berikut adalah
-                        informasi pendaftaran Anda:</p>
+                    <p class="text-gray-600">Anda tidak menyetujui pendaftaran ke dalam program CKG Sekolah.</p>
                 </div>
-                <div>
+                {{-- <div>
                     <h2 class="text-2xl font-semibold mt-4">
                         Data Peserta Didik
                     </h2>
@@ -69,7 +68,7 @@
 
                     <h2 class="text-2xl font-semibold">Hasil Screening</h2>
                     <div id="data-screening" class="my-4 space-y-4"></div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>

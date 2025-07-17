@@ -175,7 +175,7 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const kelas = localStorage.getItem('kelas');
                     const jkText = localStorage.getItem('jenis_kelamin');
-                    const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
+                    const jenisKelamin = jkText === 'Laki-laki' ? 'L' : 'P';
                     const hasilList = document.getElementById('hasil-instrumen');
 
                     const namaLengkap = localStorage.getItem('nama_lengkap');
@@ -513,7 +513,7 @@
                     const urlParams = new URLSearchParams(window.location.search);
                     const kelas = localStorage.getItem('kelas');
                     const jkText = localStorage.getItem('jenis_kelamin');
-                    const jenisKelamin = jkText === 'laki-laki' ? 'L' : 'P';
+                    const jenisKelamin = jkText === 'Laki-laki' ? 'L' : 'P';
 
                     if (!kelas || !jenisKelamin) {
                         document.getElementById('steps-container').innerHTML =

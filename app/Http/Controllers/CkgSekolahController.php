@@ -37,6 +37,7 @@ class CkgSekolahController extends Controller
 
     public function get_instrument_sekolah(Request $request)
     {
+        // dd($request->all());
         $validated = $request->validate([
             'kelas' => 'required|integer|min:1|max:12',
             'jenis_kelamin' => 'required|string|in:L,P',
@@ -123,10 +124,10 @@ class CkgSekolahController extends Controller
 
         $kelas = (int) $request->kelas;
         $jenis_kelamin = $request->jenis_kelamin;
-        if ($jenis_kelamin === 'laki-laki') {
+        if ($jenis_kelamin === 'Laki-laki') {
             $jenis_kelamin = 'L';
             $data['jenis_kelamin'] = "Laki-laki";
-        } elseif ($jenis_kelamin === 'perempuan') {
+        } elseif ($jenis_kelamin === 'Perempuan') {
             $jenis_kelamin = 'P';
             $data['jenis_kelamin'] = "Perempuan";
         }
