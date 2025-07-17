@@ -159,7 +159,7 @@ class CkgSekolahController extends Controller
 
         $pasien = PasienSekolah::where('nik', $data['nik'])->first();
 
-            if ($pasien) {
+        if ($pasien) {
             $sudahAda = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)
                 ->whereYear('created_at', now()->year)
                 ->exists();
@@ -176,7 +176,7 @@ class CkgSekolahController extends Controller
         DB::beginTransaction();
         try {
             // Simpan data pasien_sekolah
-            
+
             if ($pasien == null) {
                 $pasien = new PasienSekolah();
                 $pasien->nisn = $data['nisn'] ?? null;
@@ -201,7 +201,7 @@ class CkgSekolahController extends Controller
 
                 $pasien->id_sekolah = $data['id_sekolah'] ?? null;
                 $pasien->kelas = $data['kelas'] ?? null;
-                
+
                 $jenisDisabilitasList = ['Fisik', 'Intelektual', 'Mental', 'Sensorik'];
                 $disabilitas = [];
 
@@ -217,6 +217,7 @@ class CkgSekolahController extends Controller
 
                 $pasien->jenis_disabilitas = json_encode($disabilitas);
 
+                $pasien->nik_orangtua_wali = $data['nik_ortu_wali'] ?? null;
                 $pasien->nama_orangtua_wali = $data['nama_ortu_wali'] ?? null;
                 $pasien->telp = $data['no_hp'] ?? null;
                 $pasien->save();
