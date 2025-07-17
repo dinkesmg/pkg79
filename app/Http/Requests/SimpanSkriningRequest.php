@@ -34,7 +34,7 @@ class SimpanSkriningRequest extends FormRequest
             'bulan_lahir' => 'required|numeric|min:1|max:12',
             'tahun_lahir' => 'required|numeric|min:1900|max:' . date('Y'),
             'golongan_darah' => 'nullable|string|in:A,B,AB,O,-',
-            'jenis_kelamin' => 'required|string|in:laki-laki,perempuan',
+            'jenis_kelamin' => 'required|string|in:Laki-laki,Perempuan',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
             'kecamatan' => 'required|string',
