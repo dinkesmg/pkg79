@@ -3820,6 +3820,9 @@ class RiwayatController extends Controller
 
     public function cari_nik_pasien(Request $request)
     {
+        $auth = Auth::user();
+        $id_user = $auth->id;
+
         $data_pasien_sekolah = PasienSekolah::with(
             'ref_provinsi_ktp',
             'ref_kota_kab_ktp',
@@ -3831,7 +3834,13 @@ class RiwayatController extends Controller
             'ref_kelurahan_dom',
             'ref_sekolah',
             'ref_riwayat_sekolah.puskesmas',
-        )->where('nik', $request->nik)->first();
+        )
+            ->where('nik', $request->nik)
+            // ->where('id_puskesmas', ($id_user + 1))
+            ->whereHas('ref_sekolah', function ($query) use ($id_user) {
+                $query->where('id_puskesmas', ($id_user - 1));
+            })
+            ->first();
         if ($data_pasien_sekolah != null) {
             $data = $data_pasien_sekolah;
 

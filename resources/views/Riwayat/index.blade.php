@@ -3176,6 +3176,12 @@
             async: true,
             success: function(data) {
                 console.log(data)
+                // if (data == null) {
+                if (!data || Object.keys(data).length === 0) {
+                    alert("nik tidak ditemukan")
+                    return
+                }
+
                 if (fitur != "Detail") {
                     $('#nik_pasien').val(data.nik)
                     $('#nama_pasien').val(data.nama)

@@ -39,20 +39,21 @@ class AuthController extends Controller
             // return redirect()->route('/')->with('error', 'Nama atau password salah.');
         }
     }
-    
+
     public function logout()
     {
         Auth::logout();
         return redirect()->route('/');
     }
 
-    public function daftar_provider(){
+    public function daftar_provider()
+    {
         $data = MasterProvider::get();
 
         // dd($puskesmas);
         foreach ($data as $p) {
             $cek = User::where('nama', $p->nmprovider)->first();
-            if(!$cek){
+            if (!$cek) {
                 $user = new User();
                 $user->nama = $p->nmprovider;
                 $user->password = bcrypt($p->kdprovider);
@@ -61,4 +62,20 @@ class AuthController extends Controller
             }
         }
     }
+
+    // public function ganti_password()
+    // {
+    //     $data = Puskesmas::get();
+
+    //     // dd($puskesmas);
+    //     foreach ($data as $p) {
+    //         $cek = User::where('nama', $p->nama)->first();
+    //         if (!$cek) {
+    //             $user = new User();
+    //             $user->nama = $p->nama;
+    //             $user->password = bcrypt("pkg79@P" . $p->id);
+    //             $user->save();
+    //         }
+    //     }
+    // }
 }
