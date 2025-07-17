@@ -311,7 +311,7 @@
             </label>
             <div class="flex space-x-4 mt-2">
                 <label class="inline-flex items-center">
-                    <input type="radio" id="jenis_kemain" name="jenis_kelamin" value="laki-laki"
+                    <input type="radio" id="jenis_kemain" name="jenis_kelamin" value="Laki-laki"
                         class="form-radio text-pink-500">
                     <span class="ml-2">Laki - laki</span>
                 </label>

@@ -294,7 +294,7 @@
 
                     // console.log(data.nik);
 
-                    fetch('/simpan_data_diri', {
+                    fetch('/pkg_sekolah/simpan', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -306,27 +306,26 @@
                         .then(res => res.json())
                         .then(res => {
                             if (res.success) {
-                                // showAlert('Berhasil', 'Data berhasil disimpan!', false, true, data.nik);
-                                alert("Berhasil boss")
+                                showAlert('Berhasil', 'Data berhasil disimpan!', false, true, data.nik);
+                                // alert("Berhasil boss")
                                 localStorage.clear(); // hapus setelah submit
                                 // window.location.href = "{{ url('/pkg_sekolah/screening/success') }}";
                             } else {
-                                alert("Gagal boss")
-                                // const redirect = res.error_data_diri === true;
-                                // showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect, false, data.nik);
+                                // alert("Gagal boss")
+                                const redirect = res.error_data_diri === true;
+                                showAlert('Gagal', res.message || 'Gagal menyimpan data.', redirect, false, data.nik);
                             }
                         })
                         .catch(err => {
                             console.error(err);
-                            // showAlert('Kesalahan', 'Terjadi kesalahan saat menyimpan data.');
-                        })
-                    // .finally(() => {
-                    //     // Kembalikan tampilan tombol
-                    //     nextBtn.disabled = false;
-                    //     nextBtnText.textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
-                    //         'Selanjutnya';
-                    //     spinner.classList.add('hidden');
-                    // });
+                            showAlert('Kesalahan', 'Terjadi kesalahan saat menyimpan data.');
+                        }).finally(() => {
+                            //   Kembalikan tampilan tombol
+                            nextBtn.disabled = false;
+                            nextBtnText.textContent = currentStepIndex === groupedData.length - 1 ? 'Kirim Data' :
+                                'Selanjutnya';
+                            spinner.classList.add('hidden');
+                        });
                 }
 
                 function showAlert(title, message, redirect = false, successRedirect = false, nik = null) {
