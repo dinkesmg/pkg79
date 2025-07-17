@@ -27,7 +27,8 @@ class SimpanSkriningRequest extends FormRequest
     {
         return [
             'nisn' => 'nullable|string|max:25',
-            'nik' => 'required|string|size:16',
+            'nik' => 'required|string|size:16|min:16|max:16',
+            'nik_ortu_wali' => 'nullable|string|size:16|min:16|max:16',
             'nama_lengkap' => 'required|string|max:255',
             'tempat_lahir' => 'required|string|max:100',
             'tanggal_lahir' => 'required|numeric|min:1|max:31',
@@ -63,6 +64,11 @@ class SimpanSkriningRequest extends FormRequest
             // 'nisn.max' => 'NISN maksimal 20 karakter.',
             'nik.required' => 'NIK wajib diisi.',
             'nik.size' => 'NIK harus terdiri dari 16 digit.',
+            'nik.min' => 'NIK harus terdiri dari 16 digit.',
+            'nik.max' => 'NIK harus terdiri dari 16 digit.',
+            'nik_ortu_wali.size' => 'NIK orang tua/wali harus terdiri dari 16 digit.',
+            'nik_ortu_wali.min' => 'NIK orang tua/wali harus terdiri dari 16 digit.',
+            'nik_ortu_wali.max' => 'NIK orang tua/wali harus terdiri dari 16 digit.',
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
             'nama_lengkap.max' => 'Nama lengkap maksimal 255 karakter.',
             'tempat_lahir.required' => 'Tempat lahir wajib diisi.',

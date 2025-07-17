@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+    {{-- <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css"> --}}
     <link rel="stylesheet"
         href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
 
@@ -54,15 +54,20 @@
                 <div class="mt-4 text-center">
                     <h3 class="text-2xl font-bold">Terima Kasih!</h3>
                     <p class="text-gray-600">NIK Anda: {{ $nik }}</p>
-                    <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah. Berikut adalah
-                        informasi pendaftaran Anda:</p>
+                    <p class="text-gray-600">Anda telah berhasil mendaftar ke dalam program CKG Sekolah.</p>
+                    <button class="bg-blue-600 py-2 text-white px-4 hover:bg-blue-400 transition-all rounded-lg"
+                        onclick="window.open('{{ url('/pendaftaran/download?nik=' . $nik) }}', '_blank')">
+                        Download Bukti Pendaftaran
+                    </button>
                 </div>
                 <div>
-                    <h2 class="text-2xl font-semibold mt-4">
-                        Data Peserta Didik
-                    </h2>
-                    <div id="data-peserta" class="my-4 space-y-2 border rounded-lg px-6 py-4"></div>
-                    <hr>
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-semibold mt-4">
+                            Data Peserta Didik
+                        </h2>
+
+                    </div>
+                    <div id="data-peserta" class="my-4 space-y-2 border border-gray-300 rounded-lg px-6 py-4"></div>
 
                     <h2 class="text-2xl font-semibold mt-4">Surat Persetujuan</h2>
                     <div id="data-persetujuan" class="my-4 space-y-4"></div>
@@ -72,6 +77,7 @@
                 </div>
             </div>
         </div>
+        <h3 class="text-center mb-2 text-gray-600 font-semibold">Powered by Dinas Kesehatan Kota Semarang</h3>
     </div>
 
     <script>
@@ -108,32 +114,48 @@
                 const container = document.getElementById('data-peserta');
 
                 const pairs = [
-                    ['nik', 'nisn'],
-                    ['nama', 'tempat_tanggal_lahir'],
-                    ['umur', 'golongan_darah'],
-                    ['jenis_kelamin', 'telp'],
-                    ['alamat_ktp', 'alamat_dom'],
-                    ['kelas', 'jenis_disabilitas'],
-                    ['nama_orangtua_wali', 'nama_sekolah']
+                    ['nama', 'nik'],
+                    ['nisn', 'tempat_tanggal_lahir'],
+                    ['nik_orangtua_wali', 'nama_orangtua_wali'],
+                    ['telp'],
+                    ['umur', 'nama_sekolah'],
+                    ['alamat_sekolah', 'puskesmas'],
+                    ['kelas', 'jenis_kelamin'],
+                    ['golongan_darah'],
+                    ['provinsi_ktp', 'kota_kab_ktp'],
+                    ['kecamatan_ktp', 'kelurahan_ktp'],
+                    ['alamat_ktp'],
+                    ['provinsi_dom', 'kota_kab_dom'],
+                    ['kecamatan_dom', 'kelurahan_dom'],
+                    ['alamat_dom'],
+                    ['jenis_disabilitas'],
                 ];
 
-                pairs.forEach(([kiri, kanan]) => {
+                pairs.forEach((pair) => {
+                    const [kiri, kanan] = pair;
+
                     const row = document.createElement('div');
                     row.classList.add('grid', 'grid-cols-1', 'md:grid-cols-2', 'gap-4');
 
                     const left = document.createElement('div');
-                    left.innerHTML = `<div class="text-lg font-semibold">${labelize(kiri)}</div>
-                                  <div class="text-gray-900 text-[14px]">${formatValue(data[kiri])}</div>`;
-
-                    const right = document.createElement('div');
-                    right.innerHTML = `<div class="font-semibold text-lg">${labelize(kanan)}</div>
-                                   <div class="text-gray-900 text-[14px]">${formatValue(data[kanan])}</div>`;
-
+                    left.innerHTML = `
+                        <div class="text-lg font-semibold">${labelize(kiri)}</div>
+                        <div class="text-gray-900 text-[14px]">${formatValue(data[kiri])}</div>
+                    `;
                     row.appendChild(left);
-                    row.appendChild(right);
-                    container.appendChild(row);
 
+                    if (kanan) {
+                        const right = document.createElement('div');
+                        right.innerHTML = `
+                            <div class="font-semibold text-lg">${labelize(kanan)}</div>
+                            <div class="text-gray-900 text-[14px]">${formatValue(data[kanan])}</div>
+                        `;
+                        row.appendChild(right);
+                    }
+
+                    container.appendChild(row);
                 });
+
 
                 // 🔽 Tampilkan Surat Persetujuan
                 const persetujuanContainer = document.getElementById('data-persetujuan');
@@ -150,7 +172,7 @@
                     const isChecked = (val) => persetujuan.persetujuan === val ? 'checked' : '';
 
                     persetujuanContainer.innerHTML = `
-                                        <div class="bg-white rounded-lg shadow px-6 py-4 border">
+                                        <div class="bg-white rounded-lg shadow px-6 py-4 border border-gray-300">
                                             <div class="flex items-center gap-2 mb-2">
                                                 <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -179,7 +201,7 @@
 
                                             <div class="mt-4 mb-2">
                                                 <p class="font-semibold text-[14px] mb-1">Tanda Tangan</p>
-                                                <div class="border border-gray-500 h-32 w-full"></div>
+                                                <div id="tanda-tangan" class="border border-gray-300 h-32 w-full flex items-center justify-center"></div>
                                             </div>
 
                                             <div class="mt-4">
@@ -190,13 +212,36 @@
                                             </div>
                                         </div>
                                     `;
+
+                    fetch('/get_tanda_tangan?id_form_persetujuan=' + persetujuan.id)
+                        .then(res => res.json())
+                        .then(ttd => {
+                            if (ttd.success) {
+                                const img = document.createElement('img');
+                                img.src = ttd.image_base64;
+                                img.alt = 'Tanda Tangan';
+                                img.classList.add('max-h-48');
+                                document.getElementById('tanda-tangan').appendChild(img);
+                            } else {
+                                document.getElementById('tanda-tangan').innerHTML =
+                                    '<span class="text-sm text-red-500">Tanda tangan tidak ditemukan.</span>';
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Gagal memuat tanda tangan:', err);
+                            document.getElementById('tanda-tangan').innerHTML =
+                                '<span class="text-sm text-red-500">Gagal memuat tanda tangan.</span>';
+                        });
                 }
+
+
+
 
                 const screeningContainer = document.getElementById('data-screening');
 
                 if (Array.isArray(data.screening) && data.screening.length > 0) {
                     const box = document.createElement('div');
-                    box.classList.add('bg-white', 'rounded-lg', 'shadow', 'px-6', 'py-4', 'border');
+                    box.classList.add('bg-white', 'rounded-lg', 'shadow', 'px-6', 'py-4', 'border', 'border-gray-300');
 
                     function beautifyLabel(str) {
                         return str.replace(/_/g, ' ')
@@ -217,7 +262,7 @@
                         };
 
                         row.innerHTML = `
-                                        <div class="space-y-1 border p-1 rounded-lg">
+                                        <div class="space-y-1 border border-gray-300 p-1 rounded-lg">
                                             <div class="font-medium text-gray-700 text-[16px] md:text-lg">
                                                 ${beautifyLabel(key)}
                                             </div>
@@ -263,7 +308,15 @@
                     return val;
                 }
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {
+                console.error('Fetch error:', error);
+                document.getElementById('data-peserta').innerHTML =
+                    '<p class="text-red-600 text-sm">Gagal memuat data peserta.</p>';
+                document.getElementById('data-persetujuan').innerHTML =
+                    '<p class="text-red-600 text-sm">Gagal memuat data persetujuan.</p>';
+                document.getElementById('data-screening').innerHTML =
+                    '<p class="text-red-600 text-sm">Gagal memuat data screening.</p>';
+            });
     </script>
 </body>
 

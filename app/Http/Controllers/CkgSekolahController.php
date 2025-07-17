@@ -10,8 +10,16 @@ use App\Models\FormPersetujuan;
 use App\Models\FormPersetujuanTandaTangan;
 use App\Models\RiwayatSekolah;
 use App\Models\Puskesmas;
+use App\Models\MasterSekolah;
+use App\Models\MasterProvinsi;
+use App\Models\MasterKotaKab;
+use App\Models\MasterKecamatan;
+use App\Models\MasterKelurahan;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\SimpanSkriningRequest;
+use Illuminate\Support\Str;
+use Imagick;
 
 class CkgSekolahController extends Controller
 {
@@ -59,55 +67,42 @@ class CkgSekolahController extends Controller
 
     public function get_peserta_didik(Request $request)
     {
-        $nik = $request->nik;
-        $pasien = PasienSekolah::where('nik', $nik)->first();
-        if (!$pasien) {
+        $data = $this->getDataPesertaDidik($request->nik);
+        if (!$data) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Nik tidak ditemukan',
+                'message' => 'NIK tidak ditemukan',
+            ], 404);
+        }
+        return response()->json($data);
+    }
+
+
+    public function get_tanda_tangan(Request $request)
+    {
+        $id = $request->input('id_form_persetujuan');
+
+        // Validasi input sederhana
+        if (!$id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'ID Form Persetujuan tidak ditemukan.',
+            ], 400);
+        }
+
+        $tandaTangan = FormPersetujuanTandaTangan::where('id_form_persetujuan', $id)->first();
+
+        if (!$tandaTangan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tanda tangan tidak ditemukan.',
             ], 404);
         }
 
-        $data = $pasien->toArray();
-        // $data['tempat_lahir'] = $pasien->tempat_lahir . ', ' . date('d-m-Y', strtotime($pasien->tanggal_lahir));
-        // $data = $pasien->toArray();
-        $data['tempat_tanggal_lahir'] = $pasien->tempat_lahir . ', ' . date('d-m-Y', strtotime($pasien->tanggal_lahir));
-        $data['jenis_kelamin'] = $pasien->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan';
-
-        $lahir = new \DateTime($pasien->tanggal_lahir);
-        $today = new \DateTime();
-        $umur = $today->diff($lahir)->y;
-        $data['umur'] = $umur . ' tahun';
-
-        $nama_sekolah = $pasien->ref_sekolah?->nama ?? '-';
-        $alamat_sekolah = $pasien->ref_sekolah?->alamat ?? '-';
-
-        $data['nama_sekolah'] = $nama_sekolah;
-        $data['alamat_sekolah'] = $alamat_sekolah;
-
-        $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
-
-        if ($form_persetujuan) {
-            $form_persetujuan_array = $form_persetujuan->toArray();
-            unset($form_persetujuan_array['id_form_persetujuan_tanda_tangan'], $form_persetujuan_array['created_at'], $form_persetujuan_array['updated_at']);
-            $data['persetujuan'] = $form_persetujuan_array;
-        } else {
-            $data['persetujuan'] = null;
-        }
-
-        $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
-
-        if ($riwayat) {
-            $puskesmas = Puskesmas::where('id', $riwayat->id_puskesmas)->first();
-            $data['puskesmas'] = $puskesmas ? $puskesmas->nama : null;
-
-            $screening = json_decode($riwayat->skrining_mandiri, true);
-            $data['screening'] = $screening ?? [];
-        } else {
-            $data['screening'] = null;
-        }
-
-        return response()->json($data);
+        return response()->json([
+            'success' => true,
+            'image_base64' => $tandaTangan->value,
+        ]);
     }
 
     // public function get_screening_peserta(Request $request)
@@ -250,7 +245,7 @@ class CkgSekolahController extends Controller
                     'dom-provinsi', 'golongan_darah', 'jenis_kelamin', 'kecamatan', 'kelas', 'kelurahan', 'kota',
                     'nama_lengkap', 'nama_ortu_wali', 'nama_sekolah', 'nik', 'nisn', 'no_hp', 'persetujuan',
                     'provinsi', 'puskesmas', 'tahun_lahir', 'tempat_lahir', 'tanggal_lahir', 'tanda_tangan', 'nama_puskesmas',
-                    'id_sekolah', 'Intelektual', 'umur', 'Fisik', 'Sensorik', 'Mental',
+                    'id_sekolah', 'Intelektual', 'umur', 'Fisik', 'Sensorik', 'Mental', 'nik_ortu_wali'
                 ];
 
                 $jawaban = collect($data)
@@ -381,4 +376,159 @@ class CkgSekolahController extends Controller
         }
         return null;
     }
+
+    public function convertSvgToBase64Png($svgBase64)
+    {
+        // Ambil bagian base64 saja (hilangkan prefix)
+        $svgContent = base64_decode(Str::after($svgBase64, 'base64,'));
+
+        $imagick = new Imagick();
+        $imagick->readImageBlob($svgContent);
+        $imagick->setImageFormat("png");
+
+        $pngData = $imagick->getImageBlob();
+        return 'data:image/png;base64,' . base64_encode($pngData);
+    }
+
+    public function downloadPdf(Request $request)
+    {
+        $nik = $request->nik;
+        $data = $this->getDataPesertaDidikForPdf($nik); // pakai yang khusus PDF
+
+        if (!$data) {
+            abort(404, 'Data tidak ditemukan');
+        }
+
+        $tanda_tangan = null;
+        if ($data['persetujuan']) {
+            $ttd = FormPersetujuanTandaTangan::where('id_form_persetujuan', $data['persetujuan']['id'])->first();
+            $tanda_tangan = $ttd?->value;
+
+            if (Str::startsWith($tanda_tangan, 'data:image/svg+xml')) {
+                $tanda_tangan = $this->convertSvgToBase64Png($tanda_tangan);
+            }
+        }
+
+        $pdf = Pdf::loadView(
+            'CKG_Sekolah.Screening_CKG_Sekolah.Success_Page.pdf.index',
+            compact('data', 'tanda_tangan')
+        )->setPaper('A4', 'portrait');
+
+        return $pdf->download('Pendaftaran_' . $nik . '.pdf');
+    }
+
+    private function getDataPesertaDidik($nik)
+    {
+        $pasien = PasienSekolah::where('nik', $nik)->first();
+        if (!$pasien) return null;
+
+        $data = $pasien->toArray();
+        $data['tempat_tanggal_lahir'] = $pasien->tempat_lahir . ', ' . date('d-m-Y', strtotime($pasien->tanggal_lahir));
+        $data['jenis_kelamin'] = $pasien->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan';
+
+        $lahir = new \DateTime($pasien->tanggal_lahir);
+        $umur = (new \DateTime())->diff($lahir)->y;
+        $data['umur'] = $umur . ' tahun';
+
+        $data['nama_sekolah'] = $pasien->ref_sekolah?->nama ?? '-';
+        $data['alamat_sekolah'] = $pasien->ref_sekolah?->alamat ?? '-';
+
+        $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
+        $data['persetujuan'] = $form_persetujuan ? $form_persetujuan->toArray() : null;
+
+        if ($form_persetujuan) {
+            $data['puskesmas'] = optional(Puskesmas::find($form_persetujuan->id_master_puskesmas))->nama;
+            // $data['screening'] = json_decode($riwayat->skrining_mandiri, true);
+        }
+
+        $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
+        if ($riwayat) {
+            // $data['puskesmas'] = optional(Puskesmas::find($riwayat->id_puskesmas))->nama;
+            $data['screening'] = json_decode($riwayat->skrining_mandiri, true);
+        }
+
+        $data['provinsi_ktp'] = optional(
+            MasterProvinsi::where('kode_provinsi', $pasien->provinsi_ktp)->first()
+        )->nama;
+
+        $data['kota_kab_ktp'] = optional(
+            MasterKotaKab::where('kode_kota_kab', $pasien->kota_kab_ktp)->first()
+        )->nama;
+
+        $data['kecamatan_ktp'] = optional(
+            MasterKecamatan::where('kode_kecamatan', $pasien->kecamatan_ktp)->first()
+        )->nama;
+
+        $data['kelurahan_ktp'] = optional(
+            MasterKelurahan::where('kode_kelurahan', $pasien->kelurahan_ktp)->first()
+        )->nama;
+
+        $data['provinsi_dom'] = optional(
+            MasterProvinsi::where('kode_provinsi', $pasien->provinsi_dom)->first()
+        )->nama;
+
+        $data['kota_kab_dom'] = optional(
+            MasterKotaKab::where('kode_kota_kab', $pasien->kota_kab_dom)->first()
+        )->nama;
+
+        $data['kecamatan_dom'] = optional(
+            MasterKecamatan::where('kode_kecamatan', $pasien->kecamatan_dom)->first()
+        )->nama;
+
+        $data['kelurahan_dom'] = optional(
+            MasterKelurahan::where('kode_kelurahan', $pasien->kelurahan_dom)->first()
+        )->nama;
+
+
+        return $data;
+    }
+
+    private function getDataPesertaDidikForPdf($nik)
+    {
+        $data = $this->getDataPesertaDidik($nik);
+        if (!$data) return null;
+
+        $pasien = PasienSekolah::where('nik', $nik)->first();
+        $riwayat = RiwayatSekolah::where('id_pasien_sekolah', $pasien->id)->first();
+
+        // Parse hasil screening
+        $screeningRaw = json_decode($riwayat->skrining_mandiri, true) ?? [];
+
+        // Ubah hasil screening menjadi array asosiatif [objek => jawaban]
+        $jawabanList = [];
+        foreach ($screeningRaw as $item) {
+            $key = array_key_first($item);
+            $jawabanList[$key] = $item[$key];
+        }
+
+        // Konversi jenis kelamin
+        $kelas = (int) $pasien->kelas;
+        $jenis_kelamin = $pasien->jenis_kelamin;
+        if ($jenis_kelamin === 'Laki-laki') {
+            $jenis_kelamin = 'L';
+            $data['jenis_kelamin'] = "Laki-laki";
+        } elseif ($jenis_kelamin === 'Perempuan') {
+            $jenis_kelamin = 'P';
+            $data['jenis_kelamin'] = "Perempuan";
+        }
+
+        // Ambil instrumen berdasarkan kelas dan jenis kelamin
+        $instrumen_sekolah = MasterInstrumenSekolah::whereJsonContains('kelas', $kelas)
+            ->whereJsonContains('jenis_kelamin', $jenis_kelamin)
+            ->where('jenis', 'mandiri')
+            ->get(['objek', 'pertanyaan']);
+
+        // Siapkan hasil screening dengan pertanyaan
+        $data['screening'] = [];
+        foreach ($instrumen_sekolah as $item) {
+            $data['screening'][] = [
+                'pertanyaan' => $item->pertanyaan,
+                'jawaban' => $jawabanList[$item->objek] ?? '-'
+            ];
+        }
+
+        return $data;
+    }
+
+
 }

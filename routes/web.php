@@ -103,6 +103,9 @@ Route::get('master_puskesmas', [PuskesmasController::class, 'all'])->name('maste
 Route::get('/instrumen_sekolah', [CkgSekolahController::class, 'get_instrument_sekolah']);
 
 Route::get('/get_data_peserta', [CkgSekolahController::class, 'get_peserta_didik'])->name('get_peserta_didik.data');
+Route::get('get_tanda_tangan', [CkgSekolahController::class, 'get_tanda_tangan'])->name('get_tanda_tangan.data');
 // Route::get('/get_screening_peserta', [CkgSekolahController::class, 'get_screening_peserta'])->name('get_screening_peserta.data');
 Route::post('/pkg_sekolah/simpan', [CkgSekolahController::class, 'simpan'])->name('simpan_ckg_skolah.data');
 Route::post('/simpan_data_diri', [CkgSekolahController::class, 'simpan_data_diri'])->name('simpan_data_diri.data');
+
+Route::get('/pendaftaran/download', [CkgSekolahController::class, 'downloadPdf'])->name('pendaftaran.download');
