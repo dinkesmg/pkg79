@@ -660,7 +660,7 @@
                             </div>
                             <div class="flex justify-end items-center px-4 sm:px-6 py-4">
                                 <div class="w-full max-w-md">
-                                    @include('CKG_Sekolah\signature-pad')
+                                    @include('CKG_Sekolah/signature-pad')
                                 </div>
                             </div>
                             <div class="mt-2 flex flex-col space-y-3">

@@ -25,7 +25,7 @@ class CkgSekolahController extends Controller
 {
     public function index()
     {
-        return view('CKG_sekolah.index');
+        return view('CKG_Sekolah.index');
     }
 
     public function index_screening()
@@ -430,8 +430,11 @@ class CkgSekolahController extends Controller
         $umur = (new \DateTime())->diff($lahir)->y;
         $data['umur'] = $umur . ' tahun';
 
-        $data['nama_sekolah'] = $pasien->ref_sekolah?->nama ?? '-';
-        $data['alamat_sekolah'] = $pasien->ref_sekolah?->alamat ?? '-';
+        $nama_sekolah = isset($pasien->ref_sekolah) ? $pasien->ref_sekolah->nama : '-';
+        $alamat_sekolah = isset($pasien->ref_sekolah) ? $pasien->ref_sekolah->alamat : '-';
+
+        // $data['nama_sekolah'] = $pasien->ref_sekolah?->nama ?? '-';
+        // $data['alamat_sekolah'] = $pasien->ref_sekolah?->alamat ?? '-';
 
         $form_persetujuan = FormPersetujuan::where('id_pasien_sekolah', $pasien->id)->first();
         $data['persetujuan'] = $form_persetujuan ? $form_persetujuan->toArray() : null;
