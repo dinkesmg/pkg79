@@ -1677,7 +1677,7 @@
             </div>
 
             @if(Auth::user()->role == 'Admin' || Auth::user()->role == 'Puskesmas')
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
@@ -1700,7 +1700,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             @endif
             <!-- /.row -->
         </div><!-- /.container-fluid -->
@@ -2751,7 +2751,7 @@
             columns: col
         });
 
-        tabel_pasien_faskes_bpjs()
+        // tabel_pasien_faskes_bpjs()
     }
 
     function tabel_pasien_faskes_bpjs() {

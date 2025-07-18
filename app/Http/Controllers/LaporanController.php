@@ -14,8 +14,12 @@ use App\Models\Riwayat;
 use App\Models\MasterKecamatan;
 use App\Models\MasterKelurahan;
 use App\Models\Puskesmas;
+use App\Models\PasienSekolah;
+use App\Models\RiwayatSekolah;
+use App\Models\FormPersetujuan;
 use Carbon\Carbon;
 use App\Exports\LaporanExport;
+use App\Exports\LaporanSasaranSekolahExport;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LaporanController extends Controller
@@ -475,5 +479,123 @@ class LaporanController extends Controller
     public function index_sasaran_bpjs()
     {
         return view('Laporan.index_sasaran_bpjs');
+    }
+
+    public function index_sasaran_sekolah()
+    {
+        return view('Laporan.index_sasaran_sekolah');
+    }
+
+    public function data_sekolah(Request $request)
+    {
+        $user = Auth::user();
+        $role = $user->role;
+        $id_user = $user->id;
+        $periodeDari = $request->periode_dari;
+        $periodeSampai = $request->periode_sampai;
+        $nama_sekolah = $request->nama_sekolah;
+        $kelas = $request->kelas;
+
+        $query = RiwayatSekolah::with([
+            'pasien_sekolah.ref_provinsi_ktp' => function ($q) {
+                $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kota_kab_ktp' => function ($q) {
+                $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kecamatan_ktp' => function ($q) {
+                $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kelurahan_ktp' => function ($q) {
+                $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_provinsi_dom' => function ($q) {
+                $q->select('id', 'kode_provinsi', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kota_kab_dom' => function ($q) {
+                $q->select('id', 'kode_kota_kab', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kecamatan_dom' => function ($q) {
+                $q->select('id', 'kode_kecamatan', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_kelurahan_dom' => function ($q) {
+                $q->select('id', 'kode_kelurahan', 'kode_parent', 'nama');
+            },
+            'pasien_sekolah.ref_master_sekolah' => function ($q) {
+                $q->select('id', 'nama', 'alamat');
+            },
+            'puskesmas' => function ($q) {
+                $q->select('id', 'nama');
+            },
+        ])
+            ->join('form_persetujuan', function ($join) {
+                $join->on('riwayat_sekolah.id_pasien_sekolah', '=', 'form_persetujuan.id_pasien_sekolah')
+                    ->whereRaw('DATE(riwayat_sekolah.created_at) = form_persetujuan.tanggal');
+            })
+            ->whereBetween('riwayat_sekolah.created_at', ["{$periodeDari} 00:00:00", "{$periodeSampai} 23:59:59"])
+            ->orderBy('riwayat_sekolah.created_at', 'desc')
+            ->select('riwayat_sekolah.*', 'form_persetujuan.tanggal as form_persetujuan_tanggal', 'form_persetujuan.persetujuan');
+
+        if ($role == "Puskesmas") {
+            $query->where('id_puskesmas', ($id_user - 1));
+        }
+
+        if ($nama_sekolah != null) {
+            // $query->where('riwayat_sekolah.pasien_sekolah.id_sekolah', $nama_sekolah);
+            $query->whereHas('pasien_sekolah', function ($q) use ($nama_sekolah) {
+                $q->where('id_sekolah', $nama_sekolah);
+            });
+        }
+
+        if ($kelas != null) {
+            $query->whereHas('pasien_sekolah', function ($q) use ($kelas) {
+                $q->where('kelas', $kelas);
+            });
+        }
+
+        // Eksekusi query
+        // $data = $query->get();
+
+        // dd($data[0]);
+        // return response()->json($data);
+
+        $perPage = $request->input('length', 10);  // jumlah per halaman
+        $page = floor($request->input('start', 0) / $perPage) + 1;  // hi
+
+        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        // Return the paginated results in the DataTable format
+        return response()->json([
+            'draw' => $request->input('draw'),
+            'recordsTotal' => $data->total(),
+            'recordsFiltered' => $data->total(),
+            'data' => $data->items(),
+        ]);
+    }
+
+    public function export_sasaran_sekolah(Request $request)
+    {
+        $user = Auth::user();
+        $role = $user->role;
+        $id_user = $user->id;
+        $periodeDari = $request->periode_dari;
+        $periodeSampai = $request->periode_sampai;
+        $nama_sekolah = $request->nama_sekolah;
+        $kelas = $request->kelas;
+
+        // dd($request->all());
+
+        // return Excel::download(new LaporanSasaranSekolahExport($role, $id_user, $periodeDari, $periodeSampai, $nama_sekolah, $kelas), 'riwayat.xlsx');
+        // $today = Carbon::now()->format('d-m-Y');
+        $today = Carbon::now()->format('d-m-Y_H-i');
+        $startDate = Carbon::parse($periodeDari)->format('d-m-Y');
+        $endDate = Carbon::parse($periodeSampai)->format('d-m-Y');
+
+        // Nama file
+        $filename = "riwayat_sasaran_sekolah_{$startDate}_sampai_{$endDate}_exported_{$today}.xlsx";
+
+        return Excel::download(
+            new LaporanSasaranSekolahExport($role, $id_user, $periodeDari, $periodeSampai, $nama_sekolah, $kelas),
+            $filename
+        );
     }
 }

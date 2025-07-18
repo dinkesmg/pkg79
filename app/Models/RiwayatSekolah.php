@@ -19,4 +19,9 @@ class RiwayatSekolah extends Model
     {
         return $this->belongsTo(Puskesmas::class, 'id_puskesmas', 'id');
     }
+
+    public function pasien_sekolah()
+    {
+        return $this->belongsTo(PasienSekolah::class, 'id_pasien_sekolah', 'id');
+    }
 }

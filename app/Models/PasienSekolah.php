@@ -65,13 +65,8 @@ class PasienSekolah extends Model
         return $this->hasOne(RiwayatSekolah::class, 'id_pasien_sekolah', 'id');
     }
 
-    // public function kecamatan()
-    // {
-    //     return $this->belongsTo(Ref_Kecamatan::class, 'id_kecamatan', 'id');
-    // }
-
-    // public function kelurahan()
-    // {
-    //     return $this->belongsTo(Ref_Kelurahan::class, 'id_kelurahan', 'id');
-    // }
+    public function ref_master_sekolah()
+    {
+        return $this->hasOne(MasterSekolah::class, 'id', 'id_sekolah');
+    }
 }

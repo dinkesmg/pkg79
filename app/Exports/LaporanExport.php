@@ -41,7 +41,8 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             'pasien.ref_provinsi_ktp', 'pasien.ref_kota_kab_ktp', 'pasien.ref_kecamatan_ktp', 'pasien.ref_kelurahan_ktp',
             'pasien.ref_provinsi_dom', 'pasien.ref_kota_kab_dom', 'pasien.ref_kecamatan_dom', 'pasien.ref_kelurahan_dom',
             'pasien.ref_bpjs',
-            'pemeriksa', 'user'
+            'pemeriksa', 'user',
+            'riwayat_sekolah'
         ])->whereBetween('tanggal_pemeriksaan', [$this->periodeDari, $this->periodeSampai])
             ->orderBy('tanggal_pemeriksaan', 'desc');
 
@@ -143,6 +144,8 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             $data = $query->get();
         }
 
+        // dd($data[2]);
+
         return $data;
     }
 
@@ -170,6 +173,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             'No HP',
             'Hasil Pemeriksaan',
             'Hasil Pemeriksaan Lainnya',
+            'Hasil Pemeriksaan Mandiri',
             'Kesimpulan Hasil Pemeriksaan',
             'Program Tindak Lanjut'
         ];
@@ -300,6 +304,17 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             ));
         }
 
+        $hasilPemeriksaanMandiri = $riwayat->riwayat_sekolah ? json_decode($riwayat->riwayat_sekolah->skrining_mandiri, true) : null;
+        $format_hasil_pemeriksaan_mandiri = '-';
+        if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaanMandiri) && !empty($hasilPemeriksaanMandiri)) {
+            $format_hasil_pemeriksaan_mandiri = implode('; ', array_map(
+                fn ($item) => is_array($item)
+                    ? implode('; ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    : (string)$item,
+                $hasilPemeriksaanMandiri
+            ));
+        }
+
         // Program Tindak Lanjut
         $program_tindak_lanjut = json_decode($riwayat->program_tindak_lanjut, true);
         $format_program_tindak_lanjut = '-';
@@ -343,6 +358,7 @@ class LaporanExport implements FromCollection, WithHeadings, WithMapping
             $riwayat->pasien->no_hp ?? '-',
             $format_hasil_pemeriksaan,
             $format_hasil_pemeriksaan_lainnya,
+            $format_hasil_pemeriksaan_mandiri,
             $riwayat->kesimpulan_hasil_pemeriksaan ?? '-',
             $format_program_tindak_lanjut,
         ];

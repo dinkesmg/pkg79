@@ -52,6 +52,9 @@ Route::prefix('laporan')->group(function () {
     Route::get('/data_wilayah', [LaporanController::class, 'data_wilayah'])->name('laporan.data_wilayah');
     Route::get('/data_total_per_wilayah', [LaporanController::class, 'data_total_per_wilayah'])->name('laporan.data_total_per_wilayah');
     Route::get('/sasaran_bpjs', [LaporanController::class, 'index_sasaran_bpjs'])->name('laporan.index_sasaran_bpjs');
+    Route::get('/sasaran_sekolah', [LaporanController::class, 'index_sasaran_sekolah'])->name('laporan.sasaran_sekolah');
+    Route::get('/data_sekolah', [LaporanController::class, 'data_sekolah'])->name('laporan.data_sekolah');
+    Route::get('/export_sasaran_sekolah', [LaporanController::class, 'export_sasaran_sekolah'])->name('laporan.export_sasaran_sekolah');
 });
 
 Route::prefix('dashboard')->group(function () {

@@ -25,5 +25,9 @@ class Riwayat extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
- 
+
+    public function riwayat_sekolah()
+    {
+        return $this->hasOne(RiwayatSekolah::class, 'id_riwayat', 'id');
+    }
 }
