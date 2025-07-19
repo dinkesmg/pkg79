@@ -58,6 +58,7 @@
                                         <thead>
                                             <tr>
                                                 <th>No</th>
+                                                <th>Aksi</th>
                                                 <th>Tanggal Pemeriksaan</th>
                                                 <th>Nama FKTP Pemeriksa</th>
                                                 <th>Persetujuan</th>
@@ -130,6 +131,13 @@
                 render: function(data, type, row, meta) {
                     return meta.row + meta.settings._iDisplayStart + 1;
                 },
+            },
+            {
+                'render': function(data, type, row, meta) {
+                    let riwayat = (row.id_riwayat != null ? "sudah diperiksa" : "belum diperiksa");
+
+                    return riwayat
+                }
             },
             {
                 'data': 'form_persetujuan_tanggal'

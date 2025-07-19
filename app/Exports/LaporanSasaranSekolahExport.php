@@ -105,6 +105,7 @@ class LaporanSasaranSekolahExport implements FromCollection, WithHeadings, WithM
     {
         return [
             'No',
+            'Aksi',
             'Tanggal Pemeriksaan',
             'Nama FKTP Pemeriksa',
             'Persetujuan',
@@ -114,7 +115,8 @@ class LaporanSasaranSekolahExport implements FromCollection, WithHeadings, WithM
             'Jenis Kelamin',
             'Tanggal Lahir',
             'Umur',
-            'Kelas'
+            'Kelas',
+            'Skrining Mandiri'
         ];
     }
 
@@ -124,6 +126,9 @@ class LaporanSasaranSekolahExport implements FromCollection, WithHeadings, WithM
     public function map($riwayat): array
     {
         $this->counter++;
+        //riwayat
+        $riwayat_periksa_nakes = $riwayat->id_riwayat != null ? "sudah diperiksa" : "belum diperiksa";
+
         // Persetujuan
         $persetujuan = $riwayat->persetujuan == "1" ? "setuju" : "tidak";
 
@@ -133,8 +138,21 @@ class LaporanSasaranSekolahExport implements FromCollection, WithHeadings, WithM
         $diff = $tglLahir->diff($tglPeriksa);
         $umur = $diff->y . ' tahun ' . $diff->m . ' bulan ' . $diff->d . ' hari';
 
+        //skrining mandiri
+        $hasilPemeriksaanMandiri = json_decode($riwayat->skrining_mandiri, true);
+        $format_hasil_pemeriksaan_mandiri = '-';
+        if (json_last_error() === JSON_ERROR_NONE && is_array($hasilPemeriksaanMandiri) && !empty($hasilPemeriksaanMandiri)) {
+            $format_hasil_pemeriksaan_mandiri = implode('; ', array_map(
+                fn ($item) => is_array($item)
+                    ? implode('; ', array_map(fn ($key, $value) => "$key: $value", array_keys($item), $item))
+                    : (string)$item,
+                $hasilPemeriksaanMandiri
+            ));
+        }
+
         return [
             $this->counter,
+            $riwayat_periksa_nakes,
             Carbon::parse($riwayat->form_tanggal_persetujuan)->format('d-m-Y'),
             $riwayat->puskesmas->nama,
             $persetujuan,
@@ -145,6 +163,7 @@ class LaporanSasaranSekolahExport implements FromCollection, WithHeadings, WithM
             $riwayat->pasien_sekolah->tanggal_lahir ?? '-',
             $umur,
             $riwayat->pasien_sekolah->kelas ?? '-',
+            $format_hasil_pemeriksaan_mandiri
         ];
     }
 }
